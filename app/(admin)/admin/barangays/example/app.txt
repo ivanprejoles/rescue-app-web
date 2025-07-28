@@ -1,0 +1,197 @@
+import React, { useState } from 'react';
+import IncidentTable from './components/IncidentTable';
+import BarangayPage from './pages/BarangayPage';
+import { typeConfigs, defaultColumns, defaultActions } from './config/tableConfig';
+import { Incident } from './types/incident';
+
+const sampleData: Incident[] = [
+  {
+    "id": "b6811f02-e7ed-404b-8529-0bacd145ab22",
+    "type": "StormSurge",
+    "name": null,
+    "description": null,
+    "user_id": null,
+    "rescuer_id": null,
+    "status": "active",
+    "additional_info": {
+      "placed_by": "admin",
+      "local_time": "2025-07-03T07:42:15.022Z"
+    },
+    "created_at": "2025-07-03T07:42:16.912989+00:00",
+    "updated_at": "2025-07-03T07:42:16.912989+00:00",
+    "lat": 14.428030418032,
+    "lng": 120.884971618652
+  },
+  {
+    "id": "b2cec7fd-e1e6-4245-983c-4f3a39e4e5f7",
+    "type": "StormSurge",
+    "name": null,
+    "description": null,
+    "user_id": null,
+    "rescuer_id": null,
+    "status": "active",
+    "additional_info": {
+      "placed_by": "admin",
+      "local_time": "2025-07-03T07:47:21.870Z"
+    },
+    "created_at": "2025-07-03T07:47:23.901715+00:00",
+    "updated_at": "2025-07-03T07:47:23.901715+00:00",
+    "lat": 14.4375063189856,
+    "lng": 120.892696380615
+  },
+  {
+    "id": "6390100e-bb22-466d-9059-ff9231353109",
+    "type": "StormSurge",
+    "name": null,
+    "description": null,
+    "user_id": null,
+    "rescuer_id": null,
+    "status": "active",
+    "additional_info": {
+      "placed_by": "admin",
+      "local_time": "2025-07-03T07:50:12.968Z"
+    },
+    "created_at": "2025-07-03T07:50:14.509468+00:00",
+    "updated_at": "2025-07-03T07:50:14.509468+00:00",
+    "lat": 14.4167253070118,
+    "lng": 120.872440338135
+  },
+  {
+    "id": "0a0f0235-9d27-4251-a79a-d87a8962ccf3",
+    "type": "StormSurge",
+    "name": null,
+    "description": null,
+    "user_id": null,
+    "rescuer_id": null,
+    "status": "active",
+    "additional_info": {
+      "placed_by": "admin",
+      "local_time": "2025-07-03T07:57:17.806Z"
+    },
+    "created_at": "2025-07-03T07:57:20.909207+00:00",
+    "updated_at": "2025-07-03T07:57:20.909207+00:00",
+    "lat": 14.4341814873921,
+    "lng": 120.895099639893
+  },
+  {
+    "id": "b68251db-cda1-489f-ab7f-4ae8d87a4a1d",
+    "type": "Flood",
+    "name": null,
+    "description": null,
+    "user_id": null,
+    "rescuer_id": null,
+    "status": "active",
+    "additional_info": {
+      "placed_by": "admin",
+      "local_time": "2025-07-03T08:03:52.487Z"
+    },
+    "created_at": "2025-07-03T08:03:54.254264+00:00",
+    "updated_at": "2025-07-03T08:03:54.254264+00:00",
+    "lat": 14.4175565847126,
+    "lng": 120.88342666626
+  },
+  {
+    "id": "0d91f6e7-77d7-43fe-a1ee-721562590c23",
+    "type": "Flood",
+    "name": null,
+    "description": null,
+    "user_id": null,
+    "rescuer_id": null,
+    "status": "active",
+    "additional_info": {
+      "placed_by": "admin",
+      "local_time": "2025-07-03T08:04:36.692Z"
+    },
+    "created_at": "2025-07-03T08:04:38.846104+00:00",
+    "updated_at": "2025-07-03T08:04:38.846104+00:00",
+    "lat": 14.4314384639412,
+    "lng": 120.916385650635
+  },
+  {
+    "id": "d8ca96ee-c528-4f03-acf7-5578e5d971f5",
+    "type": "Flood",
+    "name": null,
+    "description": null,
+    "user_id": null,
+    "rescuer_id": null,
+    "status": "active",
+    "additional_info": {
+      "placed_by": "admin",
+      "local_time": "2025-07-03T08:04:53.435Z"
+    },
+    "created_at": "2025-07-03T08:04:55.150147+00:00",
+    "updated_at": "2025-07-03T08:04:55.150147+00:00",
+    "lat": 14.4311890964971,
+    "lng": 120.911493301392
+  },
+  {
+    "id": "d6c6c8b5-cd0a-4e6f-95ba-5d47ba76463a",
+    "type": "Evacuation",
+    "name": null,
+    "description": null,
+    "user_id": null,
+    "rescuer_id": null,
+    "status": "active",
+    "additional_info": {
+      "placed_by": "admin",
+      "local_time": "2025-07-03T12:52:25.088Z"
+    },
+    "created_at": "2025-07-03T12:52:28.795112+00:00",
+    "updated_at": "2025-07-03T12:52:28.795112+00:00",
+    "lat": 14.4275316752313,
+    "lng": 120.899391174316
+  }
+];
+
+function App() {
+  const [currentPage, setCurrentPage] = useState<'incidents' | 'barangays'>('barangays');
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation */}
+      <div className="bg-white shadow-sm border-b border-gray-200 mb-6">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex space-x-8">
+            <button
+              onClick={() => setCurrentPage('incidents')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                currentPage === 'incidents'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+              }`}
+            >
+              Incident Management
+            </button>
+            <button
+              onClick={() => setCurrentPage('barangays')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                currentPage === 'barangays'
+                  ? 'bg-emerald-100 text-emerald-700'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+              }`}
+            >
+              Barangay Management
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Page Content */}
+      {currentPage === 'incidents' ? (
+        <IncidentTable 
+          incidents={sampleData}
+          typeConfigs={typeConfigs}
+          columns={defaultColumns}
+          actions={defaultActions}
+          showSummary={true}
+          groupBy="type"
+          defaultCollapsed={false}
+        />
+      ) : (
+        <BarangayPage />
+      )}
+    </div>
+  );
+}
+
+export default App;

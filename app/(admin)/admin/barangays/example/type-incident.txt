@@ -1,0 +1,42 @@
+export interface Incident {
+  id: string;
+  type: string;
+  name: string | null;
+  description: string | null;
+  user_id: string | null;
+  rescuer_id: string | null;
+  status: string;
+  additional_info: {
+    placed_by: string;
+    local_time: string;
+  };
+  created_at: string;
+  updated_at: string;
+  lat: number;
+  lng: number;
+}
+
+export interface TypeConfig {
+  color: string;
+  lightColor: string;
+  borderColor: string;
+  textColor: string;
+  icon: React.ComponentType<any>;
+  label: string;
+}
+
+export interface ColumnConfig {
+  key: string;
+  label: string;
+  icon?: React.ComponentType<any>;
+  render: (incident: Incident) => React.ReactNode;
+  sortable?: boolean;
+  width?: string;
+}
+
+export interface TableAction {
+  label: string;
+  onClick: (incident: Incident) => void;
+  variant?: 'primary' | 'secondary';
+  className?: string;
+}

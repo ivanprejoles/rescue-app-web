@@ -1,0 +1,51 @@
+export interface EvacuationCenter {
+  id: string;
+  name: string;
+  capacity?: number;
+  status: 'active' | 'inactive' | 'maintenance';
+  lat: number;
+  lng: number;
+  address?: string;
+  contact?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Barangay {
+  id: string;
+  name: string;
+  captain?: string;
+  population?: number;
+  lat: number;
+  lng: number;
+  address?: string;
+  contact?: string;
+  evacuation_centers: EvacuationCenter[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BarangayTypeConfig {
+  color: string;
+  lightColor: string;
+  borderColor: string;
+  textColor: string;
+  icon: React.ComponentType<any>;
+  label: string;
+}
+
+export interface BarangayColumnConfig {
+  key: string;
+  label: string;
+  icon?: React.ComponentType<any>;
+  render: (item: any) => React.ReactNode;
+  sortable?: boolean;
+  width?: string;
+}
+
+export interface BarangayTableAction {
+  label: string;
+  onClick: (item: any) => void;
+  variant?: 'primary' | 'secondary';
+  className?: string;
+}
