@@ -24,8 +24,6 @@ export async function getRescuersAndUsers() {
 
   if (error) throw error;
 
-  console.log(data);
-
   // Separate users by user_type
   const rescuers = data?.filter((u) => u.user_type === "rescuer") ?? [];
   const users = data?.filter((u) => u.user_type === "user") ?? [];
@@ -34,4 +32,25 @@ export async function getRescuersAndUsers() {
     rescuers,
     users,
   };
+}
+
+export async function updateUserRescuer(
+  id: string,
+  updates: Partial<{
+    status: string;
+  }>
+) {
+  const supabase = await createServerSupabaseClient();
+  const { data: updated, error } = await supabase
+    .from("users")
+    .update(updates)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[updateMarker]", error.message);
+    throw error;
+  }
+  return updated;
 }

@@ -1,0 +1,18 @@
+dashboard layout and design - https://www.zignuts.com/blog/top-10-react-templates
+
+announcement - expandable-card
+             - chart statistics (date, type)
+             
+barangay - accordion animation
+             
+button - hover border gradient
+card - glowing effect (dark)
+title - sparkle
+
+==client side==
+
+client side - parallax
+            - video (3d card effect)
+            - phone image macbook scroll
+            - main page spotlight
+            - alert information (3d animated pin)

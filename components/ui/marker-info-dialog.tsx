@@ -119,8 +119,8 @@ export function MarkerInfoDialog({
                 <SelectValue placeholder="Select urgency" />
               </SelectTrigger>
               <SelectContent>
-                {urgencyOptions.map((option) => (
-                  <SelectItem key={option} value={option}>
+                {urgencyOptions.map((option, index) => (
+                  <SelectItem key={index} value={option}>
                     {option}
                   </SelectItem>
                 ))}

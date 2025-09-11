@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { User } from "@/lib/types";
 import {
   Dialog,
@@ -11,6 +11,10 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
+// Use the default input props type for ReadOnlyInput
+type InputProps = React.ComponentProps<"input">;
 import {
   Select,
   SelectTrigger,
@@ -18,6 +22,8 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateUserRescuerClient } from "@/lib/client-request/rescuer-user";
 
 interface UserModalProps {
   user: User | null;
@@ -26,54 +32,86 @@ interface UserModalProps {
   getStatusColor?: (status: string) => string; // optional styling helper
 }
 
+const ReadOnlyInput = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, ...props }, ref) => (
+    <Input
+      className={`cursor-default ring-0 focus-visible:ring-0 placeholder:text-muted-foreground ${className}`}
+      readOnly
+      ref={ref}
+      {...props}
+    />
+  )
+);
+ReadOnlyInput.displayName = "ReadOnlyInput";
+
 export const UserModal: React.FC<UserModalProps> = ({
   user,
   onClose,
   onUpdated,
-  getStatusColor,
 }) => {
-  const [open, setOpen] = useState(false);
-  const [userType, setUserType] = useState<User["user_type"]>("user");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient(); // <-- get shared query client
 
-  useEffect(() => {
+  const [open, setOpen] = React.useState(false);
+  const [userType, setUserType] = React.useState<User["user_type"]>("user");
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
     if (user) {
       setUserType(user.user_type);
       setOpen(true);
+      setError(null);
     } else {
       setOpen(false);
       setError(null);
     }
   }, [user]);
 
-  async function handleSave() {
-    if (!user) return;
+  const mutation = useMutation({
+    mutationFn: () =>
+      updateUserRescuerClient(user!.id, { user_type: userType }),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["rescuers-users"] });
 
-    setLoading(true);
-    setError(null);
+      const previousData = queryClient.getQueryData<{
+        users: User[];
+        rescuers: User[];
+      }>(["rescuers-users"]);
 
-    try {
-      const response = await fetch(`/api/users/${user.id}/updateUserType`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_type: userType }),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Failed to update user type");
+      if (previousData) {
+        queryClient.setQueryData(["rescuers-users"], {
+          users: previousData.users.map((u) =>
+            u.id === user!.id ? { ...u, user_type: userType } : u
+          ),
+          rescuers: previousData.rescuers.map((r) =>
+            r.id === user!.id ? { ...r, user_type: userType } : r
+          ),
+        });
       }
 
+      return { previousData };
+    },
+    onError: (err, _, context: any) => {
+      setError(
+        err instanceof Error ? err.message : "Failed to update user type"
+      );
+      if (context?.previousData) {
+        queryClient.setQueryData(["rescuers-users"], context.previousData);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["rescuers-users"] });
+    },
+    onSuccess: () => {
       onUpdated?.();
       setOpen(false);
       onClose();
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }
+    },
+  });
+
+  const handleSave = () => {
+    setError(null);
+    mutation.mutate();
+  };
 
   if (!user) return null;
 
@@ -90,44 +128,40 @@ export const UserModal: React.FC<UserModalProps> = ({
           <DialogTitle>Update User Type</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Readonly user info */}
+        <div className="space-y-4">
+          {/* Readonly user info with inputs for layout consistency */}
           <div>
-            <Label>Name</Label>
-            <p className="rounded border px-3 py-2 bg-gray-50">{user.name}</p>
+            <Label htmlFor="name">Name</Label>
+            <ReadOnlyInput id="name" value={user.name} />
           </div>
           <div>
-            <Label>Email</Label>
-            <p className="rounded border px-3 py-2 bg-gray-50">{user.email}</p>
+            <Label htmlFor="email">Email</Label>
+            <ReadOnlyInput id="email" value={user.email} />
           </div>
           <div>
-            <Label>Phone Number</Label>
-            <p className="rounded border px-3 py-2 bg-gray-50">
-              {user.phone_number}
-            </p>
+            <Label htmlFor="phone">Phone Number</Label>
+            <ReadOnlyInput id="phone" value={user.phone_number} />
           </div>
           <div>
-            <Label>Barangay Address</Label>
-            <p className="rounded border px-3 py-2 bg-gray-50">
-              {user.barangays?.address ?? "N/A"}
-            </p>
+            <Label htmlFor="address">Barangay Address</Label>
+            <ReadOnlyInput
+              id="address"
+              value={user.barangays?.address ?? "N/A"}
+            />
           </div>
           <div>
-            <Label>Current User Type</Label>
-            <p
-              className={`rounded border px-3 py-2 bg-gray-50 capitalize ${
-                getStatusColor ? getStatusColor(user.status) : ""
-              }`}
-            >
-              {user.user_type}
-            </p>
+            <Label htmlFor="currentUserType">Current User Type</Label>
+            <ReadOnlyInput
+              id="currentUserType"
+              value={user.user_type}
+              className={user.barangays?.address ?? "N/A"}
+            />
           </div>
 
           {/* Select to update user_type */}
           <div>
             <Label htmlFor="userTypeSelect">Change User Type</Label>
             <Select
-              id="userTypeSelect"
               value={userType}
               onValueChange={(value) => setUserType(value as User["user_type"])}
             >
@@ -141,6 +175,7 @@ export const UserModal: React.FC<UserModalProps> = ({
             </Select>
           </div>
 
+          {/* Error message */}
           {error && (
             <p className="text-sm text-red-600 mt-2" role="alert">
               {error}
@@ -151,16 +186,21 @@ export const UserModal: React.FC<UserModalProps> = ({
         <DialogFooter>
           <Button
             variant="outline"
+            className="cursor-pointer"
             onClick={() => {
               setOpen(false);
               onClose();
             }}
-            disabled={loading}
+            disabled={mutation.isPending}
           >
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={loading}>
-            {loading ? "Saving..." : "Save"}
+          <Button
+            className="cursor-pointer"
+            onClick={handleSave}
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? "Saving..." : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>

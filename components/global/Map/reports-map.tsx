@@ -8,13 +8,14 @@ import LegendPopover from "./legend-popover";
 import MarkerMaker from "./marker-maker";
 import { CustomMarker } from "./custom-marker";
 import { useMapToggleStore } from "@/hooks/use-mapToggleStore";
-import { legendMarker } from "@/lib/constants";
+import { legendMarker, typeConfigs } from "@/lib/constants";
 import { toggleReportSelection } from "@/lib/map/MarkerHandlers";
 import { kawitBounds } from "@/lib/map/kawitBounds";
 import { MapData, StoredMarkerType } from "@/lib/types";
 import {
   callNumber,
   capitalize,
+  capitalizeFirstLetter,
   openGmailComposeWithRecipient,
   openGoogleMaps,
 } from "@/lib/utils";
@@ -22,11 +23,17 @@ import { LocationModal } from "../modal/add-marker-map-modal";
 import { ContactButton } from "@/components/ui/contact-button";
 import { Ambulance, MapPin, Phone, User } from "lucide-react";
 import RenderLocations from "./render-locations";
+import BoundDragHandler from "@/lib/map/bound-non-sticky";
 
 export default function ReportsMap({ reports }: { reports?: MapData }) {
   const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const onMarkerTypeSelect = (type: string) => {
     setSelectedType(type);
@@ -66,7 +73,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
   const renderMarkers = () => {
     if (!reports?.markers) return null;
 
-    return reports.markers.map((report) => {
+    return reports.markers.map((report, index) => {
       const legend = legendMarker.find((l) => l.key === report.type);
       if (!legend) return null;
 
@@ -74,7 +81,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
 
       return (
         <CustomMarker
-          key={report.id}
+          key={index}
           marker={report}
           iconPicker={{
             iconName: legend.iconName,
@@ -83,6 +90,12 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
           }}
           onClick={handleMarkerClick}
         >
+          <h1 className="w-full text-center mb-2 text-lg font-bold">
+            {report.type === "report"
+              ? `${report.user?.name || "Guest"} Report`
+              : typeConfigs[report.type].label}
+            {/* capitalizeFirstLetter(report.type) */}
+          </h1>
           {report.type === "report" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <ContactButton
@@ -149,12 +162,12 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
 
     if (!toggleStates[legend.key]) return null;
 
-    return reports.barangays.map((brgy) => {
+    return reports.barangays.map((brgy, index) => {
       if (!brgy.latitude || !brgy.longitude) return null;
 
       return (
         <CustomMarker
-          key={brgy.id}
+          key={index}
           marker={{
             id: brgy.id,
             latitude: brgy.latitude,
@@ -169,6 +182,9 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
           }}
           onClick={handleMarkerClick}
         >
+          <h1 className="w-full text-center mb-2 text-lg font-bold">
+            {brgy.name}
+          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <ContactButton
               icon={Phone}
@@ -203,12 +219,12 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
 
     if (!toggleStates[legend.key]) return null;
 
-    return reports.evacuationCenters.map((evac) => {
+    return reports.evacuationCenters.map((evac, index) => {
       if (!evac.latitude || !evac.longitude) return null;
 
       return (
         <CustomMarker
-          key={evac.id}
+          key={index}
           marker={{
             id: evac.id,
             latitude: evac.latitude,
@@ -223,6 +239,9 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
           }}
           onClick={handleMarkerClick}
         >
+          <h1 className="w-full text-center mb-2 text-lg font-bold">
+            {evac.name}
+          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <ContactButton
               icon={Phone}
@@ -249,15 +268,20 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
     });
   };
 
+  if (!isClient) {
+    return null; // or a loader placeholder
+  }
+
   return (
     <div className="relative rounded-lg overflow-hidden h-full w-full">
       <MapContainer
+        key={"full-screen-map"}
         center={[14.4461369, 120.8657466]}
-        zoom={13}
+        zoom={15}
         minZoom={13}
         maxZoom={18}
         maxBounds={kawitBounds}
-        maxBoundsViscosity={1.0}
+        maxBoundsViscosity={0}
         scrollWheelZoom={false}
         doubleClickZoom={false}
         touchZoom="center"
@@ -265,6 +289,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
         zoomControl={false}
         className="h-full w-full"
       >
+        <BoundDragHandler bounds={kawitBounds} />
         <ZoomControl position="bottomright" />
         <ResizeFix />
 

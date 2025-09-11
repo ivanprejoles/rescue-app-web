@@ -501,7 +501,7 @@ const WeatherSection = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {mockWeatherData.alerts.map((alert, index) => (
-            <FloatingCard key={alert.id} delay={index * 0.3}>
+            <FloatingCard key={index} delay={index * 0.3}>
               <div
                 className={`glass-effect rounded-2xl p-6 border ${getSeverityColor(
                   alert.severity

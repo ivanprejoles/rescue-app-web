@@ -15,7 +15,6 @@ export function createGeoapifyIcon(
   iconName: string,
   iconColor: string
 ) {
-  console.log(iconColor);
   // colorHex must be in hex format without '#', encode properly
   const color = encodeURIComponent(colorHex.replace(/^#/, ""));
 

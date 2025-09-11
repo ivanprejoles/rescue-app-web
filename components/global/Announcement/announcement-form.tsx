@@ -38,7 +38,7 @@ export default function AnnouncementForm({
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    status: "draft" as string,
+    status: "information" as string,
     date: new Date().toISOString().split("T")[0],
   });
 
@@ -56,7 +56,7 @@ export default function AnnouncementForm({
       setFormData({
         title: "",
         description: "",
-        status: "draft",
+        status: "information",
         date: new Date().toISOString().split("T")[0],
       });
     }
@@ -83,7 +83,7 @@ export default function AnnouncementForm({
     setFormData({
       title: "",
       description: "",
-      status: "draft",
+      status: "information",
       date: new Date().toISOString().split("T")[0],
     });
     onClose();
@@ -106,8 +106,8 @@ export default function AnnouncementForm({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 overflow-hidden">
-          <Card>
-            <CardContent className="pt-6 space-y-6 overflow-hidden">
+          <div className="py-6">
+            <div className="pt-6 space-y-6 overflow-hidden">
               {/* Title Field */}
               <div className="space-y-2">
                 <Label htmlFor="title" className="flex items-center space-x-2">
@@ -164,10 +164,9 @@ export default function AnnouncementForm({
                       <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="draft">Draft</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="information">Information</SelectItem>
                       <SelectItem value="urgent">Urgent</SelectItem>
-                      <SelectItem value="info">Info</SelectItem>
+                      <SelectItem value="warning">Warning</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -189,14 +188,23 @@ export default function AnnouncementForm({
                   />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           <DialogFooter className="gap-2">
-            <Button type="button" variant="outline" onClick={handleClose}>
+            <Button
+              type="button"
+              variant="outline"
+              className="cursor-pointer"
+              onClick={handleClose}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="cursor-pointer"
+            >
               {isSubmitting ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

@@ -205,8 +205,8 @@ export function MarkerPopupContent({
                     <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
                   <SelectContent className="z-[1000]">
-                    {urgencyOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
+                    {urgencyOptions.map((option, index) => (
+                      <SelectItem key={index} value={option.value}>
                         <div className="flex items-center gap-2">
                           <div
                             className={`w-2 h-2 rounded-full ${

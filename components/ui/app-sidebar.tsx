@@ -31,14 +31,11 @@ import {
 } from "@/components/ui/sidebar";
 
 import {
-  LayoutDashboard,
   AlertTriangle,
   MapPin,
   Users,
   House,
-  FileText,
   Megaphone,
-  BarChart3,
   Shield,
 } from "lucide-react";
 
@@ -50,14 +47,9 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "Home ",
       url: "/admin",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Emergency Reports",
-      url: "/admin/reports",
-      icon: AlertTriangle,
+      icon: House,
     },
     {
       title: "Map View",
@@ -65,9 +57,9 @@ const data = {
       icon: MapPin,
     },
     {
-      title: "Analytics",
-      url: "/admin/analytics",
-      icon: BarChart3,
+      title: "Emergency Reports",
+      url: "/admin/reports",
+      icon: AlertTriangle,
     },
     {
       title: "User Management",
@@ -78,11 +70,6 @@ const data = {
       title: "Announcements",
       url: "/admin/announcements",
       icon: Megaphone,
-    },
-    {
-      title: "Reports Export",
-      url: "/admin/export",
-      icon: FileText,
     },
     {
       title: "Barangays",
@@ -113,9 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
-        {/* <NavUser user={data.user} /> */}
-      </SidebarFooter>
+      <SidebarFooter>{/* <NavUser user={data.user} /> */}</SidebarFooter>
     </Sidebar>
   );
 }

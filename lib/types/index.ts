@@ -43,6 +43,7 @@ export interface TypeConfig {
   lightColor: string;
   borderColor: string;
   textColor: string;
+  dotColor: string;
   icon: React.ComponentType<any>;
   label: string;
 }
@@ -51,7 +52,9 @@ export interface ColumnConfig {
   key: string;
   label: string;
   icon?: React.ComponentType<any>;
-  render: (incident: MarkerWithRelations) => React.ReactNode;
+  render: (
+    incident: MarkerWithRelations | MapEvacuationCenter | MapBarangay
+  ) => React.ReactNode;
   sortable?: boolean;
   width?: string;
 }
@@ -130,7 +133,7 @@ export interface MarkerWithRelations {
   created_at: string;
   updated_at: string;
 
-  users: {
+  user: {
     id: string;
     name: string;
     status: string;
@@ -138,7 +141,7 @@ export interface MarkerWithRelations {
     user_type: "user" | "rescuer";
   } | null;
 
-  barangays: {
+  barangay: {
     id: string;
     name: string;
     phone: string;
@@ -178,7 +181,7 @@ export interface Announcement {
   id: string;
   title: string;
   description: string;
-  status: string;
+  status: "information" | "urgent" | "warning";
   date: string;
 }
 
@@ -224,7 +227,7 @@ interface MapUser {
 }
 
 // Barangay info
-interface MapBarangay {
+export interface MapBarangay {
   id: string;
   name: string;
   phone?: string | null;
@@ -248,6 +251,22 @@ export interface MapMarker {
   rescuer?: MapUser | null;
   barangay?: MapBarangay | null;
 }
+
+// export interface Report {
+//   id: string;
+//   title: string;
+//   description: string;
+//   category: string;
+//   status: "Pending" | "Assigned" | "Resolved" | "Failed";
+//   priority: "low" | "medium" | "high" | "urgent";
+//   reportedBy: string;
+//   contactNumber: string;
+//   longitude: number;
+//   latitude: number;
+//   dateReported: string;
+//   lastUpdated: string;
+//   images?: string[];
+// }
 
 // EvacuationCenter info
 export interface MapEvacuationCenter {
@@ -274,4 +293,13 @@ export interface MapLocation {
   entity_type: "user" | "rescuer";
   entity_id: string;
   updated_at: string;
+}
+
+// DOCS
+
+// rotating slider
+export interface RotatingSliderProps {
+  title: string;
+  description: string;
+  image: string;
 }

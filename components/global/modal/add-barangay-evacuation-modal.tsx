@@ -178,13 +178,14 @@ export function AddUpdateBarangaysModal({
               No barangays available.
             </p>
           ) : (
-            allBarangays.map(({ id, name }) => (
-              <div key={id} className="flex items-center space-x-2">
+            allBarangays.map(({ id, name }, index) => (
+              <div key={index} className="flex items-center space-x-2">
                 <Checkbox
                   id={`bar-${id}`}
                   checked={selectedIds.has(id)}
                   onCheckedChange={() => toggleSelect(id)}
                   disabled={isLoading}
+                  className="cursor-pointer"
                 />
                 <Label htmlFor={`bar-${id}`} className="cursor-pointer">
                   {name}
@@ -194,10 +195,19 @@ export function AddUpdateBarangaysModal({
           )}
 
           <DialogFooter className="flex justify-end gap-4 mt-4">
-            <Button variant="outline" onClick={onClose} disabled={isLoading}>
+            <Button
+              variant="outline"
+              onClick={onClose}
+              disabled={isLoading}
+              className="cursor-pointer"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="cursor-pointer"
+            >
               {isLoading ? "Updating..." : "Update Barangays"}
             </Button>
           </DialogFooter>

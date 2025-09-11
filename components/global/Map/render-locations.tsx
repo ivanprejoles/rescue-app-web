@@ -49,7 +49,7 @@ const RenderLocations = () => {
   return (
     users &&
     users.length > 0 &&
-    users.map((user) => {
+    users.map((user, index) => {
       if (!user.latitude || !user.longitude) return null;
 
       const legend = UserMarker.find((l) => l.key === user.entity_type);
@@ -57,7 +57,7 @@ const RenderLocations = () => {
 
       return (
         <CustomMarker
-          key={user.id}
+          key={index}
           marker={{
             id: user.id,
             latitude: user.latitude,

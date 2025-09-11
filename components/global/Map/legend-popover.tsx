@@ -3,6 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useMapToggleStore } from "@/hooks/use-mapToggleStore";
 import { capitalize, cn } from "@/lib/utils";
 import { legendMarker } from "@/lib/constants"; // Only import the unified legendMarker
+import { GradientWrapper } from "@/components/ui/background-gradient";
+import { Button } from "@/components/ui/button";
+import { MapPin } from "lucide-react";
+import { GlowingWrapper } from "@/components/ui/glowing-effect";
+import { Card, CardContent } from "@/components/ui/card";
+import { FloatingDock } from "@/components/ui/floating-dock";
 
 const popupVariants = {
   hidden: { opacity: 0, x: -24, pointerEvents: "none" },
@@ -34,50 +40,45 @@ export default function LegendPopover() {
     store.toggleLayer(key);
   };
 
+  const floatingDockItems = legendMarker.map((layer) => ({
+    title: layer.label,
+    icon: (
+      <layer.svgIcon className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+    ),
+    onClick: () => toggleLayer(layer.key),
+    active: isLayerActive(layer.key),
+  }));
+
   return (
-    <div className="inline-block absolute top-6 left-6 z-[1000]">
-      <motion.button
-        onClick={() => setOpen((prev) => !prev)}
-        animate={
-          open
-            ? { scale: 1.05, boxShadow: "0 4px 24px rgba(0,0,0,0.12)" }
-            : { scale: 1, boxShadow: "0 2px 6px rgba(0,0,0,0.1)" }
-        }
-        transition={{ type: "spring", stiffness: 300 }}
-        className="flex items-center px-2 py-1 rounded-lg gap-2 bg-white shadow cursor-pointer hover:bg-white hover:shadow"
-      >
-        <span className="text-2xl">🗺️</span>
-      </motion.button>
+    <div className="inline-block absolute bottom-7 left-19 z-[1000]">
+      <GradientWrapper>
+        <Button
+          onClick={() => setOpen((prev) => !prev)}
+          className="shadow-lg hover:shadow-xl transition-shadow rounded-full cursor-pointer"
+          title="Toggle Markers"
+          size="icon"
+          variant="outline"
+        >
+          <MapPin size={20} />
+        </Button>
+      </GradientWrapper>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            className="absolute left-full top-1/2 -translate-y-1/2 ml-2 flex gap-2 bg-white rounded-xl shadow-lg p-2"
+            className="absolute left-full top-1/2 bg-black -translate-y-1/2 ml-2 flex rounded-xl shadow-lg p-1"
             initial="hidden"
             animate="visible"
             exit="hidden"
             variants={popupVariants}
           >
-            {legendMarker.map((layer) => {
-              const active = isLayerActive(layer.key);
-              return (
-                <motion.div
-                  key={layer.key}
-                  onClick={() => toggleLayer(layer.key)}
-                  className={cn(
-                    "flex flex-col items-center px-2 py-1 rounded-lg cursor-pointer transition-colors",
-                    active
-                      ? "bg-purple-100 text-purple-700 font-bold"
-                      : "hover:bg-gray-100"
-                  )}
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <span className="text-2xl">{layer.icon}</span>
-                  <span className="text-xs mt-1">{layer.label}</span>
-                </motion.div>
-              );
-            })}
+            <GlowingWrapper>
+              <Card className="py-0 rounded-[22px] border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D]">
+                <CardContent className="flex w-auto px-0">
+                  <FloatingDock items={floatingDockItems} />
+                </CardContent>
+              </Card>
+            </GlowingWrapper>
           </motion.div>
         )}
       </AnimatePresence>

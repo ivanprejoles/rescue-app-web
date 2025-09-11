@@ -14,9 +14,7 @@ export const useReportFilters = (barangays: BarangayReport[]) => {
           searchTerm === "" ||
           report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           report.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          report.reportedBy.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          report.location.toLowerCase().includes(searchTerm.toLowerCase());
-
+          report.reportedBy.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus =
           statusFilter === "all" || report.status === statusFilter;
         const matchesPriority =

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { MapPin, Phone, Building2 } from "lucide-react";
-import { RawEvacuationCenter } from "@/lib/types";
+import { RawBarangay, RawEvacuationCenter } from "@/lib/types";
 import {
   Dialog,
   DialogContent,
@@ -21,28 +21,83 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEvacuationCenterModalStore } from "@/hooks/modals/use-update-add-evacuation-modal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  createEvacuationClient,
+  updateEvacuationClient,
+} from "@/lib/client-request/evacuation";
 
 const LocationPickerMap = dynamic(() => import("@/lib/map/location-picker"), {
   ssr: false,
 });
 
-interface EvacuationCenterModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (
-    center: Omit<RawEvacuationCenter, "id" | "createdAt" | "barangays">
-  ) => void;
-  evacuationCenter?: RawEvacuationCenter;
-  mode: "add" | "edit";
-}
+export const EvacuationCenterModal: React.FC = () => {
+  const { isOpen, evacuationCenter, mode, closeModal } =
+    useEvacuationCenterModalStore();
+  const queryClient = useQueryClient();
 
-export const EvacuationCenterModal: React.FC<EvacuationCenterModalProps> = ({
-  isOpen,
-  onClose,
-  onSave,
-  evacuationCenter,
-  mode,
-}) => {
+  const createMutation = useMutation({
+    mutationFn: createEvacuationClient,
+    onSuccess: (newCenter) => {
+      queryClient.setQueryData<{
+        evacuations: RawEvacuationCenter[];
+        barangays: RawBarangay[];
+      }>(["evacuations"], (oldData) => {
+        if (!oldData) {
+          return { evacuations: [newCenter], barangays: [] };
+        }
+        return {
+          ...oldData,
+          evacuations: [...oldData.evacuations, newCenter],
+        };
+      });
+      closeModal();
+    },
+    onError: (error) => {
+      console.error("Create evacuation center error:", error);
+      alert(error instanceof Error ? error.message : "Failed to create center");
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<RawEvacuationCenter>;
+    }) => updateEvacuationClient(id, data),
+    onSuccess: (updatedCenter) => {
+      queryClient.setQueryData<{
+        evacuations: RawEvacuationCenter[];
+        barangays: RawBarangay[];
+      }>(["evacuations"], (oldData) => {
+        if (!oldData) return { evacuations: [updatedCenter], barangays: [] };
+
+        return {
+          ...oldData,
+          evacuations: oldData.evacuations.map((center) => {
+            if (center.id === updatedCenter.id) {
+              return {
+                ...updatedCenter,
+                // Preserve the evacuation_center_barangays from old center,
+                // if the backend doesn't return them
+                evacuation_center_barangays: center.evacuation_center_barangays,
+              };
+            }
+            return center;
+          }),
+        };
+      });
+      closeModal();
+    },
+    onError: (error) => {
+      console.error("Update evacuation center error:", error);
+      alert(error instanceof Error ? error.message : "Failed to update center");
+    },
+  });
+
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -71,7 +126,6 @@ export const EvacuationCenterModal: React.FC<EvacuationCenterModalProps> = ({
           phone: evacuationCenter.phone || "",
           status: evacuationCenter.status || "active",
         });
-        setErrors({});
       } else {
         setFormData({
           name: "",
@@ -81,69 +135,70 @@ export const EvacuationCenterModal: React.FC<EvacuationCenterModalProps> = ({
           phone: "",
           status: "active",
         });
-        setErrors({});
       }
+      setErrors({});
     }
   }, [isOpen, mode, evacuationCenter]);
 
+  const isLoading = createMutation.isPending || updateMutation.isPending;
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
     if (!formData.name.trim()) newErrors.name = "Center name is required";
-
     if (!formData.address.trim()) newErrors.address = "Address is required";
-
     if (!formData.latitude.trim()) newErrors.latitude = "Latitude is required";
     else if (isNaN(Number(formData.latitude)))
-      newErrors.latitude = "Latitude must be a valid number";
-
+      newErrors.latitude = "Must be a valid number";
     if (!formData.longitude.trim())
       newErrors.longitude = "Longitude is required";
     else if (isNaN(Number(formData.longitude)))
-      newErrors.longitude = "Longitude must be a valid number";
-
+      newErrors.longitude = "Must be a valid number";
     if (
       formData.phone.trim() &&
       !/^[\d\s\-\+\(\)]+$/.test(formData.phone.trim())
-    )
+    ) {
       newErrors.phone = "Please enter a valid phone number";
-
+    }
     if (!formData.status) newErrors.status = "Status is required";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading || !validateForm()) return;
 
-    if (!validateForm()) return;
-
-    onSave({
+    const payload = {
       name: formData.name.trim(),
       address: formData.address.trim(),
       latitude: Number(formData.latitude),
       longitude: Number(formData.longitude),
       phone: formData.phone.trim() || undefined,
       status: formData.status as "active" | "inactive" | "maintenance" | "full",
-    });
+    };
 
-    onClose();
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
+    if (mode === "add") {
+      await createMutation.mutateAsync(payload);
+    } else if (mode === "edit" && evacuationCenter?.id) {
+      await updateMutation.mutateAsync({
+        id: evacuationCenter.id,
+        data: payload,
+      });
     }
   };
 
-  if (!isOpen) return null;
+  const onClose = () => {
+    closeModal();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-auto scroll-thin">
+      <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-auto scroll-thin">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
@@ -300,9 +355,13 @@ export const EvacuationCenterModal: React.FC<EvacuationCenterModalProps> = ({
             </Button>
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 cursor-pointer"
+              className="bg-blue-600 hover:bg-blue-700 cursor-pointer text-white"
             >
-              {mode === "add" ? "Add Center" : "Update Center"}
+              {isLoading
+                ? "Saving..."
+                : mode === "add"
+                ? "Add Center"
+                : "Update Center"}
             </Button>
           </DialogFooter>
         </form>

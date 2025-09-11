@@ -306,9 +306,9 @@ export default function AdminDocumentationDashboard() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="max-h-96 overflow-y-auto">
-              {data.news.map((news) => (
+              {data.news.map((news, index) => (
                 <div
-                  key={news.id}
+                  key={index}
                   className="p-4 border-b border-gray-200 dark:border-gray-700"
                 >
                   <div className="flex items-start justify-between mb-2">

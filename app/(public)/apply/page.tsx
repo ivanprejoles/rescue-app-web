@@ -355,8 +355,8 @@ export default function ApplyRescuerPage() {
               <div className="space-y-2">
                 <Label>Specializations (Select all that apply)</Label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {specializationOptions.map((spec) => (
-                    <div key={spec} className="flex items-center space-x-2">
+                  {specializationOptions.map((spec, index) => (
+                    <div key={index} className="flex items-center space-x-2">
                       <Checkbox
                         id={spec}
                         checked={formData.qualifications.specializations.includes(

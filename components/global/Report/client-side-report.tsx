@@ -10,15 +10,24 @@ import { useReportStats } from "@/hooks/use-report-stats";
 import { useAdminQuery } from "@/lib/useQuery";
 import { getMarkersClient } from "@/lib/client-fetchers";
 import { transformMarkersToBarangayReports } from "@/lib/utils";
-import { MarkerWithRelations } from "@/lib/types";
+import { MarkerWithRelations, Report } from "@/lib/types";
+import { ReportModal } from "../modal/update-report-modal";
+import { DeleteReportModal } from "../modal/delete-report-modal";
+import { useReportModalStore } from "@/hooks/modals/use-update-report";
+import { useDeleteReportModalStore } from "@/hooks/modals/use-delete-report-modal";
 
 export default function ClientSideReport() {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  const [deletedReport, setDeletedReport] = useState<Report | null>(null);
 
   const { data, isLoading, error } = useAdminQuery<MarkerWithRelations[]>(
     ["reports"],
     getMarkersClient
   );
+
+  const { openModal: openReport } = useReportModalStore();
+  const { openModal: openDeleteReport } = useDeleteReportModalStore();
 
   const barangays = useMemo(() => {
     return data ? transformMarkersToBarangayReports(data) : [];
@@ -45,58 +54,67 @@ export default function ClientSideReport() {
     );
   };
 
-  const handleStatusUpdate = (reportId: string, newStatus: string) => {
-    console.log(`Updating report ${reportId} status to ${newStatus}`);
-    // TODO: Supabase update here
+  const handleStatusUpdate = (report: Report) => {
+    // setSelectedReport(report);
+    openReport(report);
   };
 
-  const handleDelete = (reportId: string) => {
-    console.log(`Deleting report ${reportId}`);
-    // TODO: Supabase delete here
+  const handleDelete = (report: Report) => {
+    openDeleteReport({ id: report.id, name: report.title });
   };
 
   if (isLoading) return <p>Loading reports...</p>;
   if (error) return <p>Error loading reports.</p>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen gap-3 mt-3 flex flex-col">
       <SidebarHeader
         header="Admin Reports"
         description="Manage and review citizen reports across all barangays"
       ></SidebarHeader>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white dark:bg-black flex flex-col gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <StatisticsCards
           totalReports={totalReports}
           pendingReports={pendingReports}
           inProgressReports={inProgressReports}
           resolvedReports={resolvedReports}
         />
-
-        <div>
-          <FilterSection
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            priorityFilter={priorityFilter}
-            setPriorityFilter={setPriorityFilter}
-          />
-
-          <div className="flex flex-col gap-4">
-            {filteredBarangays.map((barangay) => (
-              <BarangaySection
-                key={barangay.id}
-                barangay={barangay}
-                isExpanded={expandedSections.includes(barangay.id)}
-                onToggle={() => toggleSection(barangay.id)}
-                onStatusUpdate={handleStatusUpdate}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
-        </div>
       </div>
+
+      <FilterSection
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        priorityFilter={priorityFilter}
+        setPriorityFilter={setPriorityFilter}
+      />
+
+      <div className="flex flex-col gap-3">
+        {filteredBarangays.map((barangay, index) => (
+          <BarangaySection
+            key={index}
+            barangay={barangay}
+            isExpanded={expandedSections.includes(barangay.id)}
+            onToggle={() => toggleSection(barangay.id)}
+            onStatusUpdate={handleStatusUpdate}
+            onDelete={handleDelete}
+          />
+        ))}
+      </div>
+      {/* {selectedReport && (
+        <ReportModal
+          report={selectedReport}
+          onClose={() => setSelectedReport(null)}
+        />
+      )} */}
+      {/* {deletedReport && (
+        <DeleteReportModal
+          report={deletedReport}
+          onClose={() => setDeletedReport(null)}
+        />
+      )} */}
     </div>
   );
 }

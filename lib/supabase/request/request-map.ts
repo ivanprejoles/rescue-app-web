@@ -57,3 +57,60 @@ export async function getAllMarkersForMap() {
     evacuationCenters: evacuationRes.data,
   };
 }
+
+export async function getPublicMarkers() {
+  const supabase = createServerSupabaseClient();
+
+  const [markersRes, evacuationRes] = await Promise.all([
+    (
+      await supabase
+    )
+      .from("markers")
+      .select(
+        `
+        id,
+        type,
+        description,
+        latitude,
+        longitude,
+        status,
+        created_at,
+        updated_at,
+        user:user_id (
+          id,
+          name,
+          email,
+          phone_number,
+          status,
+          brgy_id
+        ),
+        rescuer:rescuer_id (
+          id,
+          name,
+          email,
+          phone_number,
+          status,
+          brgy_id
+        ),
+        barangay:brgy_id (
+          id,
+          phone,
+          name,
+          address
+        )
+      `
+      )
+      .not("type", "in", '("report")'),
+    (await supabase)
+      .from("evacuation_centers")
+      .select("id, name, address, latitude, longitude, phone, status"),
+  ]);
+
+  if (markersRes.error) throw markersRes.error;
+  if (evacuationRes.error) throw evacuationRes.error;
+
+  return {
+    markers: markersRes.data,
+    evacuationCenters: evacuationRes.data,
+  };
+}

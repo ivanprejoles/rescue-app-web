@@ -198,7 +198,7 @@ export async function deleteBarangay(id: string) {
     throw error;
   }
 
-  return true;
+  return { success: true };
 }
 
 // ADD AND REMOVE
@@ -234,7 +234,7 @@ export async function removeBarangaysFromEvacuationCenter(
   const supabase = await createServerSupabaseClient();
 
   const { data, error } = await supabase
-  .from("evacuation_center_barangays")
+    .from("evacuation_center_barangays")
     .delete()
     .eq("evacuation_center_id", evacuationCenterId)
     .in("barangay_id", barangayIds);

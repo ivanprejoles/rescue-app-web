@@ -17,28 +17,22 @@ import type { User } from "@/lib/types";
 import { useAdminQuery } from "@/lib/useQuery";
 import { getRescuersAndUsersClient } from "@/lib/client-fetchers";
 import SidebarHeader from "../header";
-import {
-  Users,
-  Shield,
-  Activity,
-  TrendingUp,
-  AlertTriangle,
-} from "lucide-react";
+import { AlertTriangle, Bell } from "lucide-react";
+import { GlowingWrapper } from "@/components/ui/glowing-effect";
+import { ChartRadialStack } from "../chart/user-radial-stack";
 
 // Loading skeleton component
 const StatsLoadingSkeleton = () => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    {[...Array(4)].map((_, i) => (
-      <Card key={i}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Skeleton className="h-4 w-20" />
-          <Skeleton className="h-4 w-4" />
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-8 w-16 mb-2" />
-          <Skeleton className="h-3 w-24" />
-        </CardContent>
-      </Card>
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    {[...Array(2)].map((_, i) => (
+      <GlowingWrapper key={i}>
+        <Card className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <Skeleton className="h-4 w-20" />
+            <Skeleton className="h-4 w-4" />
+          </CardHeader>
+        </Card>
+      </GlowingWrapper>
     ))}
   </div>
 );
@@ -46,26 +40,24 @@ const StatsLoadingSkeleton = () => (
 const LoadingList = () => (
   <div className="space-y-4">
     {[...Array(3)].map((_, i) => (
-      <Card key={i}>
-        <CardContent className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <Skeleton className="h-6 w-20" />
-              <Skeleton className="h-6 w-16" />
+      <GlowingWrapper key={i}>
+        <Card className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-6 w-20" />
+                <Skeleton className="h-6 w-16" />
+              </div>
+              <Skeleton className="h-4 w-32" />
             </div>
-            <Skeleton className="h-4 w-32" />
-          </div>
-          <div className="space-y-2">
-            <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-36" />
-            <Skeleton className="h-4 w-40" />
-          </div>
-          <div className="flex gap-2 mt-4">
-            <Skeleton className="h-8 w-16" />
-            <Skeleton className="h-8 w-16" />
-          </div>
-        </CardContent>
-      </Card>
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-48" />
+              <Skeleton className="h-4 w-36" />
+              <Skeleton className="h-4 w-40" />
+            </div>
+          </CardContent>
+        </Card>
+      </GlowingWrapper>
     ))}
   </div>
 );
@@ -84,9 +76,6 @@ export default function ClientSideUser() {
     users: User[];
     rescuers: User[];
   }>(["rescuers-users"], getRescuersAndUsersClient);
-
-  console.log(data?.users);
-  console.log(data?.rescuers);
 
   // Filter users
   const filteredUsers = useMemo(() => {
@@ -137,7 +126,7 @@ export default function ClientSideUser() {
           header="User Management"
           description="Manage users and rescuers"
         />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="w-full mx-auto">
           <Alert className="border-red-200 bg-red-50">
             <AlertTriangle className="h-4 w-4 text-red-600" />
             <AlertDescription className="text-red-800">
@@ -150,109 +139,68 @@ export default function ClientSideUser() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen gap-3 mt-3 flex flex-col">
       <SidebarHeader
         header="User Management"
         description="Manage users and rescuers with comprehensive controls"
       />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white dark:bg-black">
-        {/* Statistics Cards */}
-        {isLoading ? (
-          <StatsLoadingSkeleton />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="shadow-md @container/card">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Users
-                </CardTitle>
-                <Users className="h-4 w-4 text-blue-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                <p className="text-xs">{stats.activeUsers} active users</p>
-              </CardContent>
+      {isLoading ? (
+        <StatsLoadingSkeleton />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <GlowingWrapper>
+            <Card className="border-0.75 h-full bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 py-0">
+              <ChartRadialStack
+                label="Users"
+                value={stats.totalUsers || 0}
+                description="Showing total users in real-time"
+              />
             </Card>
+          </GlowingWrapper>
 
-            <Card className="border-0 shadow-md @container/card">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Active Users
-                </CardTitle>
-                <Activity className="h-4 w-4 text-green-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.activeUsers}</div>
-                <p className="text-xs">
-                  {stats.totalUsers > 0
-                    ? Math.round((stats.activeUsers / stats.totalUsers) * 100)
-                    : 0}
-                  % of total users
-                </p>
-              </CardContent>
+          <GlowingWrapper>
+            <Card className="border-0.75 h-full bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 py-0">
+              <ChartRadialStack
+                label="Rescuers"
+                value={stats.totalRescuers || 0}
+                description="Showing total rescuers in real-time"
+              />
             </Card>
+          </GlowingWrapper>
+        </div>
+      )}
 
-            <Card className="border-0 shadow-md @container/card">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Rescuers
-                </CardTitle>
-                <Shield className="h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold ">{stats.totalRescuers}</div>
-                <p className="text-xs">
-                  {stats.activeRescuers} active rescuers
-                </p>
-              </CardContent>
-            </Card>
+      {/* Main Content */}
+      <Card className="border-0 shadow-xl @container/card py-0 bg-transparent">
+        <CardContent className="p-0">
+          <Tabs defaultValue="users" className="w-full gap-3 flex flex-col">
+            <GlowingWrapper>
+              <Card className="border-0.75 bg-transparent dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 p-3">
+                <GlowingWrapper>
+                  <TabsList className="grid w-auto grid-cols-2 shadow-sm">
+                    <TabsTrigger
+                      value="users"
+                      className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                    >
+                      Users ({filteredUsers.length})
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="rescuers"
+                      className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                    >
+                      Rescuers ({filteredRescuers.length})
+                    </TabsTrigger>
+                  </TabsList>
+                </GlowingWrapper>
+              </Card>
+            </GlowingWrapper>
 
-            <Card className="border-0 shadow-md @container/card">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Response Rate
-                </CardTitle>
-                <TrendingUp className="h-4 w-4 text-orange-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {stats.totalRescuers > 0
-                    ? Math.round(
-                        (stats.activeRescuers / stats.totalRescuers) * 100
-                      )
-                    : 0}
-                  %
-                </div>
-                <p className="text-xs">Active rescuer availability</p>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Main Content */}
-        <Card className="border-0 shadow-xl @container/card">
-          <CardContent className="p-0">
-            <Tabs defaultValue="users" className="w-full">
-              <div className="border-b px-6 py-4">
-                <TabsList className="grid w-full max-w-md grid-cols-2 shadow-sm">
-                  <TabsTrigger
-                    value="users"
-                    className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-                  >
-                    Users ({filteredUsers.length})
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="rescuers"
-                    className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
-                  >
-                    Rescuers ({filteredRescuers.length})
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-
-              {/* Users Tab */}
-              <TabsContent value="users" className="p-6 space-y-6">
+            {/* Users Tab */}
+            <GlowingWrapper>
+              <TabsContent
+                value="users"
+                className="p-6 space-y-6 border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10"
+              >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -261,12 +209,7 @@ export default function ClientSideUser() {
                         Manage and monitor all registered users
                       </p>
                     </div>
-                    <Badge
-                      variant="secondary"
-                      className="bg-blue-100 text-blue-800"
-                    >
-                      {filteredUsers.length} users
-                    </Badge>
+                    <Badge variant="blue">{filteredUsers.length} users</Badge>
                   </div>
 
                   <UserFilters
@@ -289,14 +232,6 @@ export default function ClientSideUser() {
                     onSelectUser={setSelectedUser}
                   />
                 )}
-
-                {selectedUser && (
-                  <UserModal
-                    user={selectedUser}
-                    onClose={() => setSelectedUser(null)}
-                    getStatusColor={getRescueStatusColor}
-                  />
-                )}
               </TabsContent>
 
               {/* Rescuers Tab */}
@@ -313,7 +248,7 @@ export default function ClientSideUser() {
                     </div>
                     <Badge
                       variant="secondary"
-                      className="bg-purple-100 text-purple-800"
+                      className="bg-purple-500 text-white"
                     >
                       {filteredRescuers.length} rescuers
                     </Badge>
@@ -348,10 +283,18 @@ export default function ClientSideUser() {
                   />
                 )} */}
               </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
+            </GlowingWrapper>
+            {selectedUser && (
+              <UserModal
+                user={selectedUser}
+                onClose={() => setSelectedUser(null)}
+                getStatusColor={getRescueStatusColor}
+              />
+            )}
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
+    // </div>
   );
 }

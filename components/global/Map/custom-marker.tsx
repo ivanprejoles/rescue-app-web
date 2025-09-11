@@ -1,14 +1,10 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Marker, Popup } from "react-leaflet";
 import { StoredMarkerType } from "@/lib/types";
 import { createGeoapifyIcon } from "@/lib/map/marker-icon";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { useMapStore } from "@/hooks/useMapStore";
+import type { Marker as LeafletMarker } from "leaflet";
 
 interface CustomMarkerProps {
   marker: StoredMarkerType;
@@ -27,6 +23,30 @@ export function CustomMarker({
   onClick,
   children,
 }: CustomMarkerProps) {
+  const { activeMarkerId, setActiveMarkerId } = useMapStore();
+  const markerRef = useRef<LeafletMarker | null>(null);
+
+  useEffect(() => {
+    if (!markerRef.current) return;
+
+    console.log("marker id");
+    console.log(activeMarkerId);
+    console.log(marker.id);
+    if (activeMarkerId === marker.id) {
+      console.log("its running!!");
+      markerRef.current.openPopup();
+    } 
+    // else {
+    //   console.log("its running!");
+    //   markerRef.current.closePopup();
+    // }
+  }, [activeMarkerId, marker.id]);
+
+  const handleClick = () => {
+    if (onClick) onClick(marker); // direct click handler passed from parent
+    // setActiveMarkerId(marker.id); // set active marker on direct click too
+  };
+
   const icon = createGeoapifyIcon(
     iconPicker.color,
     iconPicker.iconName,
@@ -35,14 +55,20 @@ export function CustomMarker({
 
   return (
     <Marker
-      key={marker.id}
+      ref={markerRef}
       position={[marker.latitude, marker.longitude]}
       icon={icon}
       eventHandlers={{
-        click: () => onClick && onClick(marker),
+        click: handleClick,
       }}
     >
-      <Popup>
+      <Popup
+        autoClose={false}
+        closeOnClick={false}
+        eventHandlers={{
+          remove: () => setActiveMarkerId(null),
+        }}
+      >
         <Card className="w-72 h-auto overflow-auto">
           <CardContent className="h-auto w-auto">{children}</CardContent>
         </Card>

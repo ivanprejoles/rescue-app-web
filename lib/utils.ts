@@ -57,12 +57,12 @@ export const formatDate = (dateString: string) => {
 
 export const getStatusColor = (status: string) => {
   switch (status) {
-    case "pending":
-      return "bg-amber-50 text-amber-700 border-amber-200";
-    case "in-progress":
-      return "bg-blue-50 text-blue-700 border-blue-200";
-    case "resolved":
-      return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    case "Pending":
+      return "bg-amber-700 text-white border-amber-200";
+    case "Assigned":
+      return "bg-blue-700 text-white border-blue-200";
+    case "Resolved":
+      return "bg-emerald-700 text-white border-emerald-200";
     case "failed":
       return "bg-red-50 text-red-700 border-red-200";
     default:
@@ -296,4 +296,26 @@ Powered by Your Rescue App — Stay safe, stay connected.
 export function capitalize(str: string): string {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function toMilitaryTime(dateInput: Date) {
+  const date = new Date(dateInput);
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
+export function truncateText(text: string, maxLength: number = 30) {
+  try {
+    if (typeof text !== "string") throw new Error("Invalid text");
+
+    return text.length > maxLength ? text.slice(0, maxLength) + "" : text;
+  } catch (error) {
+    console.error("Error in truncateText:", error);
+    return "";
+  }
+}
+export function capitalizeFirstLetter(text: string) {
+  if (!text) return text; // handle empty or undefined input
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }

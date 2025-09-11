@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { GlowingWrapper } from "@/components/ui/glowing-effect";
 
 interface FilterSectionProps {
   searchTerm: string;
@@ -29,73 +30,55 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   setPriorityFilter,
 }) => {
   return (
-    <Card className="mb-8 border shadow-md rounded-xl">
-      <CardHeader className="flex items-center gap-2">
-        <Filter className="w-5 h-5" />
-        <CardTitle className="text-lg font-semibold">Filter Reports</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col sm:flex-row gap-4">
-          {/* Search Input */}
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search reports, locations, or reporters..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          {/* Filters */}
-          <div className="gap-3 items-center grid grid-cols-2">
-            <div className="relative">
-              <Select
-                value={statusFilter}
-                onValueChange={(value) => setStatusFilter(value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Status</SelectLabel>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="Pending">Pending</SelectItem>
-                    <SelectItem value="Assigned">Assigned</SelectItem>
-                    <SelectItem value="Resolved">Resolved</SelectItem>
-                    <SelectItem value="Failed">Failed</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+    <GlowingWrapper>
+      <Card className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 h-fit">
+        <CardHeader className="flex items-center gap-2">
+          <Filter className="w-5 h-5" />
+          <CardTitle className="text-lg font-semibold">
+            Filter Reports
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Search Input */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search reports, locations, or reporters..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
 
-            {/* Priority Filter */}
-            <div className="relative">
-              <Select
-                value={priorityFilter}
-                onValueChange={(value) => setPriorityFilter(value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All Priority" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Priority</SelectLabel>
-                    <SelectItem value="all">All Priority</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="urgent">Urgent</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            {/* Filters */}
+            <div className="gap-3 items-center grid">
+              <div className="relative">
+                <Select
+                  value={statusFilter}
+                  onValueChange={(value) => setStatusFilter(value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Status</SelectLabel>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="Pending">Pending</SelectItem>
+                      <SelectItem value="Assigned">Assigned</SelectItem>
+                      <SelectItem value="Resolved">Resolved</SelectItem>
+                      <SelectItem value="Failed">Failed</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </GlowingWrapper>
   );
 };
 

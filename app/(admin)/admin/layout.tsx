@@ -5,40 +5,39 @@ import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { handleAdminAccess } from "@/lib/supabase/request/request-admin";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 import { MainHeader } from "@/components/ui/header";
+import { Spotlight } from "@/components/ui/spotlight-new";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await currentUser();
-  const { sessionId } = await auth();
-
-  if (!user) {
-    redirect("/sign-in");
-  }
-
-  let adminAccess;
   try {
-    adminAccess = await handleAdminAccess(user);
+    const user = await currentUser();
+    const { sessionId } = await auth();
+
+    if (!user) {
+      redirect("/");
+    }
+
+    const adminAccess = await handleAdminAccess(user);
+
+    if (!adminAccess.isAdmin) {
+      // Revoke Clerk session if possible
+      if (sessionId) {
+        try {
+          const client = await clerkClient();
+          await client.sessions.revokeSession(sessionId);
+        } catch (error) {
+          console.error("Error revoking session:", error);
+        }
+      }
+      redirect("/");
+    }
   } catch (error) {
     console.error("Admin access error:", error);
-    redirect("/sign-in");
-  }
-
-  if (!adminAccess.isAdmin) {
-    // Revoke Clerk session if possible
-    if (sessionId) {
-      try {
-        const client = await clerkClient();
-        await client.sessions.revokeSession(sessionId);
-      } catch (error) {
-        console.error("Error revoking session:", error);
-      }
-    }
     redirect("/");
   }
-
   return (
     <SidebarProvider
       style={
@@ -52,21 +51,15 @@ export default async function AdminLayout({
       <AppSidebar variant="inset" />
       <SidebarInset className="rounded-lg overflow-auto">
         <MainHeader />
-        {/* <div className="flex h-screen w-full overflow-hidden">
-          <AdminSidebar />
-          <div className="flex flex-1 flex-col overflow-hidden">
-            <AdminHeader />
-            <main className="flex-1 overflow-auto p-6 bg-gray-50 dark:bg-gray-900">
-              <div className="max-w-full">{children}</div>
-            </main>
-          </div>
-        </div> */}
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             {children}
           </div>
         </div>
       </SidebarInset>
+      <div className="fixed top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%]">
+        <Spotlight />
+      </div>
     </SidebarProvider>
   );
 }

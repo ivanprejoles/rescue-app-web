@@ -9,23 +9,13 @@ export default function PublicDocsPage({
 }) {
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('/images/stormy-background.png')`,
-        }}
-      >
-        <div className="absolute inset-0 bg-black/30"></div>
-      </div>
-
       {/* Custom CSS for animations and glass effects */}
 
       {/* Header - Fixed positioning */}
       <MainHeader />
 
       {/* Main Content - Add top padding to account for fixed header */}
-      <div className="relative z-10 text-white pt-20">
+      <div className="relative z-10 text-white">
         {children}
 
         {/* Footer */}

@@ -1,0 +1,235 @@
+"use client";
+
+import { kawitBounds } from "@/lib/map/kawitBounds";
+import React, { useCallback, useEffect, useState } from "react";
+import { MapContainer, TileLayer, ZoomControl } from "react-leaflet";
+import ResizeFix from "../Map/ResizeFix";
+import { useQuery } from "@tanstack/react-query";
+import { MapData, StoredMarkerType } from "@/lib/types";
+import { CustomMarker } from "../Map/custom-marker";
+import { ContactButton } from "@/components/ui/contact-button";
+import { Ambulance, MapPin, Phone, User } from "lucide-react";
+import {
+  callNumber,
+  openGmailComposeWithRecipient,
+  openGoogleMaps,
+} from "@/lib/utils";
+import { legendMarker } from "@/lib/constants";
+import { toggleReportSelection } from "@/lib/map/MarkerHandlers";
+import BoundDragHandler from "@/lib/map/bound-non-sticky";
+
+async function fetchMarkers() {
+  const res = await fetch("/api/public/maps", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Failed to fetch markers");
+  }
+  return res.json();
+}
+
+export default function LeafletMap() {
+  const [selectedReports, setSelectedReports] = useState<StoredMarkerType[]>(
+    []
+  );
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const {
+    data: reports,
+    isLoading,
+    error,
+  } = useQuery<MapData>({
+    queryKey: ["markers"],
+    queryFn: fetchMarkers,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const handleMarkerClick = useCallback((report: StoredMarkerType) => {
+    setSelectedReports((prev) => toggleReportSelection(prev, report));
+  }, []);
+
+  const renderEvacuations = () => {
+    if (!reports?.evacuationCenters) return null;
+
+    const legend = legendMarker.find((l) => l.key === "evacuationCenters");
+    if (!legend) return null;
+
+    return reports.evacuationCenters.map((evac, index) => {
+      if (!evac.latitude || !evac.longitude) return null;
+
+      return (
+        <CustomMarker
+          key={index}
+          marker={{
+            id: evac.id,
+            latitude: evac.latitude,
+            longitude: evac.longitude,
+            type: "evacuationCenters",
+            description: evac.address || "",
+          }}
+          iconPicker={{
+            iconName: legend.iconName,
+            color: legend.color,
+            iconColor: legend.iconColor,
+          }}
+          onClick={handleMarkerClick}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <ContactButton
+              icon={Phone}
+              label="Phone"
+              value={evac.phone as string}
+              onClick={() => callNumber(evac.phone as string)}
+              iconColor="text-blue-400"
+            />
+            <ContactButton
+              icon={MapPin}
+              label="Center"
+              value={evac.name as string}
+              onClick={() =>
+                openGoogleMaps({
+                  lat: evac.latitude as number,
+                  lng: evac.longitude as number,
+                })
+              }
+              iconColor="text-blue-400"
+            />
+          </div>
+        </CustomMarker>
+      );
+    });
+  };
+
+  const renderMarkers = () => {
+    if (!reports?.markers) return null;
+
+    return reports.markers.map((report, index) => {
+      const legend = legendMarker.find((l) => l.key === report.type);
+      if (!legend) return null;
+
+      return (
+        <CustomMarker
+          key={index}
+          marker={report}
+          iconPicker={{
+            iconName: legend.iconName,
+            color: legend.color,
+            iconColor: legend.iconColor,
+          }}
+          onClick={handleMarkerClick}
+        >
+          {report.type === "report" ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <ContactButton
+                icon={User}
+                label="Phone"
+                value={report.user?.phone_number as string}
+                onClick={() => callNumber(report.user?.phone_number as string)}
+                iconColor="text-green-400"
+              />
+              <ContactButton
+                icon={Ambulance}
+                label="Phone"
+                value={report.rescuer?.phone_number as string}
+                onClick={() =>
+                  callNumber(report.rescuer?.phone_number as string)
+                }
+                iconColor="text-red-400"
+              />
+              <ContactButton
+                icon={User}
+                label="Email"
+                value={report.user?.email as string}
+                onClick={() =>
+                  openGmailComposeWithRecipient(report.user?.email as string)
+                }
+                iconColor="text-green-400"
+              />
+              <ContactButton
+                icon={Ambulance}
+                label="Email"
+                value={report.user?.email as string}
+                onClick={() =>
+                  openGmailComposeWithRecipient(report.rescuer?.email as string)
+                }
+                iconColor="text-red-400"
+              />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-3">
+              <ContactButton
+                icon={MapPin}
+                label="Location"
+                value={report.type}
+                onClick={() =>
+                  openGoogleMaps({
+                    lat: report.latitude as number,
+                    lng: report.longitude as number,
+                  })
+                }
+                iconColor="text-green-400"
+              />
+            </div>
+          )}
+        </CustomMarker>
+      );
+    });
+  };
+
+  if (isLoading) return <p>Loading markers...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+  if (!isClient) {
+    return null; // or a loader placeholder
+  }
+
+  return (
+    <div className="relative rounded-lg overflow-hidden h-full w-full  ">
+      <MapContainer
+        key={"main-map"}
+        center={[14.4461369, 120.8657466]}
+        zoom={15}
+        minZoom={13}
+        maxZoom={18}
+        maxBounds={kawitBounds}
+        maxBoundsViscosity={0}
+        scrollWheelZoom={false}
+        doubleClickZoom={false}
+        touchZoom="center"
+        dragging={true}
+        zoomControl={false}
+        className="h-full w-full"
+      >
+        <BoundDragHandler bounds={kawitBounds} />
+        <ZoomControl position="bottomright" />
+        <ResizeFix />
+
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        {renderMarkers()}
+        {/* {renderBarangays()} */}
+        {renderEvacuations()}
+        {/* <RenderLocations /> */}
+      </MapContainer>
+
+      {/* <MarkerMaker onSelect={onMarkerTypeSelect} /> */}
+      {/* <LocationModal
+        mode={selectedType === "Evacuation" ? "evacuation" : "marker"}
+        isOpen={modalOpen}
+        onClose={closeModal}
+        initialData={{ type: selectedType?.toLowerCase() ?? "" }}
+      /> */}
+      {/* <LegendPopover /> */}
+    </div>
+  );
+}
