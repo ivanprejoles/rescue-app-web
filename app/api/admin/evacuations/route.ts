@@ -36,6 +36,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+    console.log(body);
 
     const insertedBarangay = await createEvacuationCenter({
       name,
@@ -47,33 +48,6 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(insertedBarangay, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error.message || "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PUT(req: Request) {
-  const { userId } = await auth();
-  if (!userId)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  try {
-    const body = await req.json();
-    const { id, ...updates } = body;
-
-    if (!id) {
-      return NextResponse.json(
-        { error: "Missing barangay id" },
-        { status: 400 }
-      );
-    }
-
-    const updatedBarangay = await updateEvacuationCenter(id, updates);
-
-    return NextResponse.json(updatedBarangay, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || "Internal Server Error" },

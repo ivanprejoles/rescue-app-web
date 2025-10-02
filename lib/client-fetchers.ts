@@ -27,3 +27,17 @@ export async function getRescuersAndUsersClient() {
   if (!res.ok) throw new Error("Failed to fetch rescuers and users");
   return res.json(); // returns { rescuers: [], users: [] }
 }
+
+// 5. User Profile
+export async function getUserProfileClient() {
+  const res = await fetch("/api/client/profile");
+  if (!res.ok) throw new Error("Failed to fetch user profile");
+  return res.json(); // returns ClientAccessResponse
+}
+
+// 6. User Marker
+export async function getUserMarkersClient() {
+  const res = await fetch("/api/client/marker");
+  if (!res.ok) throw new Error("Failed to fetch user marker");
+  return res.json(); // returns ClientAccessResponse
+}

@@ -7,16 +7,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
 import IncidentTable from "../Table/incident-table";
 import { MapData } from "@/lib/types";
 import SidebarHeader from "../header";
 import { GlowingWrapper } from "@/components/ui/glowing-effect";
-import { GradientWrapper } from "@/components/ui/background-gradient";
 import FullScreen from "./full-screen";
+import { MapPinned } from "lucide-react";
+import StatisticsMap from "./statistics-map";
 
 const ReportsMap = dynamic(
   () => import("@/components/global/Map/reports-map"),
@@ -25,7 +24,7 @@ const ReportsMap = dynamic(
   }
 );
 
-async function fetchMarkers() {
+export async function fetchMarkers() {
   const res = await fetch("/api/admin/maps", {
     method: "GET",
     headers: {
@@ -55,7 +54,16 @@ export default function ClientSideMap() {
       <SidebarHeader
         header="Admin Map"
         description="Manage map"
+        icon={MapPinned}
       ></SidebarHeader>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <StatisticsMap
+          hazards={data?.markers.filter((m) => m.type !== "report").length || 0}
+          reports={data?.markers.filter((m) => m.type === "report").length || 0}
+          barangays={data?.barangays.length || 0}
+          centers={data?.evacuationCenters.length || 0}
+        />
+      </div>
       <div className="h-auto flex flex-col gap-3">
         <GlowingWrapper>
           <Card className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 ">

@@ -1,14 +1,20 @@
 import React from "react";
-import { FileText } from "lucide-react";
+import { FileText, LucideIcon } from "lucide-react";
 import { GlowingWrapper } from "../ui/glowing-effect";
 
 interface Props {
   header: string;
   description: string;
   children?: React.ReactNode;
+  icon: LucideIcon;
 }
 
-const SidebarHeader = ({ header, description, children }: Props) => {
+const SidebarHeader = ({
+  header,
+  description,
+  children,
+  icon: Icon = FileText,
+}: Props) => {
   return (
     <GlowingWrapper>
       <div className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] rounded-xl relative">
@@ -17,7 +23,7 @@ const SidebarHeader = ({ header, description, children }: Props) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <FileText className="w-6 h-6 text-white" />
+                  <Icon className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold">{header}</h1>

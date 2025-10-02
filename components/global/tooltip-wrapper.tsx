@@ -13,9 +13,10 @@ import { Button } from "../ui/button";
 interface WrapperProps {
   text: string;
   maxLength?: number;
+  className?: string;
 }
 
-const TooltipWrapper = ({ text, maxLength = 15 }: WrapperProps) => {
+const TooltipWrapper = ({ text, maxLength = 15, className }: WrapperProps) => {
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 640px)");
 
@@ -26,14 +27,19 @@ const TooltipWrapper = ({ text, maxLength = 15 }: WrapperProps) => {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="link" className="h-auto p-0 text-left">
+          <Button
+            variant="link"
+            className={`h-auto p-0 text-left ${className}`}
+          >
             {truncatedText}
             {showFullText && (
               <span className="text-muted-foreground"> ...</span>
             )}
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[500px] text-xs md:text-sm px-2">
+        <DialogContent
+          className={`sm:max-w-[500px] text-xs md:text-sm px-2 ${className}`}
+        >
           <p>{text}</p>
         </DialogContent>
       </Dialog>
@@ -44,14 +50,14 @@ const TooltipWrapper = ({ text, maxLength = 15 }: WrapperProps) => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="cursor-help">
+          <span className={`cursor-help ${className}`}>
             {truncatedText}
             {showFullText && <span className="text-muted-foreground">...</span>}
           </span>
         </TooltipTrigger>
         <TooltipContent
           side="bottom"
-          className="max-auto bg-muted text-muted-foreground px-3 py-2 rounded-md shadow-lg"
+          className={`max-auto bg-muted text-muted-foreground px-3 py-2 rounded-md shadow-lg ${className}`}
         >
           {text}
         </TooltipContent>

@@ -9,31 +9,8 @@ import WeatherForecast from "@/components/global/Docs/weather-forecast";
 import { useWeatherStore } from "@/hooks/use-meteo-storage";
 import { cn } from "@/lib/utils";
 
-// Map Open-Meteo weather codes to descriptions and video placeholders (same as your original style)
-const weatherCodeMap = {
-  0: { desc: "Clear sky / Sunny", video: "☀️ Sunny Video" },
-  1: { desc: "Mainly clear", video: "🌤️ Partly Cloudy Video" },
-  2: { desc: "Partly cloudy", video: "🌤️ Partly Cloudy Video" },
-  3: { desc: "Overcast", video: "☁️ Cloudy Video" },
-  45: { desc: "Fog or mist", video: "🌫️ Foggy Video" },
-  48: { desc: "Depositing rime fog (rare)", video: "🌫️ Foggy Video" },
-  51: { desc: "Light drizzle", video: "🌦️ Drizzle Video" },
-  53: { desc: "Moderate drizzle", video: "🌦️ Drizzle Video" },
-  55: { desc: "Dense drizzle", video: "🌧️ Rain Video" },
-  61: { desc: "Slight rain", video: "🌧️ Rain Video" },
-  63: { desc: "Moderate rain", video: "🌧️ Rain Video" },
-  65: { desc: "Heavy rain", video: "🌧️ Rain Video" },
-  80: { desc: "Rain showers, slight", video: "🌧️ Rain Showers Video" },
-  81: { desc: "Rain showers, moderate", video: "🌧️ Rain Showers Video" },
-  82: { desc: "Rain showers, heavy", video: "🌧️ Rain Showers Video" },
-  95: { desc: "Thunderstorm (with rain)", video: "⛈️ Thunderstorm Video" },
-  96: { desc: "Thunderstorm with slight hail", video: "⛈️ Thunderstorm Video" },
-  99: { desc: "Thunderstorm with heavy hail", video: "⛈️ Thunderstorm Video" },
-};
-
 export default function PublicPage() {
-  const { setWeeklyData, currentDay, weekly, selectedDayIndex } =
-    useWeatherStore();
+  const { weekly, selectedDayIndex } = useWeatherStore();
 
   return (
     <>
@@ -53,14 +30,6 @@ export default function PublicPage() {
       >
         {weekly[selectedDayIndex] &&
         weekly[selectedDayIndex].weather.color == "light" ? (
-          // <div
-          //   className={cn(
-          //     "pointer-events-none absolute inset-0",
-          //     "bg-[radial-gradient(ellipse_at_center,transparent_40%,white_60%)]"
-          //   )}
-          // >
-          //   <GridPattern />
-          // </div>
           <div
             className={cn(
               "pointer-events-none absolute inset-0",

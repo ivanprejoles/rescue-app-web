@@ -4,10 +4,10 @@ export async function updateMarkerClient(
     status: string;
   }>
 ) {
-  const res = await fetch("/api/admin/markers", {
+  const res = await fetch(`/api/admin/markers/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id, ...data }),
+    body: JSON.stringify({ ...data }),
   });
   if (!res.ok) {
     const errorData = await res.json();

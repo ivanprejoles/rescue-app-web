@@ -1,3 +1,5 @@
+import { use } from "react";
+
 export interface SentMarkerType {
   lat: number;
   lng: number;
@@ -53,7 +55,8 @@ export interface ColumnConfig {
   label: string;
   icon?: React.ComponentType<any>;
   render: (
-    incident: MarkerWithRelations | MapEvacuationCenter | MapBarangay
+    incident: MarkerWithRelations | MapEvacuationCenter | MapBarangay,
+    userBrgId?: string | null
   ) => React.ReactNode;
   sortable?: boolean;
   width?: string;
@@ -91,20 +94,59 @@ export interface BarangayTableAction {
   className?: string;
 }
 
+// export interface Report {
+//   id: string;
+//   title: string;
+//   description: string;
+//   category: string;
+//   status: "Pending" | "Assigned" | "Resolved" | "Failed";
+//   priority: "low" | "medium" | "high" | "urgent";
+//   reportedBy: string;
+//   contactNumber: string;
+//   longitude: number;
+//   latitude: number;
+//   dateReported: string;
+//   lastUpdated: string;
+//   images?: string[];
+// }
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  status: string; // e.g., "waiting"
+  brgy_id: string;
+  phone_number: string;
+}
+
+export interface Rescuer {
+  id: string;
+  name: string;
+  email: string;
+  status: string; // e.g., "active"
+  brgy_id: string;
+  phone_number: string;
+}
+
+export interface Barangay {
+  id: string;
+  name: string;
+  phone: string;
+  address: string;
+}
+
 export interface Report {
   id: string;
-  title: string;
+  type: "report"; // matches actual property
   description: string;
-  category: string;
-  status: "Pending" | "Assigned" | "Resolved" | "Failed";
-  priority: "low" | "medium" | "high" | "urgent";
-  reportedBy: string;
-  contactNumber: string;
-  longitude: number;
   latitude: number;
-  dateReported: string;
-  lastUpdated: string;
-  images?: string[];
+  longitude: number;
+  status: "Pending" | "Assigned" | "Resolved" | "Failed"; // adjust values as needed
+  created_at: string; // ISO string timestamp
+  updated_at: string; // ISO string timestamp
+  user: User;
+  rescuer?: Rescuer | null;
+  barangay: Barangay;
 }
 
 export interface BarangayReport {
@@ -277,6 +319,7 @@ export interface MapEvacuationCenter {
   longitude?: number | null;
   phone?: string | null;
   status?: string | null;
+  evacuation_center_barangays?: { barangay_id: string }[];
 }
 
 // The full fetched data shape from your API/server
@@ -302,4 +345,61 @@ export interface RotatingSliderProps {
   title: string;
   description: string;
   image: string;
+}
+
+// USER
+export interface BarangayInfo {
+  id: string;
+  name: string;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  phone: string | null;
+}
+
+export interface ClientAccessUser {
+  id: string;
+  name: string;
+  email: string | null;
+  phone_number: string | null;
+  status: string;
+  created_at: string;
+  user_type: "rescuer" | "user";
+  barangays: BarangayInfo | null;
+}
+export interface ClientAccessWithBarangays {
+  user: ClientAccessUser | null;
+  allBarangays: {
+    id: string;
+    name: string;
+  }[];
+}
+
+export type PublicUser = {
+  id: string;
+  name: string;
+  brgy_id: string | null;
+};
+
+export type ClientAccessResponse = {
+  user: PublicUser | null;
+  isUser: boolean;
+};
+
+// client report
+export interface ClientData {
+  user: ClientUser;
+  markers: MapMarker[];
+  evacuationCenters: MapEvacuationCenter[];
+}
+
+export interface ClientUser {
+  id: string;
+  name: string;
+  email: string | null;
+  phone_number: string | null;
+  status: string;
+  created_at: string;
+  user_type: "rescuer" | "user";
+  brgy_id: string;
 }

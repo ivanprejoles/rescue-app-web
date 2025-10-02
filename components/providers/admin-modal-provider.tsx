@@ -7,8 +7,11 @@ import { EvacuationCenterModal } from "../global/modal/add-update-evacuation-mod
 import { DeleteEvacuationModal } from "../global/modal/delete-evacuation-modal";
 import { ReportModal } from "../global/modal/update-report-modal";
 import { DeleteReportModal } from "../global/modal/delete-report-modal";
+import { UpdateAddMapModal } from "../global/modal/add-marker-map-modal";
+import { ProfileEditModal } from "../global/modal/update-profile-modal";
+import { DeleteIncidentModal } from "../global/modal/delete-map-incident-modal";
 
-const ModalProvider = () => {
+const AdminModalProvider = () => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -25,8 +28,11 @@ const ModalProvider = () => {
       <EvacuationCenterModal />
       <ReportModal />
       <DeleteReportModal />
+      <UpdateAddMapModal />
+      <ProfileEditModal />
+      <DeleteIncidentModal />
     </>
   );
 };
 
-export default ModalProvider;
+export default AdminModalProvider;

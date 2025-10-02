@@ -29,13 +29,10 @@ export function CustomMarker({
   useEffect(() => {
     if (!markerRef.current) return;
 
-    console.log("marker id");
-    console.log(activeMarkerId);
-    console.log(marker.id);
     if (activeMarkerId === marker.id) {
       console.log("its running!!");
       markerRef.current.openPopup();
-    } 
+    }
     // else {
     //   console.log("its running!");
     //   markerRef.current.closePopup();

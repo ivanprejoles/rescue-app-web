@@ -10,7 +10,11 @@ import { Badge } from "./badge";
 import { Skeleton } from "./skeleton";
 import { GlowingWrapper } from "./glowing-effect";
 
-export function MainHeader() {
+interface Props {
+  withSideBar?: boolean;
+}
+
+export function MainHeader({ withSideBar = true }: Props) {
   return (
     <GlowingWrapper>
       <header
@@ -18,7 +22,7 @@ export function MainHeader() {
         suppressHydrationWarning
       >
         <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
-          <SidebarTrigger className="-ml-1" />
+          {withSideBar && <SidebarTrigger className="-ml-1" />}
           <Separator
             orientation="vertical"
             className="mx-2 data-[orientation=vertical]:h-4"
@@ -36,21 +40,21 @@ export function MainHeader() {
             <ModeToggle />
 
             {/* clerk icon */}
-            <ClerkLoading>
-              <div className="flex items-center justify-center h-9 w-9">
-                <Skeleton className="rounded-full h-9 w-9" />
-              </div>
-            </ClerkLoading>
-            <SignedIn>
-              <UserButton
-                // afterSignOutUrl="/"
-                appearance={{
-                  elements: {
-                    userButtonAvatarBox: "w-9 h-9",
-                  },
-                }}
-              />
-            </SignedIn>
+              <ClerkLoading>
+                <div className="flex items-center justify-center h-9 w-9">
+                  <Skeleton className="rounded-full h-9 w-9" />
+                </div>
+              </ClerkLoading>
+              <SignedIn>
+                <UserButton
+                  // afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      userButtonAvatarBox: "w-9 h-9",
+                    },
+                  }}
+                />
+              </SignedIn>
           </div>
         </div>
       </header>

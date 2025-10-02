@@ -139,8 +139,6 @@ export async function fetchWeeklyWeatherData(
 
   const data: MeteoResponse = await response.json();
 
-  console.log("Open-Meteo API raw response:", data);
-
   const windspeed = data.current_weather.windspeed;
 
   const weeklyData: DailyForecast[] = data.daily.time.map((date, idx) => ({

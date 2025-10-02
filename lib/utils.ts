@@ -169,7 +169,7 @@ export function formatReadableDate(dateInput: any) {
 
 export const openGoogleMaps = (
   coordinates?: { lat: number; lng: number } | null,
-  address?: string | null
+address?: string | null
 ) => {
   const validCoord =
     coordinates &&

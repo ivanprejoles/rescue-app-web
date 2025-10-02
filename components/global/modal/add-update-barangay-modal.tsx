@@ -210,6 +210,27 @@ export const BarangayModal: React.FC = () => {
               />
             </div>
 
+            {/* Phone */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="phone"
+                className="text-sm font-medium flex items-center gap-2"
+              >
+                <Phone size={14} />
+                Contact Number *
+              </Label>
+              <Input
+                id="phone"
+                value={formData.phone}
+                onChange={(e) => handleInputChange("phone", e.target.value)}
+                placeholder="+63 912 345 6789"
+                className={errors.phone ? "border-red-500" : ""}
+              />
+              {errors.phone && (
+                <p className="text-sm text-red-600">{errors.phone}</p>
+              )}
+            </div>
+
             {/* Coordinates */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">Select Location *</Label>
@@ -272,31 +293,15 @@ export const BarangayModal: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Phone */}
-            <div className="space-y-2">
-              <Label
-                htmlFor="phone"
-                className="text-sm font-medium flex items-center gap-2"
-              >
-                <Phone size={14} />
-                Contact Number *
-              </Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleInputChange("phone", e.target.value)}
-                placeholder="+63 912 345 6789"
-                className={errors.phone ? "border-red-500" : ""}
-              />
-              {errors.phone && (
-                <p className="text-sm text-red-600">{errors.phone}</p>
-              )}
-            </div>
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button
+              type="button"
+              className="cursor-pointer"
+              variant="outline"
+              onClick={onClose}
+            >
               Cancel
             </Button>
             <Button

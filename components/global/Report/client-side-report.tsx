@@ -11,15 +11,12 @@ import { useAdminQuery } from "@/lib/useQuery";
 import { getMarkersClient } from "@/lib/client-fetchers";
 import { transformMarkersToBarangayReports } from "@/lib/utils";
 import { MarkerWithRelations, Report } from "@/lib/types";
-import { ReportModal } from "../modal/update-report-modal";
-import { DeleteReportModal } from "../modal/delete-report-modal";
 import { useReportModalStore } from "@/hooks/modals/use-update-report";
 import { useDeleteReportModalStore } from "@/hooks/modals/use-delete-report-modal";
+import { Flag } from "lucide-react";
 
 export default function ClientSideReport() {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
-  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
-  const [deletedReport, setDeletedReport] = useState<Report | null>(null);
 
   const { data, isLoading, error } = useAdminQuery<MarkerWithRelations[]>(
     ["reports"],
@@ -71,6 +68,7 @@ export default function ClientSideReport() {
       <SidebarHeader
         header="Admin Reports"
         description="Manage and review citizen reports across all barangays"
+        icon={Flag}
       ></SidebarHeader>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -103,18 +101,6 @@ export default function ClientSideReport() {
           />
         ))}
       </div>
-      {/* {selectedReport && (
-        <ReportModal
-          report={selectedReport}
-          onClose={() => setSelectedReport(null)}
-        />
-      )} */}
-      {/* {deletedReport && (
-        <DeleteReportModal
-          report={deletedReport}
-          onClose={() => setDeletedReport(null)}
-        />
-      )} */}
     </div>
   );
 }

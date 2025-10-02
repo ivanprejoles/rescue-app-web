@@ -36,7 +36,7 @@ export const legendMarker = [
     icon: "🚣‍♀️",
     iconName: "swimmer",
     key: "flood",
-    color: "#06b6d4", // from original cyan-500: tailwind cyan-500 = #06b6d4
+    color: "#ef4444", // from original cyan-500: tailwind cyan-500 = #06b6d4
     iconColor: "#212121",
     svgIcon: IconSwimming,
   },
@@ -45,7 +45,7 @@ export const legendMarker = [
     icon: "⛰️",
     iconName: "mountain",
     key: "landslide",
-    color: "#15803d", // from original green-600: tailwind green-600 = #15803d
+    color: "#ef4444", // from original green-600: tailwind green-600 = #15803d
     iconColor: "#212121",
     svgIcon: IconMountain,
   },
@@ -54,16 +54,19 @@ export const legendMarker = [
     icon: "🌊",
     iconName: "water",
     key: "stormsurge",
-    color: "#3b82f6", // from original blue-500: tailwind blue-500 = #3b82f6
+    color: "#ef4444", // from original blue-500: tailwind blue-500 = #3b82f6
     iconColor: "#212121",
     svgIcon: IconStorm,
   },
+  // #3b82f6 -blue
+  // #15803d -green
+  // #ef4444 -red
   {
     label: "Barangays",
     icon: "🏘️",
     iconName: "city",
     key: "barangay",
-    color: "#06b6d4", // from original cyan-500 = #06b6d4 instead of #34495e
+    color: "#3b82f6", // from original cyan-500 = #06b6d4 instead of #34495e
     iconColor: "#212121",
     svgIcon: IconBuildingEstate,
   },
@@ -72,7 +75,7 @@ export const legendMarker = [
     icon: "🏫",
     iconName: "hospital",
     key: "evacuationCenters",
-    color: "#ef4444", // from original red-500 = #ef4444 instead of #27ae60
+    color: "#15803d", // from original red-500 = #ef4444 instead of #27ae60
     iconColor: "#212121",
     svgIcon: IconBuildingHospital,
   },
@@ -89,48 +92,47 @@ export const legendMarker = [
 
 export const typeConfigs: Record<string, TypeConfig> = {
   flood: {
-    // capitalized to match 'Flood' title in insertedMarker
-    color: "from-cyan-500",
-    dotColor: "bg-cyan-500",
-    lightColor: "bg-cyan-50",
-    borderColor: "border-cyan-200",
-    textColor: "text-cyan-700",
-    icon: IconSwimming,
-    label: "Flood",
-  },
-  landslide: {
-    color: "from-green-600", // example color for landslide
-    dotColor: "bg-green-600",
-    lightColor: "bg-green-100",
-    borderColor: "border-green-300",
-    textColor: "text-green-800",
-    icon: Mountain,
-    label: "Landslide",
-  },
-  stormsurge: {
-    color: "from-blue-500",
-    dotColor: "bg-blue-500",
-    lightColor: "bg-blue-50",
-    borderColor: "border-blue-200",
-    textColor: "text-blue-700",
-    icon: Waves,
-    label: "Storm Surge",
-  },
-  evacuation: {
     color: "from-red-500",
     dotColor: "bg-red-500",
     lightColor: "bg-red-50",
     borderColor: "border-red-200",
     textColor: "text-red-700",
+    icon: IconSwimming,
+    label: "Flood",
+  },
+  landslide: {
+    color: "from-red-500",
+    dotColor: "bg-red-500",
+    lightColor: "bg-red-50",
+    borderColor: "border-red-200",
+    textColor: "text-red-700",
+    icon: Mountain,
+    label: "Landslide",
+  },
+  stormsurge: {
+    color: "from-red-500",
+    dotColor: "bg-red-500",
+    lightColor: "bg-red-50",
+    borderColor: "border-red-200",
+    textColor: "text-red-700",
+    icon: Waves,
+    label: "Storm Surge",
+  },
+  evacuation: {
+    color: "from-green-500",
+    dotColor: "bg-green-500",
+    lightColor: "bg-green-50",
+    borderColor: "border-green-200",
+    textColor: "text-green-700",
     icon: Hospital,
     label: "Evacuation Center",
   },
   barangay: {
-    color: "from-yellow-500",
-    dotColor: "bg-yellow-500",
-    lightColor: "bg-yellow-50",
-    borderColor: "border-yellow-200",
-    textColor: "text-yellow-700",
+    color: "from-blue-500",
+    dotColor: "bg-blue-500",
+    lightColor: "bg-blue-50",
+    borderColor: "border-blue-200",
+    textColor: "text-blue-700",
     icon: Building2,
     label: "Barangay",
   },

@@ -59,9 +59,9 @@ export async function createMarker(data: any) {
       latitude: data.latitude,
       longitude: data.longitude,
       description: data.description || null,
-      status: data.status || "active",
+      status: data.status || "Active",
       rescuer_id: null,
-      brgy_id: null,
+      brgy_id: data.brgyId || null,
     })
     .select()
     .single();
@@ -74,12 +74,7 @@ export async function createMarker(data: any) {
   return inserted;
 }
 
-export async function updateMarker(
-  id: string,
-  updates: Partial<{
-    status: string;
-  }>
-) {
+export async function updateMarker(id: string, updates: Partial<any>) {
   const supabase = await createServerSupabaseClient();
   const { data: updated, error } = await supabase
     .from("markers")

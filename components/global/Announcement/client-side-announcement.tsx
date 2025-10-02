@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus, Search, Bell } from "lucide-react";
+import { Plus, Search, Bell, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -200,6 +200,7 @@ export default function ClientSideAnnouncement() {
       <SidebarHeader
         header="Announcement Management"
         description="Manage announcements"
+        icon={Megaphone}
       />
 
       <div className="w-full mx-auto">

@@ -25,14 +25,14 @@ const MainHeader = () => {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/apply">
+            <Link href="/user">
               <Button
                 size="sm"
                 variant="outline"
                 className="border-white/20 text-white hover:bg-white/10 bg-transparent"
               >
                 <User className="h-4 w-4 mr-2" />
-                Apply
+                Log In
               </Button>
             </Link>
             <Button

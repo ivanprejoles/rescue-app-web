@@ -10,40 +10,46 @@ import { CustomMarker } from "./custom-marker";
 import { useMapToggleStore } from "@/hooks/use-mapToggleStore";
 import { legendMarker, typeConfigs } from "@/lib/constants";
 import { toggleReportSelection } from "@/lib/map/MarkerHandlers";
-import { kawitBounds } from "@/lib/map/kawitBounds";
+import { kawitBounds, kawitCenter } from "@/lib/map/kawitBounds";
 import { MapData, StoredMarkerType } from "@/lib/types";
 import {
   callNumber,
   capitalize,
-  capitalizeFirstLetter,
+  // capitalizeFirstLetter,
   openGmailComposeWithRecipient,
   openGoogleMaps,
 } from "@/lib/utils";
-import { LocationModal } from "../modal/add-marker-map-modal";
+// import { MapModal } from "../modal/add-marker-map-modal";
 import { ContactButton } from "@/components/ui/contact-button";
 import { Ambulance, MapPin, Phone, User } from "lucide-react";
 import RenderLocations from "./render-locations";
 import BoundDragHandler from "@/lib/map/bound-non-sticky";
+import { useUpdateAddMapModal } from "@/hooks/modals/use-update-add-map-modal";
 
 export default function ReportsMap({ reports }: { reports?: MapData }) {
   const queryClient = useQueryClient();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  // const [modalOpen, setModalOpen] = useState(false);
+  // const [selectedType, setSelectedType] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const { openModal } = useUpdateAddMapModal();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const onMarkerTypeSelect = (type: string) => {
-    setSelectedType(type);
-    setModalOpen(true);
+    // setSelectedType(type);
+    // setModalOpen(true);
+    openModal(
+      type === "Evacuation" ? "evacuation" : "marker",
+      type !== "Evacuation" && { type: type.toLowerCase() }
+    );
   };
 
-  const closeModal = () => {
-    setSelectedType(null);
-    setModalOpen(false);
-  };
+  // const closeModal = () => {
+  //   setSelectedType(null);
+  //   setModalOpen(false);
+  // };
 
   // We will subscribe to all toggle keys individually to avoid object recreation
   const toggleStates = legendMarker.reduce((acc, layer) => {
@@ -63,7 +69,6 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
 
   useEffect(() => {
     const cached = queryClient.getQueryData(["markers"]);
-    console.log("📦 Cached markers:", cached);
   }, [queryClient]);
 
   const handleMarkerClick = useCallback((report: StoredMarkerType) => {
@@ -276,7 +281,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
     <div className="relative rounded-lg overflow-hidden h-full w-full">
       <MapContainer
         key={"full-screen-map"}
-        center={[14.4461369, 120.8657466]}
+        center={kawitCenter}
         zoom={15}
         minZoom={13}
         maxZoom={18}
@@ -305,12 +310,6 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
       </MapContainer>
 
       <MarkerMaker onSelect={onMarkerTypeSelect} />
-      <LocationModal
-        mode={selectedType === "Evacuation" ? "evacuation" : "marker"}
-        isOpen={modalOpen}
-        onClose={closeModal}
-        initialData={{ type: selectedType?.toLowerCase() ?? "" }}
-      />
       <LegendPopover />
     </div>
   );

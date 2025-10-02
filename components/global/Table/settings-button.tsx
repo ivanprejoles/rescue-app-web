@@ -12,6 +12,12 @@ import { Button } from "@/components/ui/button";
 import { callNumber, openGoogleMaps } from "@/lib/utils";
 import { MapBarangay, MapEvacuationCenter, MapMarker } from "@/lib/types";
 import { useReportModalStore } from "@/hooks/modals/use-update-report";
+import { useUpdateAddMapModal } from "@/hooks/modals/use-update-add-map-modal";
+import { useUpdateAddBarangayModalStore } from "@/hooks/modals/use-update-add-barangay-modal";
+import { useDeleteBarangayModalStore } from "@/hooks/modals/use-delete-barangay-modal";
+import { useDeleteEvacuationModalStore } from "@/hooks/modals/use-delete-evacuation-modal";
+import { useDeleteReportModalStore } from "@/hooks/modals/use-delete-report-modal";
+import { useDeleteIncidentModalStore } from "@/hooks/modals/use-delete-map-incident-modal";
 
 type Props = {
   address?: string;
@@ -34,6 +40,12 @@ const ContactMenu = ({ number }: { number: string }) => {
 
 const SettingsButton = ({ address, location, number, data }: Props) => {
   const { openModal: openReportModal } = useReportModalStore();
+  const { openModal: openUpdateMapModal } = useUpdateAddMapModal();
+  const { openModal: openUpdateBarangayModal } =
+    useUpdateAddBarangayModalStore();
+
+  // DELETE
+  const { openModal: openDeleteIncidentModal } = useDeleteIncidentModalStore();
 
   return (
     <DropdownMenu>
@@ -59,13 +71,13 @@ const SettingsButton = ({ address, location, number, data }: Props) => {
                 break;
               case "natural":
                 // d.data is MapMarker here
-                handleMapMarker(data.data);
+                openUpdateMapModal("marker", data.data);
                 break;
               case "barangay":
-                handleBarangay(data.data);
+                openUpdateBarangayModal("edit", data.data);
                 break;
               case "evacuation":
-                handleEvacuationCenter(data.data);
+                openUpdateMapModal("evacuation", data.data);
                 break;
             }
           }}
@@ -76,7 +88,41 @@ const SettingsButton = ({ address, location, number, data }: Props) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
-            alert("wew");
+            switch (data.type) {
+              case "report":
+                const report: MapMarker = data.data as MapMarker;
+                openDeleteIncidentModal({
+                  id: data.data.id,
+                  type: data.type,
+                  name: report.type,
+                });
+                break;
+              case "natural":
+                const natural: MapMarker = data.data as MapMarker;
+                openDeleteIncidentModal({
+                  id: data.data.id,
+                  type: data.type,
+                  name: natural.type,
+                });
+                break;
+              case "barangay":
+                const barangay: MapBarangay = data.data as MapBarangay;
+                openDeleteIncidentModal({
+                  id: data.data.id,
+                  type: data.type,
+                  name: barangay.name,
+                });
+                break;
+              case "evacuation":
+                const evacuation: MapEvacuationCenter =
+                  data.data as MapEvacuationCenter;
+                openDeleteIncidentModal({
+                  id: data.data.id,
+                  type: data.type,
+                  name: evacuation.name,
+                });
+                break;
+            }
           }}
           className="text-red-500 hover:text-red-600"
         >
@@ -88,20 +134,5 @@ const SettingsButton = ({ address, location, number, data }: Props) => {
   );
 };
 
-function handleData(d: Data) {
-  switch (d.type) {
-    case "report":
-    case "natural":
-      // d.data is MapMarker here
-      handleMapMarker(d.data);
-      break;
-    case "barangay":
-      handleBarangay(d.data);
-      break;
-    case "evacuation":
-      handleEvacuationCenter(d.data);
-      break;
-  }
-}
 
 export default SettingsButton;

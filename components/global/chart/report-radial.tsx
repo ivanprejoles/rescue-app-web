@@ -19,9 +19,9 @@ interface ChartRadialTextProps {
 }
 
 export function ChartRadialText({
-  label,
-  count,
-  description = "Showing total visitors for the last 6 months",
+  label = "Loading...",
+  count = 0,
+  description = "Loading...",
   color = "var(--chart-2)",
 }: ChartRadialTextProps) {
   const chartData = [

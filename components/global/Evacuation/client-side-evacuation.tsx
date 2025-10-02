@@ -9,7 +9,7 @@ import { BarangayManagement } from "../Barangay/barangay-management";
 import EvacuationManagement from "./evacuation-management";
 import { Card, CardContent } from "@/components/ui/card";
 import { GlowingWrapper } from "@/components/ui/glowing-effect";
-import { Bell } from "lucide-react";
+import { Bell, Building2 } from "lucide-react";
 import { ChartRadialShape } from "../chart/barangay-radial";
 
 const ClientSideEvacuation = () => {
@@ -83,6 +83,7 @@ const ClientSideEvacuation = () => {
         <SidebarHeader
           header="Barangay Management"
           description="Manage barangays"
+          icon={Building2}
         ></SidebarHeader>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

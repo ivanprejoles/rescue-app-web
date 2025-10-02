@@ -39,7 +39,7 @@ const IncidentTable: React.FC<IncidentTableProps> = ({
 
   const [sortConfig, setSortConfig] = useState<{
     key: string;
-    direction: "asc" | "desc";
+    direction: "asc" | "desc";  
   } | null>(null);
 
   const getNestedValue = (obj: any, path: string) => {
@@ -132,7 +132,6 @@ const IncidentTable: React.FC<IncidentTableProps> = ({
     if (!groupedData) return null;
 
     return Object.entries(groupedData).map(([groupKey, items]) => {
-      console.log(groupKey);
       const config = typeConfigs[groupKey] ?? {
         label: groupKey,
         icon: () => null,

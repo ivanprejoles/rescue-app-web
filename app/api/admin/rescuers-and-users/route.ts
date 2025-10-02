@@ -32,9 +32,6 @@ export async function PUT(req: NextRequest) {
     }
     // Optionally validate updates keys and types here
 
-    console.log("data update");
-    console.log(updates);
-    console.log(id);
     const updatedUserRescuer = await updateUserRescuer(id, updates);
 
     return NextResponse.json(updatedUserRescuer, { status: 200 });

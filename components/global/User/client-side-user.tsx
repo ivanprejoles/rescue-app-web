@@ -17,7 +17,7 @@ import type { User } from "@/lib/types";
 import { useAdminQuery } from "@/lib/useQuery";
 import { getRescuersAndUsersClient } from "@/lib/client-fetchers";
 import SidebarHeader from "../header";
-import { AlertTriangle, Bell } from "lucide-react";
+import { AlertTriangle, Bell, Users } from "lucide-react";
 import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { ChartRadialStack } from "../chart/user-radial-stack";
 
@@ -125,6 +125,7 @@ export default function ClientSideUser() {
         <SidebarHeader
           header="User Management"
           description="Manage users and rescuers"
+          icon={Users}
         />
         <div className="w-full mx-auto">
           <Alert className="border-red-200 bg-red-50">
@@ -143,6 +144,7 @@ export default function ClientSideUser() {
       <SidebarHeader
         header="User Management"
         description="Manage users and rescuers with comprehensive controls"
+        icon={Users}
       />
       {isLoading ? (
         <StatsLoadingSkeleton />

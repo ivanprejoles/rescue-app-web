@@ -15,7 +15,7 @@ import {
   MapEvacuationCenter,
 } from "@/lib/types";
 import TooltipWrapper from "../tooltip-wrapper";
-import TableButtons from "./table-buttons";
+import LocateButtons from "./locate-buttons";
 import SettingsButton from "./settings-button";
 import { statusTextColors } from "@/lib/constants";
 
@@ -69,15 +69,6 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     icon: Activity,
     render: (marker: MarkerWithRelations) => (
       <div className="flex items-center space-x-2">
-        <div
-          className={`w-3 h-3 rounded-full ${
-            marker.type
-              ? statusTextColors[
-                  marker.status as keyof typeof statusTextColors
-                ] || "bg-gray-500"
-              : "bg-gray-500"
-          }`}
-        ></div>
         <span
           className={`text-sm font-medium capitalize ${
             statusTextColors[
@@ -99,7 +90,11 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     render: (marker: MarkerWithRelations) => (
       <div>
         <TooltipWrapper
-          text={marker.type === "report" ? marker.user?.phone_number : "None"}
+          text={
+            marker.type === "report"
+              ? (marker.user?.phone_number as string)
+              : "None"
+          }
         />
       </div>
     ),
@@ -110,7 +105,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "map",
     label: "Location",
     icon: MapPin,
-    render: (marker: MarkerWithRelations) => <TableButtons id={marker.id} />,
+    render: (marker: MarkerWithRelations) => <LocateButtons id={marker.id} />,
     sortable: false,
     width: "w-28",
   },
@@ -125,7 +120,10 @@ export const defaultMarkerColumns: ColumnConfig[] = [
         number={
           marker.type === "report" ? marker.user?.phone_number : undefined
         }
-        data={{ type: marker.type === "report" ? "report" : "natural", data: marker }}
+        data={{
+          type: marker.type === "report" ? "report" : "natural",
+          data: marker,
+        }}
       />
     ),
     sortable: false,
@@ -167,7 +165,7 @@ export const defaultBarangayColumns: ColumnConfig[] = [
     key: "map",
     label: "Location",
     icon: MapPin,
-    render: (barangay: MapBarangay) => <TableButtons id={barangay.id} />,
+    render: (barangay: MapBarangay) => <LocateButtons id={barangay.id} />,
     sortable: false,
     width: "w-28",
   },
@@ -225,7 +223,7 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
     key: "map",
     label: "Location",
     icon: MapPin,
-    render: (evac: MapEvacuationCenter) => <TableButtons id={evac.id} />,
+    render: (evac: MapEvacuationCenter) => <LocateButtons id={evac.id} />,
     sortable: false,
     width: "w-28",
   },

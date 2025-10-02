@@ -1,11 +1,15 @@
 "use client";
 
-import { kawitBounds } from "@/lib/map/kawitBounds";
+import { kawitBounds, kawitCenter } from "@/lib/map/kawitBounds";
 import React, { useCallback, useEffect, useState } from "react";
 import { MapContainer, TileLayer, ZoomControl } from "react-leaflet";
 import ResizeFix from "../Map/ResizeFix";
-import { useQuery } from "@tanstack/react-query";
-import { MapData, StoredMarkerType } from "@/lib/types";
+import {
+  ClientUser,
+  MapEvacuationCenter,
+  MapMarker,
+  StoredMarkerType,
+} from "@/lib/types";
 import { CustomMarker } from "../Map/custom-marker";
 import { ContactButton } from "@/components/ui/contact-button";
 import { Ambulance, MapPin, Phone, User } from "lucide-react";
@@ -14,25 +18,35 @@ import {
   openGmailComposeWithRecipient,
   openGoogleMaps,
 } from "@/lib/utils";
-import { legendMarker } from "@/lib/constants";
+import { legendMarker, typeConfigs } from "@/lib/constants";
 import { toggleReportSelection } from "@/lib/map/MarkerHandlers";
 import BoundDragHandler from "@/lib/map/bound-non-sticky";
 
-async function fetchMarkers() {
-  const res = await fetch("/api/public/maps", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.error || "Failed to fetch markers");
-  }
-  return res.json();
+// async function fetchMarkers() {
+//   const res = await fetch("/api/public/maps", {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   });
+//   if (!res.ok) {
+//     const errorData = await res.json();
+//     throw new Error(errorData.error || "Failed to fetch markers");
+//   }
+//   return res.json();
+// }
+
+interface Props {
+  markers: MapMarker[];
+  evacuationCenters: MapEvacuationCenter[];
+  user?: ClientUser;
 }
 
-export default function LeafletMap() {
+export default function LeafletMap({
+  markers,
+  evacuationCenters,
+  user,
+}: Props) {
   const [selectedReports, setSelectedReports] = useState<StoredMarkerType[]>(
     []
   );
@@ -42,27 +56,28 @@ export default function LeafletMap() {
     setIsClient(true);
   }, []);
 
-  const {
-    data: reports,
-    isLoading,
-    error,
-  } = useQuery<MapData>({
-    queryKey: ["markers"],
-    queryFn: fetchMarkers,
-    staleTime: 1000 * 60 * 5,
-  });
+  // const {
+  //   data: reports,
+  //   isLoading,
+  //   error,
+  // } = useQuery<MapData>({
+  //   queryKey: ["markers"],
+  //   queryFn: fetchMarkers,
+  //   staleTime: 1000 * 60 * 5,
+  // });
 
   const handleMarkerClick = useCallback((report: StoredMarkerType) => {
     setSelectedReports((prev) => toggleReportSelection(prev, report));
   }, []);
 
+  // evacuation marker
   const renderEvacuations = () => {
-    if (!reports?.evacuationCenters) return null;
+    if (!evacuationCenters) return null;
 
     const legend = legendMarker.find((l) => l.key === "evacuationCenters");
     if (!legend) return null;
 
-    return reports.evacuationCenters.map((evac, index) => {
+    return evacuationCenters.map((evac, index) => {
       if (!evac.latitude || !evac.longitude) return null;
 
       return (
@@ -82,6 +97,9 @@ export default function LeafletMap() {
           }}
           onClick={handleMarkerClick}
         >
+          <h1 className="w-full text-center mb-2 text-lg font-bold">
+            {evac.name}
+          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <ContactButton
               icon={Phone}
@@ -108,10 +126,11 @@ export default function LeafletMap() {
     });
   };
 
+  // report markers
   const renderMarkers = () => {
-    if (!reports?.markers) return null;
+    if (!markers) return null;
 
-    return reports.markers.map((report, index) => {
+    return markers.map((report, index) => {
       const legend = legendMarker.find((l) => l.key === report.type);
       if (!legend) return null;
 
@@ -126,6 +145,12 @@ export default function LeafletMap() {
           }}
           onClick={handleMarkerClick}
         >
+          <h1 className="w-full text-center mb-2 text-lg font-bold">
+            {report.type === "report"
+              ? `${report.user?.name || "Guest"} Report`
+              : typeConfigs[report.type].label}
+            {/* capitalizeFirstLetter(report.type) */}
+          </h1>
           {report.type === "report" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <ContactButton
@@ -184,8 +209,8 @@ export default function LeafletMap() {
     });
   };
 
-  if (isLoading) return <p>Loading markers...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  // if (isLoading) return <p>Loading markers...</p>;
+  // if (error) return <p>Error: {error.message}</p>;
   if (!isClient) {
     return null; // or a loader placeholder
   }
@@ -194,7 +219,7 @@ export default function LeafletMap() {
     <div className="relative rounded-lg overflow-hidden h-full w-full  ">
       <MapContainer
         key={"main-map"}
-        center={[14.4461369, 120.8657466]}
+        center={kawitCenter}
         zoom={15}
         minZoom={13}
         maxZoom={18}

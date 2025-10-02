@@ -3,7 +3,9 @@
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import VideoText from "@/components/ui/video-text";
 import { useWeatherStore } from "@/hooks/use-meteo-storage";
+import { MapData } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import React from "react";
 
@@ -14,8 +16,35 @@ const LeafletMap = dynamic(
   }
 );
 
+async function fetchMarkers() {
+  const res = await fetch("/api/public/maps", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.error || "Failed to fetch markers");
+  }
+  return res.json();
+}
+
 export default function PublicMap() {
   const { weekly, selectedDayIndex } = useWeatherStore();
+
+  const {
+    data: reports,
+    isLoading,
+    error,
+  } = useQuery<MapData>({
+    queryKey: ["markers"],
+    queryFn: fetchMarkers,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (isLoading) return <p>Loading markers...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
     <>
@@ -52,7 +81,12 @@ export default function PublicMap() {
           className="mx-auto rounded-2xl object-cover h-full object-left-top"
           draggable={false}
         /> */}
-        <LeafletMap />
+        {reports && (
+          <LeafletMap
+            markers={reports.markers}
+            evacuationCenters={reports.evacuationCenters}
+          />
+        )}
       </ContainerScroll>
     </>
   );
