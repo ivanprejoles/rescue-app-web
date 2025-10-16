@@ -5,9 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params; // no await here
+  const { id } = await params; // no await here
 
   const { userId } = await auth();
   if (!userId) {

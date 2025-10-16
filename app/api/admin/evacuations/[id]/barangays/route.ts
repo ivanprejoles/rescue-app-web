@@ -8,15 +8,15 @@ import {
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const evacuationCenterId = await params.id;
-  if (!evacuationCenterId) {
+  const { id } = await params;
+  if (!id) {
     return NextResponse.json(
       { error: "Missing evacuation center ID" },
       { status: 400 }
@@ -44,12 +44,12 @@ export async function POST(
 
     // Remove barangays first (if any)
     if (toRemove && toRemove.length > 0) {
-      await removeBarangaysFromEvacuationCenter(evacuationCenterId, toRemove);
+      await removeBarangaysFromEvacuationCenter(id, toRemove);
     }
 
     // Add barangays next (if any)
     if (toAdd && toAdd.length > 0) {
-      await addBarangaysToEvacuationCenter(evacuationCenterId, toAdd);
+      await addBarangaysToEvacuationCenter(id, toAdd);
     }
 
     return NextResponse.json(
