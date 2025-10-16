@@ -6,11 +6,10 @@ import {
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
-interface Params {
-  id: string;
-}
-
-export async function DELETE(req: NextRequest, { params }: { params: Params }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const { userId } = await auth();
   if (!userId)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -33,13 +32,12 @@ export async function DELETE(req: NextRequest, { params }: { params: Params }) {
   }
 }
 
-interface Params {
-  params: Promise<{ id: string }>;
-}
-
 // for natural marker only, updates can be { type, description, latitude, longitude, status }
 
-export async function PUT(req: NextRequest, { params }: Params) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const { id } = await params; // ✅ fixed
 
   const { userId } = await auth();
