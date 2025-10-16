@@ -8,7 +8,7 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { userId } = await auth();
   if (!userId)
@@ -34,13 +34,13 @@ export async function DELETE(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { userId } = await auth();
   if (!userId)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { id } = params; // no await here
+  const { id } = await params; // no await here
 
   if (!id) {
     return NextResponse.json({ error: "Missing barangay id" }, { status: 400 });
