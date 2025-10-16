@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { deleteAnnouncement } from "@/lib/supabase/request/request-announcement";
 import { auth } from "@clerk/nextjs/server";
-import { Params } from "next/dist/server/request/params";
 import { NextRequest, NextResponse } from "next/server";
+
+interface Params {
+  id: string;
+}
 
 export async function DELETE(req: NextRequest, { params }: { params: Params }) {
   const { userId } = await auth();
