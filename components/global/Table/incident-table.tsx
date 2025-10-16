@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -39,7 +40,7 @@ const IncidentTable: React.FC<IncidentTableProps> = ({
 
   const [sortConfig, setSortConfig] = useState<{
     key: string;
-    direction: "asc" | "desc";  
+    direction: "asc" | "desc";
   } | null>(null);
 
   const getNestedValue = (obj: any, path: string) => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { FC } from "react";
@@ -9,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Phone, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 
 interface RescuerModalProps {
   rescuer: any;
@@ -44,13 +45,24 @@ export const RescuerModal: FC<RescuerModalProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
             <div>
-              <p><strong>Name:</strong> {rescuer.name}</p>
-              <p><strong>Email:</strong> {rescuer.email}</p>
-              <p><strong>Phone:</strong> {rescuer.phone_number}</p>
+              <p>
+                <strong>Name:</strong> {rescuer.name}
+              </p>
+              <p>
+                <strong>Email:</strong> {rescuer.email}
+              </p>
+              <p>
+                <strong>Phone:</strong> {rescuer.phone_number}
+              </p>
             </div>
             <div>
-              <p><strong>Joined:</strong> {new Date(rescuer.created_at).toLocaleString()}</p>
-              <p><strong>Status:</strong> {rescuer.status}</p>
+              <p>
+                <strong>Joined:</strong>{" "}
+                {new Date(rescuer.created_at).toLocaleString()}
+              </p>
+              <p>
+                <strong>Status:</strong> {rescuer.status}
+              </p>
             </div>
           </div>
         </div>

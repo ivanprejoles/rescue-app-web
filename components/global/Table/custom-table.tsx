@@ -1,40 +1,6 @@
 import React from "react";
-import { Shield, Zap, Building } from "lucide-react";
 import IncidentTable from "./incident-table";
-import {
-  TypeConfig,
-  ColumnConfig,
-  TableAction,
-  MarkerWithRelations,
-} from "@/lib/types";
-
-// Example: Custom type configurations
-const customTypeConfigs: Record<string, TypeConfig> = {
-  Emergency: {
-    color: "bg-red-600",
-    lightColor: "bg-red-50",
-    borderColor: "border-red-200",
-    textColor: "text-red-700",
-    icon: Shield,
-    label: "Emergency Response",
-  },
-  Maintenance: {
-    color: "bg-yellow-500",
-    lightColor: "bg-yellow-50",
-    borderColor: "border-yellow-200",
-    textColor: "text-yellow-700",
-    icon: Zap,
-    label: "Maintenance Work",
-  },
-  Infrastructure: {
-    color: "bg-purple-500",
-    lightColor: "bg-purple-50",
-    borderColor: "border-purple-200",
-    textColor: "text-purple-700",
-    icon: Building,
-    label: "Infrastructure",
-  },
-};
+import { ColumnConfig, MarkerWithRelations } from "@/lib/types";
 
 // Example: Custom columns
 const customColumns: ColumnConfig[] = [
@@ -88,32 +54,6 @@ const customColumns: ColumnConfig[] = [
   },
 ];
 
-// Example: Custom actions
-const customActions: TableAction[] = [
-  {
-    label: "Edit",
-    onClick: (incident: MarkerWithRelations) => {
-      alert(`Editing incident: ${incident.id}`);
-    },
-    variant: "secondary",
-  },
-  {
-    label: "Escalate",
-    onClick: (incident: MarkerWithRelations) => {
-      alert(`Escalating incident: ${incident.id}`);
-    },
-    variant: "primary",
-  },
-  {
-    label: "Archive",
-    onClick: (incident: MarkerWithRelations) => {
-      alert(`Archiving incident: ${incident.id}`);
-    },
-    variant: "secondary",
-    className: "text-red-600 hover:bg-red-50",
-  },
-];
-
 // This is an example of how you would use the configurable table
 const CustomTableExample: React.FC<{ incidents: MarkerWithRelations[] }> = ({
   incidents,
@@ -121,10 +61,10 @@ const CustomTableExample: React.FC<{ incidents: MarkerWithRelations[] }> = ({
   return (
     <IncidentTable
       markers={incidents}
-      typeConfigs={customTypeConfigs}
+      // typeConfigs={customTypeConfigs}
       columns={customColumns}
-      actions={customActions}
-      showSummary={true}
+      // actions={customActions}
+      // showSummary={true}
       groupBy="status" // Group by status instead of type
       defaultCollapsed={true} // Start with groups collapsed
     />

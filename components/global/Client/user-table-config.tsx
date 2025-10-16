@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 '"use client";';
 
 import {
@@ -20,27 +21,30 @@ import UserSettingsButton from "./user-setting-button";
 import { statusTextColors } from "@/lib/constants";
 
 // Columns for MapMarkers
+// MarkerWithRelations as type for render
 export const defaultMarkerColumns: ColumnConfig[] = [
   {
     key: "location",
     label: "Barangay",
     icon: MapPinHouse,
-    render: (marker: MarkerWithRelations, userBrgId) => (
+    render: (marker: any, user) => (
       <TooltipWrapper
-        text={marker.barangay?.name || "Unknown"}
+        text={marker.barangay?.name || "  Unknown  "}
         maxLength={50}
-        className={marker.barangay?.id === userBrgId ? "text-yellow-400" : ""}
+        className={
+          marker.barangay?.id === user?.brgy_id ? "text-yellow-400" : ""
+        }
       />
     ),
     sortable: false,
-    width: "flex-1",
+    width: "w-52 md:flex-1",
   },
   {
     key: "placed_by",
     label: "Reported By",
     icon: User,
-    render: (marker: MarkerWithRelations) => (
-      <TooltipWrapper text={marker.user?.name || "Admin"} />
+    render: (marker: any) => (
+      <TooltipWrapper text={marker.user?.name || "   Admin   "} />
     ),
     sortable: true,
     width: "w-32",
@@ -49,7 +53,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "created_at",
     label: "Created",
     icon: Clock,
-    render: (marker: MarkerWithRelations) =>
+    render: (marker: any) =>
       marker.created_at ? (
         <TooltipWrapper
           maxLength={25}
@@ -62,7 +66,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
           })}
         />
       ) : (
-        "-"
+        "  Unknown  "
       ),
     sortable: true,
     width: "w-55",
@@ -71,7 +75,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "status",
     label: "Status",
     icon: Activity,
-    render: (marker: MarkerWithRelations) => (
+    render: (marker: any) => (
       <div className="flex items-center space-x-2">
         <span
           className={`text-sm font-medium capitalize ${
@@ -80,7 +84,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
             ] || "text-gray-700"
           }`}
         >
-          {marker.status || "Unknown"}
+          {marker.status || "  Unknown  "}
         </span>
       </div>
     ),
@@ -91,7 +95,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "map",
     label: "Location",
     icon: MapPin,
-    render: (marker: MarkerWithRelations) => <LocateButtons id={marker.id} />,
+    render: (marker: any) => <LocateButtons id={marker.id} />,
     sortable: false,
     width: "w-28",
   },
@@ -99,7 +103,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "actions",
     label: "Actions",
     icon: Settings,
-    render: (marker: MarkerWithRelations) => (
+    render: (marker: any) => (
       <UserSettingsButton
         address={marker.address}
         location={{ lat: marker.latitude, lng: marker.longitude }}
@@ -124,7 +128,7 @@ export const defaultBarangayColumns: ColumnConfig[] = [
     label: "Name",
     icon: MapPinHouse,
     render: (barangay: MapBarangay) => (
-      <TooltipWrapper text={barangay.name || "Unknown"} maxLength={25} />
+      <TooltipWrapper text={barangay.name || "  Unknown  "} maxLength={25} />
     ),
     sortable: true,
     width: "w-56",
@@ -134,7 +138,7 @@ export const defaultBarangayColumns: ColumnConfig[] = [
     label: "Address",
     icon: MapPin,
     render: (barangay: MapBarangay) => (
-      <TooltipWrapper text={barangay.address || "Unknown"} maxLength={40} />
+      <TooltipWrapper text={barangay.address || "  Unknown  "} maxLength={40} />
     ),
     sortable: false,
     width: "flex-1",
@@ -143,7 +147,7 @@ export const defaultBarangayColumns: ColumnConfig[] = [
     key: "phone",
     label: "Phone",
     icon: User,
-    render: (barangay: MapBarangay) => barangay.phone || "Unknown",
+    render: (barangay: MapBarangay) => barangay.phone || "  Unknown  ",
     sortable: false,
     width: "w-36",
   },
@@ -181,13 +185,13 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
     key: "name",
     label: "Name",
     icon: MapPinHouse,
-    render: (evac: MapEvacuationCenter, userBrgId) => {
+    render: (evac: MapEvacuationCenter, user) => {
       const selectedBrgy = evac.evacuation_center_barangays?.find(
-        (b) => b.barangay_id === userBrgId
+        (b) => b.barangay_id === user?.brgy_id
       );
       return (
         <TooltipWrapper
-          text={evac.name || "Unknown"}
+          text={evac.name || "  Unknown  "}
           maxLength={25}
           className={selectedBrgy ? "text-yellow-400" : ""}
         />
@@ -201,7 +205,7 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
     label: "Address",
     icon: MapPin,
     render: (evac: MapEvacuationCenter) => (
-      <TooltipWrapper text={evac.address || "Unknown"} maxLength={25} />
+      <TooltipWrapper text={evac.address || "  Unknown  "} maxLength={25} />
     ),
     sortable: false,
     width: "flex-1",
@@ -210,7 +214,7 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
     key: "phone",
     label: "Phone",
     icon: User,
-    render: (evac: MapEvacuationCenter) => evac.phone || "-",
+    render: (evac: MapEvacuationCenter) => evac.phone || "  Unknown  ",
     sortable: false,
     width: "w-36",
   },

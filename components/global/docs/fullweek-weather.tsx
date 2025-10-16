@@ -1,16 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useWeatherStore } from "@/hooks/use-meteo-storage";
+import useMediaQuery from "@/lib/media-query";
 
 // Helper to get weekday name from date string
-function getWeekdayName(dateString: string) {
+function getWeekdayName(dateString: string, isMobile: boolean) {
   const date = new Date(dateString);
-  return date.toLocaleDateString(undefined, { weekday: "long" });
+  if (isMobile) {
+    const dayShort = date.toLocaleDateString(undefined, { weekday: "short" });
+    return dayShort.charAt(0).toUpperCase();
+  }
+  const fullDay = date.toLocaleDateString(undefined, { weekday: "long" });
+  return fullDay.charAt(0).toUpperCase() + fullDay.slice(1);
 }
 
 export default function WeeklyForecastInteractive() {
   const weeklyData = useWeatherStore((state) => state.weekly);
   const selectedDayIndex = useWeatherStore((state) => state.selectedDayIndex);
   const selectDay = useWeatherStore((state) => state.selectDay);
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -61,14 +68,16 @@ export default function WeeklyForecastInteractive() {
   return (
     <div
       ref={containerRef}
-      className="w-full max-w-full py-6 relative bg-transparent select-none"
+      className="w-full max-w-full md:py-6 relative bg-transparent select-none"
       style={{ height: "180px" }}
     >
-      <div className="flex justify-between mb-10 text-center text-white/90 text-sm select-none px-1">
+      <div className="flex justify-between mb-8 md:mb-10 text-center text-white/90 text-sm select-none md:px-1 md:gap-0 gap-1">
         {weeklyData.map(({ date, tempMax }, index) => (
           <div key={index} className="flex flex-col items-center w-12">
-            <span className="font-light text-xs">{getWeekdayName(date)}</span>
-            <span className="font-semibold text-2xl">
+            <span className="font-light text-xs">
+              {getWeekdayName(date, isMobile)}
+            </span>
+            <span className="font-semibold text-xl md:text-2xl">
               {Math.round(tempMax)}°
             </span>
           </div>
@@ -147,7 +156,8 @@ export default function WeeklyForecastInteractive() {
               }}
               style={{ cursor: "pointer" }}
               aria-label={`Click for details of ${getWeekdayName(
-                weeklyData[i].date
+                weeklyData[i].date,
+                isMobile
               )}`}
             >
               <foreignObject

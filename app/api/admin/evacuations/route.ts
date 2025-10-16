@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import {
   createEvacuationCenter,
   getEvacuationAndBarangaysForAdmin,
-  updateEvacuationCenter,
 } from "@/lib/supabase/request/request-barangay-evacuation";
 
 export async function GET() {

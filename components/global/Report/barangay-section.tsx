@@ -45,13 +45,13 @@ const BarangaySection: React.FC<BarangaySectionProps> = ({
               exit="collapsed"
               variants={contentVariants}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="bg-gray-50"
+              // className="bg-gray-50"
             >
               {barangay.reports.length === 0 ? (
                 <GlowingWrapper>
                   <Card className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10">
                     <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg">
+                    <p className="text-gray-500 text-lg text-center">
                       No reports found for this barangay
                     </p>
                   </Card>

@@ -1,5 +1,3 @@
-// Folder structure: /lib/client-fetchers.ts
-
 // 1. Announcements
 export async function getAnnouncementsClient() {
   const res = await fetch("/api/admin/announcements");
@@ -25,19 +23,19 @@ export async function getMarkersClient() {
 export async function getRescuersAndUsersClient() {
   const res = await fetch("/api/admin/rescuers-and-users");
   if (!res.ok) throw new Error("Failed to fetch rescuers and users");
-  return res.json(); // returns { rescuers: [], users: [] }
+  return res.json();
 }
 
 // 5. User Profile
 export async function getUserProfileClient() {
   const res = await fetch("/api/client/profile");
   if (!res.ok) throw new Error("Failed to fetch user profile");
-  return res.json(); // returns ClientAccessResponse
+  return res.json();
 }
 
 // 6. User Marker
 export async function getUserMarkersClient() {
   const res = await fetch("/api/client/marker");
   if (!res.ok) throw new Error("Failed to fetch user marker");
-  return res.json(); // returns ClientAccessResponse
+  return res.json();
 }

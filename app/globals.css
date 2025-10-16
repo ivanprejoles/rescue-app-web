@@ -526,3 +526,8 @@
     opacity: 0.4;
   }
 }
+
+/* global.css or component inline style */
+.touch-action-manipulation {
+  touch-action: manipulation;
+}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -27,9 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { MapPin, Building, Phone, MapIcon } from "lucide-react";
+import { MapPin, Building, Phone } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -162,7 +161,7 @@ export const UpdateAddMapModal: React.FC = () => {
             if (!old) return old;
             return {
               ...old,
-              markers: old.markers.map((m) =>
+              markers: old.markers.map((m: any) =>
                 m.id === initialData.id ? { ...m, ...payload } : m
               ),
             };
@@ -213,7 +212,7 @@ export const UpdateAddMapModal: React.FC = () => {
             if (!old) return old;
             return {
               ...old,
-              evacuationCenters: old.evacuationCenters.map((e) =>
+              evacuationCenters: old.evacuationCenters.map((e: any) =>
                 e.id === initialData.id ? { ...e, ...payload } : e
               ),
             };
@@ -458,14 +457,17 @@ export const UpdateAddMapModal: React.FC = () => {
                     latitude={
                       form.watch("latitude")
                         ? Number(form.watch("latitude"))
-                        : null
+                        : undefined
                     }
                     longitude={
                       form.watch("longitude")
                         ? Number(form.watch("longitude"))
-                        : null
+                        : undefined
                     }
-                    onChange={(lat: number, lng: number) => {
+                    onChange={(
+                      lat: { toString: () => string },
+                      lng: { toString: () => string }
+                    ) => {
                       form.setValue("latitude", lat.toString(), {
                         shouldValidate: true,
                         shouldDirty: true,

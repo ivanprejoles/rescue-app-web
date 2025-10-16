@@ -7,7 +7,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Search, Shield } from "lucide-react";
+import { Search } from "lucide-react";
 
 interface RescuerFiltersProps {
   searchTerm: string;

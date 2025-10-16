@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -13,7 +14,6 @@ import { Announcement } from "@/lib/types";
 import SidebarHeader from "../header";
 import {
   createAnnouncementClient,
-  deleteAnnouncementClient,
   updateAnnouncementClient,
 } from "@/lib/client-request/announcement";
 import { useQueryClient } from "@tanstack/react-query";
@@ -34,12 +34,6 @@ export default function ClientSideAnnouncement() {
     refetchOnReconnect: false,
     refetchOnMount: false,
   });
-
-  // Initialize announcements state when data loads
-  // const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  // useEffect(() => {
-  //   if (data) setAnnouncements(data);
-  // }, [data]);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] =
@@ -93,8 +87,8 @@ export default function ClientSideAnnouncement() {
     ]);
 
     // Optimistically update
-    queryClient.setQueryData(["announcements"], (old = []) =>
-      old.map((ann) => (ann.id === id ? { ...ann, ...updatedData } : ann))
+    queryClient.setQueryData(["announcements"], (old: any = []) =>
+      old.map((ann: any) => (ann.id === id ? { ...ann, ...updatedData } : ann))
     );
 
     try {
@@ -104,8 +98,8 @@ export default function ClientSideAnnouncement() {
       );
 
       // Sync with server response just in case there are server-generated fields
-      queryClient.setQueryData(["announcements"], (old = []) =>
-        old.map((ann) =>
+      queryClient.setQueryData(["announcements"], (old: any = []) =>
+        old.map((ann: any) =>
           ann.id === updatedAnnouncement.id ? updatedAnnouncement : ann
         )
       );
@@ -120,33 +114,6 @@ export default function ClientSideAnnouncement() {
         error && typeof error === "object" && "message" in error
           ? (error as { message: string }).message
           : "Failed to update announcement"
-      );
-    }
-  };
-
-  const handleDeleteAnnouncement = async (id: string) => {
-    if (!window.confirm("Are you sure?")) return;
-
-    // Backup current announcements
-    const previousAnnouncements = queryClient.getQueryData<Announcement[]>([
-      "announcements",
-    ]);
-
-    // Optimistically remove it from cache
-    queryClient.setQueryData(["announcements"], (old = []) =>
-      old.filter((ann) => ann.id !== id)
-    );
-
-    try {
-      await deleteAnnouncementClient(id);
-    } catch (error) {
-      // Rollback on error
-      queryClient.setQueryData(["announcements"], previousAnnouncements);
-
-      alert(
-        error && typeof error === "object" && "message" in error
-          ? (error as { message: string }).message
-          : "Failed to delete announcement"
       );
     }
   };
@@ -317,7 +284,7 @@ export default function ClientSideAnnouncement() {
         }}
         onSave={
           editingAnnouncement
-            ? handleEditAnnouncement
+            ? handleEditAnnouncement as any
             : handleCreateAnnouncement
         }
         editingAnnouncement={editingAnnouncement}

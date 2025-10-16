@@ -16,6 +16,7 @@ import {
   MapMarker,
 } from "@/lib/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAssistReportModalStore } from "@/hooks/modals/use-assist-report-modal";
 
 type Props = {
   address?: string;
@@ -38,7 +39,7 @@ const ContactMenu = ({ number }: { number: string }) => {
 
 const UserSettingsButton = ({ address, location, number, data }: Props) => {
   const queryClient = useQueryClient();
-
+  const { openModal } = useAssistReportModalStore();
   const cachedData = queryClient.getQueryData<ClientData>(["client-report"]);
 
   return (
@@ -55,7 +56,12 @@ const UserSettingsButton = ({ address, location, number, data }: Props) => {
           cachedData?.user &&
           cachedData?.user.user_type === "rescuer" && (
             <DropdownMenuItem
-              onClick={() => {}}
+              onClick={() => {
+                openModal({
+                  markerId: data.data.id,
+                  rescuer: cachedData.user,
+                });
+              }}
               className="text-green-600 focus:text-green-800"
             >
               <Ambulance className="text-green-600 focus:text-green-800" />

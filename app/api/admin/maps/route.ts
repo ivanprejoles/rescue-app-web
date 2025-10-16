@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getAllMarkersForMap } from "@/lib/supabase/request/request-map";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";

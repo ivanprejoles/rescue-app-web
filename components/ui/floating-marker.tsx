@@ -1,9 +1,3 @@
-/**
- * Note: Use position fixed according to your needs
- * Desktop navbar is better positioned at the bottom
- * Mobile navbar is better positioned at bottom right.
- **/
-
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 
@@ -39,7 +33,7 @@ const FloatingDockMobile = ({
   className?: string;
   isOpen: boolean;
 }) => {
-  const [open, setOpen] = useState(isOpen);
+  const [open] = useState(isOpen);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (

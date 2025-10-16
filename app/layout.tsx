@@ -11,9 +11,9 @@ import { QueryProvider } from "@/components/providers/query-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Typhoon Emergency Response System",
+  title: "Kawit Emergency App",
   description:
-    "Real-time emergency reporting and response system for typhoon disasters",
+    "Kawit Real-time emergency reporting and response system for typhoon disasters",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
           <QueryProvider>
             <ThemeProvider
               attribute="class"
-              defaultTheme="system"
+              defaultTheme="dark"
               enableSystem
               disableTransitionOnChange
             >

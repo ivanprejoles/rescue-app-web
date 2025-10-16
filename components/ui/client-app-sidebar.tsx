@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { AlertTriangle, House, Shield } from "lucide-react";
+import Link from "next/link";
 
 const data = {
   user: {
@@ -46,10 +47,10 @@ export function ClientAppSidebar({
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <Link href="/">
                 <Shield className="!size-5" />
-                <span className="text-base font-semibold">TERS Admin</span>
-              </a>
+                <span className="text-base font-semibold">User Dashboard</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

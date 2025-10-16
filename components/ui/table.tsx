@@ -10,7 +10,10 @@ interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
 
 function Table({ className, divClassName, ...props }: TableProps) {
   return (
-    <div data-slot="table-container" className={cn("relative w-full overflow-auto", divClassName)}>
+    <div
+      data-slot="table-container"
+      className={cn("relative w-full overflow-auto", divClassName)}
+    >
       <table
         data-slot="table"
         className={cn("w-full caption-bottom text-sm", className)}

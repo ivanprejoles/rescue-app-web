@@ -253,9 +253,16 @@ export const EvacuationCenterModal: React.FC = () => {
           <div className="space-y-2">
             <Label className="text-sm font-medium">Select Location *</Label>
             <LocationPickerMap
-              latitude={formData.latitude ? Number(formData.latitude) : null}
-              longitude={formData.longitude ? Number(formData.longitude) : null}
-              onChange={(lat: number, lng: number) => {
+              latitude={
+                formData.latitude ? Number(formData.latitude) : undefined
+              }
+              longitude={
+                formData.longitude ? Number(formData.longitude) : undefined
+              }
+              onChange={(
+                lat: { toString: () => string },
+                lng: { toString: () => string }
+              ) => {
                 setFormData((prev) => ({
                   ...prev,
                   latitude: lat.toString(),

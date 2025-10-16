@@ -1,24 +1,6 @@
 "use client";
 
 import * as React from "react";
-// import {
-//   IconCamera,
-//   IconChartBar,
-//   IconDashboard,
-//   IconDatabase,
-//   IconFileAi,
-//   IconFileDescription,
-//   IconFileWord,
-//   IconFolder,
-//   IconHelp,
-//   IconInnerShadowTop,
-//   IconListDetails,
-//   IconReport,
-//   IconSearch,
-//   IconSettings,
-//   IconUsers,
-// } from "@tabler/icons-react";
-
 import { NavMain } from "./nav-main";
 import {
   Sidebar,
@@ -38,6 +20,7 @@ import {
   Megaphone,
   Shield,
 } from "lucide-react";
+import Link from "next/link";
 
 const data = {
   user: {
@@ -89,10 +72,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <Link href="/">
                 <Shield className="!size-5" />
-                <span className="text-base font-semibold">TERS Admin</span>
-              </a>
+                <span className="text-base font-semibold">Admin Dashboard</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

@@ -58,10 +58,14 @@ export default function ClientSideMap() {
       ></SidebarHeader>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <StatisticsMap
-          hazards={data?.markers.filter((m) => m.type !== "report").length || 0}
-          reports={data?.markers.filter((m) => m.type === "report").length || 0}
-          barangays={data?.barangays.length || 0}
-          centers={data?.evacuationCenters.length || 0}
+          hazards={
+            (data?.markers ?? []).filter((m) => m.type !== "report").length || 0
+          }
+          reports={
+            (data?.markers ?? []).filter((m) => m.type === "report").length || 0
+          }
+          barangays={data?.barangays?.length ?? 0}
+          centers={data?.evacuationCenters?.length ?? 0}
         />
       </div>
       <div className="h-auto flex flex-col gap-3">

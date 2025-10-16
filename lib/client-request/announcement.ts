@@ -18,7 +18,6 @@ export async function updateAnnouncementClient(
   id: string,
   data: Partial<Omit<Announcement, "id">>
 ) {
-
   const res = await fetch("/api/admin/announcements", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },

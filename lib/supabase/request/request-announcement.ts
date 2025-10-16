@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { createServerSupabaseClient } from "../server";
 
-export async function getAllAnnouncements(userId: string) {
-  if (!userId) throw new Error("Unauthorized");
-
+export async function getAllAnnouncements() {
   const supabase = await createServerSupabaseClient();
 
   const { data, error } = await supabase

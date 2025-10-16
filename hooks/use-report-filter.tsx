@@ -14,16 +14,14 @@ export const useReportFilters = (barangays: BarangayReport[]) => {
           searchTerm === "" ||
           report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           report.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          report.reportedBy.toLowerCase().includes(searchTerm.toLowerCase());
+          report.reportedBy?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus =
           statusFilter === "all" || report.status === statusFilter;
-        const matchesPriority =
-          priorityFilter === "all" || report.priority === priorityFilter;
 
-        return matchesSearch && matchesStatus && matchesPriority;
+        return matchesSearch && matchesStatus;
       }),
     }));
-  }, [barangays, searchTerm, statusFilter, priorityFilter]);
+  }, [barangays, searchTerm, statusFilter]);
 
   return {
     searchTerm,

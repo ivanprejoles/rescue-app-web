@@ -5,7 +5,6 @@ export async function getEvacuationAndBarangaysForAdmin(userId: string) {
 
   const supabase = await createServerSupabaseClient();
 
-  // Fetch evacuation centers with just barangay IDs (join table) for lightweight response
   const evacuationRes = await supabase
     .from("evacuation_centers")
     .select(
@@ -23,7 +22,6 @@ export async function getEvacuationAndBarangaysForAdmin(userId: string) {
     throw new Error("Failed to load evacuation centers");
   }
 
-  // Fetch all barangays separately
   const barangayRes = await supabase
     .from("barangays")
     .select("*")

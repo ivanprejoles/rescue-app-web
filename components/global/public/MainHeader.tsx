@@ -1,51 +1,73 @@
-import { Button } from "@/components/ui/button";
-import { IconCloudFilled } from "@tabler/icons-react";
-import { AlertTriangle, Download, User } from "lucide-react";
+"use client";
+
+import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import React from "react";
+import { Button } from "@/components/ui/button";
+import { User, Download, Hospital } from "lucide-react";
+import { GlowingWrapper } from "@/components/ui/glowing-effect";
+import ShowAnnouncementModal from "../modal/show-announcement-modal";
+import { useEffect, useState } from "react";
 
 const MainHeader = () => {
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 ">
-      <div className="px-6 py-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-2">
-            <Link href="/">
-              <div className=" rounded-xl">
-                <IconCloudFilled className="h-6 w-6 text-white" />
-              </div>
-            </Link>
+  const [isMounted, setIsMounted] = useState(false);
+  const { isLoaded, isSignedIn } = useUser();
 
-            <div>
-              <Link href="/">
-                <span className="font-sans font-extralight text-md text-white">
-                  forecast now
-                </span>
-              </Link>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/user">
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-white/20 text-white hover:bg-white/10 bg-transparent"
-              >
-                <User className="h-4 w-4 mr-2" />
-                Log In
-              </Button>
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted || !isLoaded) return null; // or a loading state
+
+  return (
+    <header className="fixed top-0 z-50 p-2 w-full bg-transparent">
+      <GlowingWrapper className="bg-white bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10">
+        <div className="flex flex-row justify-between h-full items-center">
+          <div className="flex flex-row gap-2 h-full ml-2">
+            <Link href="/">
+              <Hospital className="h-6 w-6 text-blue-600 drop-shadow-[0_0_2px_rgba(0,0,0,0.7)]" />
             </Link>
+            <Link href="/">
+              <h1 className="drop-shadow-[0_0_2px_rgba(0,0,0,0.7)] md:flex hidden">
+                Kawit Emergency App
+              </h1>
+            </Link>
+          </div>
+          <div className="flex items-center gap-2 md:gap-4 justify-end">
+            <ShowAnnouncementModal />
+            {isSignedIn ? (
+              <Link href="/user">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-white/20 text-white hover:bg-white/10 bg-transparent cursor-pointer drop-shadow-[0_0_2px_rgba(0,0,0,0.7)] text-xs md:text-base"
+                >
+                  <User className="h-4 w-4 mr-2 drop-shadow-[0_0_2px_rgba(0,0,0,0.7)]" />
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/sign-in">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-white/20 text-white hover:bg-white/10 bg-transparent cursor-pointer drop-shadow-[0_0_2px_rgba(0,0,0,0.7)] text-xs md:text-base"
+                >
+                  <User className="h-4 w-4 mr-2 drop-shadow-[0_0_2px_rgba(0,0,0,0.7)]" />
+                  Log In
+                </Button>
+              </Link>
+            )}
             <Button
               size="sm"
               variant="outline"
-              className="bg-transparent text-white hover:bg-white/20"
+              className="bg-transparent text-white hover:bg-white/20 cursor-pointer drop-shadow-[0_0_2px_rgba(0,0,0,0.7)] text-xs md:text-base"
             >
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 mr-2 drop-shadow-[0_0_2px_rgba(0,0,0,0.7)]" />
               Download App
             </Button>
           </div>
         </div>
-      </div>
+      </GlowingWrapper>
     </header>
   );
 };

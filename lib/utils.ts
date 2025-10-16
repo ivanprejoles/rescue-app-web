@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { MarkerWithRelations, BarangayReport } from "@/lib/types";
@@ -5,18 +6,6 @@ import { MarkerWithRelations, BarangayReport } from "@/lib/types";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-// lib/utils.ts
-export const formatTimeAgo = (date: Date) => {
-  const now = new Date();
-  const diffInMinutes = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60)
-  );
-
-  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-  if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
-  return `${Math.floor(diffInMinutes / 1440)}d ago`;
-};
 
 export const getRescueStatusColor = (status: string) => {
   switch (status) {
@@ -70,36 +59,6 @@ export const getStatusColor = (status: string) => {
   }
 };
 
-export const getPriorityColor = (priority: string) => {
-  switch (priority) {
-    case "low":
-      return "bg-slate-100 text-slate-600 border-slate-200";
-    case "medium":
-      return "bg-yellow-100 text-yellow-700 border-yellow-200";
-    case "high":
-      return "bg-orange-100 text-orange-700 border-orange-200";
-    case "urgent":
-      return "bg-red-100 text-red-700 border-red-200";
-    default:
-      return "bg-gray-100 text-gray-600 border-gray-200";
-  }
-};
-
-export const getCategoryColor = (category: string) => {
-  switch (category) {
-    case "Natural Disaster":
-      return "bg-purple-100 text-purple-700 border-purple-200";
-    case "Infrastructure":
-      return "bg-indigo-100 text-indigo-700 border-indigo-200";
-    case "Public Health":
-      return "bg-pink-100 text-pink-700 border-pink-200";
-    case "Environmental":
-      return "bg-green-100 text-green-700 border-green-200";
-    default:
-      return "bg-gray-100 text-gray-600 border-gray-200";
-  }
-};
-
 export function transformMarkersToBarangayReports(
   markers: MarkerWithRelations[]
 ): BarangayReport[] {
@@ -127,28 +86,17 @@ export function transformMarkersToBarangayReports(
       description: marker.description,
       category: marker.type,
       status: marker.status,
-      priority: "medium", // optionally map status to priority later
       reportedBy: marker.users?.name || "Unknown",
       contactNumber: marker.users?.phone_number || "N/A",
       latitude: marker.latitude,
       longitude: marker.longitude,
       dateReported: marker.created_at,
       lastUpdated: marker.updated_at,
+      type: "report",
     });
   });
 
   return Object.values(grouped);
-}
-
-export function isToday(dateString: string): boolean {
-  const today = new Date();
-  const date = new Date(dateString);
-
-  return (
-    date.getDate() === today.getDate() &&
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear()
-  );
 }
 
 export function formatReadableDate(dateInput: any) {
@@ -169,7 +117,7 @@ export function formatReadableDate(dateInput: any) {
 
 export const openGoogleMaps = (
   coordinates?: { lat: number; lng: number } | null,
-address?: string | null
+  address?: string | null
 ) => {
   const validCoord =
     coordinates &&
@@ -196,24 +144,6 @@ address?: string | null
 
 export const callNumber = (phoneNumber: string) => {
   window.open(`tel:${phoneNumber}`, "_self");
-};
-
-export const formatPhoneNumber = (phoneNumber: string): string => {
-  // Remove non-digit characters
-  const digitsOnly = phoneNumber.replace(/\D/g, "");
-
-  // Proceed only if it's exactly 11 digits
-  if (digitsOnly.length === 11 && digitsOnly.startsWith("0")) {
-    return `+36${digitsOnly.slice(1)}`;
-  }
-
-  // If already starts with '36' and is 11 digits, just add '+'
-  if (digitsOnly.length === 11 && digitsOnly.startsWith("36")) {
-    return `+${digitsOnly}`;
-  }
-
-  // Otherwise, return the original unmodified
-  return phoneNumber;
 };
 
 export const openGmailComposeWithRecipient = (recipientEmail: string) => {
@@ -296,13 +226,6 @@ Powered by Your Rescue App — Stay safe, stay connected.
 export function capitalize(str: string): string {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-export function toMilitaryTime(dateInput: Date) {
-  const date = new Date(dateInput);
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
 }
 
 export function truncateText(text: string, maxLength: number = 30) {

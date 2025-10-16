@@ -32,7 +32,6 @@ const ProfileSection = ({ data }: Props) => {
     });
   };
 
-
   return (
     <GlowingWrapper>
       <Card className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 ">
@@ -76,7 +75,11 @@ const ProfileSection = ({ data }: Props) => {
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-4">
                 <Badge
                   variant="outline"
-                  className="bg-blue-50 text-blue-700 border-blue-200 font-medium px-3 py-1"
+                  className={`font-medium px-3 py-1 ${
+                    data.user_type === "rescuer"
+                      ? "bg-purple-100 text-purple-800 border-purple-200"
+                      : "bg-blue-50 text-blue-700 border-blue-200"
+                  }`}
                 >
                   {data.user_type.charAt(0).toUpperCase() +
                     data.user_type.slice(1)}

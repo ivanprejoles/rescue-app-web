@@ -23,7 +23,6 @@ type WeatherState = {
   selectedDayIndex: number;
   selectDay: (index: number) => void;
   setWeeklyData: (weekly: DailyForecast[]) => void;
-  // Derived property to get the currently selected day forecast
   currentDay: () => DailyForecast | null;
 };
 

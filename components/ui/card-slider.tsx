@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import UsablePin from "./usable-pin";
 import { RotatingSliderProps } from "@/lib/types";
-import { GlowingWrapper } from "./glowing-effect";
 
 interface Props {
   items: RotatingSliderProps[];

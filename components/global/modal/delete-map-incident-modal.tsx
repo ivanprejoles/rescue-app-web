@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useDeleteReportModalStore } from "@/hooks/modals/use-delete-report-modal";
 import {
   Dialog,
   DialogContent,
@@ -10,10 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { deleteMarkerClient } from "@/lib/client-request/marker";
-import { MarkerWithRelations } from "@/lib/types";
 import { useDeleteIncidentModalStore } from "@/hooks/modals/use-delete-map-incident-modal";
 import { deleteBarangayClient } from "@/lib/client-request/barangay";
-import { BreadcrumbLink } from "@/components/ui/breadcrumb";
 import { deleteEvacuationClient } from "@/lib/client-request/evacuation";
 import { capitalizeFirstLetter } from "@/lib/utils";
 

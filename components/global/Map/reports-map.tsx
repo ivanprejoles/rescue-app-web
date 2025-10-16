@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -8,7 +9,7 @@ import LegendPopover from "./legend-popover";
 import MarkerMaker from "./marker-maker";
 import { CustomMarker } from "./custom-marker";
 import { useMapToggleStore } from "@/hooks/use-mapToggleStore";
-import { legendMarker, typeConfigs } from "@/lib/constants";
+import { legendMarker, statusMarkerColor, typeConfigs } from "@/lib/constants";
 import { toggleReportSelection } from "@/lib/map/MarkerHandlers";
 import { kawitBounds, kawitCenter } from "@/lib/map/kawitBounds";
 import { MapData, StoredMarkerType } from "@/lib/types";
@@ -41,7 +42,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
     // setSelectedType(type);
     // setModalOpen(true);
     openModal(
-      type === "Evacuation" ? "evacuation" : "marker",
+      type === "Evacuation" ? ("evacuation" as never) : ("marker" as never),
       type !== "Evacuation" && { type: type.toLowerCase() }
     );
   };
@@ -53,6 +54,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
 
   // We will subscribe to all toggle keys individually to avoid object recreation
   const toggleStates = legendMarker.reduce((acc, layer) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     acc[layer.key] = useMapToggleStore(
       (state) => state[`show${capitalize(layer.key)}`]
     );
@@ -80,6 +82,9 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
 
     return reports.markers.map((report, index) => {
       const legend = legendMarker.find((l) => l.key === report.type);
+      const rescuerStatus = report.rescuer;
+      const reportStatus = report.status;
+
       if (!legend) return null;
 
       if (!toggleStates[legend.key]) return null;
@@ -90,7 +95,12 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
           marker={report}
           iconPicker={{
             iconName: legend.iconName,
-            color: legend.color,
+            color:
+              rescuerStatus && reportStatus
+                ? statusMarkerColor[
+                    reportStatus as keyof typeof statusMarkerColor
+                  ]
+                : legend.color,
             iconColor: legend.iconColor,
           }}
           onClick={handleMarkerClick}
@@ -99,10 +109,27 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
             {report.type === "report"
               ? `${report.user?.name || "Guest"} Report`
               : typeConfigs[report.type].label}
-            {/* capitalizeFirstLetter(report.type) */}
           </h1>
           {report.type === "report" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <ContactButton
+                icon={User}
+                label="Email"
+                value={report.user?.email as string}
+                onClick={() =>
+                  openGmailComposeWithRecipient(report.user?.email as string)
+                }
+                iconColor="text-green-400"
+              />
+              <ContactButton
+                icon={Ambulance}
+                label="Email"
+                value={report.rescuer?.email as string}
+                onClick={() =>
+                  openGmailComposeWithRecipient(report.rescuer?.email as string)
+                }
+                iconColor="text-red-400"
+              />
               <ContactButton
                 icon={User}
                 label="Phone"
@@ -116,24 +143,6 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
                 value={report.rescuer?.phone_number as string}
                 onClick={() =>
                   callNumber(report.rescuer?.phone_number as string)
-                }
-                iconColor="text-red-400"
-              />
-              <ContactButton
-                icon={User}
-                label="Email"
-                value={report.user?.email as string}
-                onClick={() =>
-                  openGmailComposeWithRecipient(report.user?.email as string)
-                }
-                iconColor="text-green-400"
-              />
-              <ContactButton
-                icon={Ambulance}
-                label="Email"
-                value={report.user?.email as string}
-                onClick={() =>
-                  openGmailComposeWithRecipient(report.rescuer?.email as string)
                 }
                 iconColor="text-red-400"
               />

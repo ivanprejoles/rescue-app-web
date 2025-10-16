@@ -1,9 +1,11 @@
+"use client";
+
 import React, { useEffect } from "react";
 import WeeklyForecastInteractive from "./fullweek-weather";
 import WordPullUp from "@/components/ui/word-pull-up";
 import BlurIn from "@/components/ui/word-blur-in";
 import Counter from "@/components/ui/number-ticker";
-import { cn, toMilitaryTime } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { fetchWeeklyWeatherData } from "@/hooks/use-meteo";
 import { useWeatherStore } from "@/hooks/use-meteo-storage";
 
@@ -62,13 +64,13 @@ const WeatherForecast = () => {
         )}
       </div>
 
-      <div className="w-full h-full flex flex-col border p-3 md:p-6">
-        <div className="flex-1 grid grid-cols-4 border pt-16">
+      <div className="w-full h-10/12 md:h-full flex flex-col border p-3 md:p-6">
+        <div className="flex-1 grid grid-cols-4 border pt-10 md:pt-16">
           {/* left */}
           <div className="w-full h-full relative col-span-2">
             {/* <h1 cx */}
             <WordPullUp
-              className="font-sans font-light text-4xl text-white mb-3 mt-10 text-left"
+              className="font-sans font-light text-3xl md:text-4xl text-white mb-3 mt-10 text-left"
               words={
                 weekly[selectedDayIndex] &&
                 weekly[selectedDayIndex].weather.desc
@@ -96,38 +98,6 @@ const WeatherForecast = () => {
           </div>
 
           {/* right */}
-          <div className="space-y-6 col-start-4">
-            {/* Wind Status */}
-            {/* bg-white/5 */}
-            <div className="border backdrop-blur-[0px] rounded-2xl p-6 shadow-xs">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center">
-                  {/* <Wind className="w-4 h-4 text-white/70 mr-2" /> */}
-                  <span className="text-white/90 text-sm">Wind status</span>
-                </div>
-                <div className="text-white text-lg font-semibold">
-                  {weekly[selectedDayIndex] &&
-                    weekly[selectedDayIndex].windspeed}{" "}
-                  <span className="text-sm font-normal text-white/60">
-                    km/h
-                  </span>
-                </div>
-              </div>
-
-              {/* Wind chart bars */}
-              <div className="flex items-end justify-between h-16 space-x-1">
-                {[30, 45, 35, 50, 40, 60, 45, 35, 25, 40].map(
-                  (height, index) => (
-                    <div
-                      key={index}
-                      className="bg-gradient-to-t from-blue-400/60 to-blue-300/40 rounded-t-sm flex-1"
-                      style={{ height: `${height}%` }}
-                    />
-                  )
-                )}
-              </div>
-            </div>
-          </div>
         </div>
         <WeeklyForecastInteractive />
       </div>

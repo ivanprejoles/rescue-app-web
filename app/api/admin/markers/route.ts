@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createMarker,
   getReportMarkersOnly,
-  updateMarker,
 } from "@/lib/supabase/request/request-marker";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";

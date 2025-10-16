@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ProfileEditModal } from "../global/modal/update-profile-modal";
+import { AssistReportModal } from "../global/modal/assist-report-modal";
 
 const ClientModalProvider = () => {
   const [isClient, setIsClient] = useState(false);
@@ -15,6 +16,7 @@ const ClientModalProvider = () => {
   return (
     <>
       <ProfileEditModal />
+      <AssistReportModal />
     </>
   );
 };

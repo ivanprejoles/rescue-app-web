@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useRef } from "react";
 import { useScroll, useTransform, motion, MotionValue } from "motion/react";
-import VideoText from "./video-text";
 import { BackgroundGradient } from "./background-gradient";
 
 export const ContainerScroll = ({
@@ -42,7 +42,7 @@ export const ContainerScroll = ({
       ref={containerRef}
     >
       <div
-        className="py-10 md:py-20 w-full relative md:px-16"
+        className="py-0 md:py-20 w-full relative md:px-16"
         style={{
           perspective: "1000px",
         }}
@@ -62,7 +62,7 @@ export const Header = ({ translate, titleComponent }: any) => {
       style={{
         translateY: translate,
       }}
-      className="div max-w-5xl h-44 mx-auto text-center"
+      className="div max-w-5xl h-20 md:h-44 mx-auto text-center"
     >
       {titleComponent}
     </motion.div>

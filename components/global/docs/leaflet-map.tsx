@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { kawitBounds, kawitCenter } from "@/lib/map/kawitBounds";
@@ -18,23 +19,9 @@ import {
   openGmailComposeWithRecipient,
   openGoogleMaps,
 } from "@/lib/utils";
-import { legendMarker, typeConfigs } from "@/lib/constants";
+import { legendMarker, statusMarkerColor, typeConfigs } from "@/lib/constants";
 import { toggleReportSelection } from "@/lib/map/MarkerHandlers";
 import BoundDragHandler from "@/lib/map/bound-non-sticky";
-
-// async function fetchMarkers() {
-//   const res = await fetch("/api/public/maps", {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   });
-//   if (!res.ok) {
-//     const errorData = await res.json();
-//     throw new Error(errorData.error || "Failed to fetch markers");
-//   }
-//   return res.json();
-// }
 
 interface Props {
   markers: MapMarker[];
@@ -42,11 +29,7 @@ interface Props {
   user?: ClientUser;
 }
 
-export default function LeafletMap({
-  markers,
-  evacuationCenters,
-  user,
-}: Props) {
+export default function LeafletMap({ markers, evacuationCenters }: Props) {
   const [selectedReports, setSelectedReports] = useState<StoredMarkerType[]>(
     []
   );
@@ -55,16 +38,6 @@ export default function LeafletMap({
   useEffect(() => {
     setIsClient(true);
   }, []);
-
-  // const {
-  //   data: reports,
-  //   isLoading,
-  //   error,
-  // } = useQuery<MapData>({
-  //   queryKey: ["markers"],
-  //   queryFn: fetchMarkers,
-  //   staleTime: 1000 * 60 * 5,
-  // });
 
   const handleMarkerClick = useCallback((report: StoredMarkerType) => {
     setSelectedReports((prev) => toggleReportSelection(prev, report));
@@ -132,6 +105,9 @@ export default function LeafletMap({
 
     return markers.map((report, index) => {
       const legend = legendMarker.find((l) => l.key === report.type);
+      const rescuerStatus = report.rescuer;
+      const reportStatus = report.status;
+
       if (!legend) return null;
 
       return (
@@ -140,7 +116,12 @@ export default function LeafletMap({
           marker={report}
           iconPicker={{
             iconName: legend.iconName,
-            color: legend.color,
+            color:
+              rescuerStatus && reportStatus
+                ? statusMarkerColor[
+                    reportStatus as keyof typeof statusMarkerColor
+                  ]
+                : legend.color,
             iconColor: legend.iconColor,
           }}
           onClick={handleMarkerClick}
@@ -155,6 +136,24 @@ export default function LeafletMap({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <ContactButton
                 icon={User}
+                label="Email"
+                value={report.user?.email as string}
+                onClick={() =>
+                  openGmailComposeWithRecipient(report.user?.email as string)
+                }
+                iconColor="text-green-400"
+              />
+              <ContactButton
+                icon={Ambulance}
+                label="Email"
+                value={report.rescuer?.email as string}
+                onClick={() =>
+                  openGmailComposeWithRecipient(report.rescuer?.email as string)
+                }
+                iconColor="text-red-400"
+              />
+              <ContactButton
+                icon={User}
                 label="Phone"
                 value={report.user?.phone_number as string}
                 onClick={() => callNumber(report.user?.phone_number as string)}
@@ -166,24 +165,6 @@ export default function LeafletMap({
                 value={report.rescuer?.phone_number as string}
                 onClick={() =>
                   callNumber(report.rescuer?.phone_number as string)
-                }
-                iconColor="text-red-400"
-              />
-              <ContactButton
-                icon={User}
-                label="Email"
-                value={report.user?.email as string}
-                onClick={() =>
-                  openGmailComposeWithRecipient(report.user?.email as string)
-                }
-                iconColor="text-green-400"
-              />
-              <ContactButton
-                icon={Ambulance}
-                label="Email"
-                value={report.user?.email as string}
-                onClick={() =>
-                  openGmailComposeWithRecipient(report.rescuer?.email as string)
                 }
                 iconColor="text-red-400"
               />

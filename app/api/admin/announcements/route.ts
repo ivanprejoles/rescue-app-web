@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import {
@@ -7,12 +8,12 @@ import {
 } from "@/lib/supabase/request/request-announcement";
 
 export async function GET() {
-  const { userId } = await auth();
-  if (!userId)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // const { userId } = await auth();
+  // if (!userId)
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const markers = await getAllAnnouncements(userId);
+    const markers = await getAllAnnouncements();
 
     return NextResponse.json(markers);
   } catch (error: any) {

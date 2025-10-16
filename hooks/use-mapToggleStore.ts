@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { legendMarker } from "@/lib/constants";
 import { capitalize } from "@/lib/utils";
@@ -13,12 +14,12 @@ const initialState = legendMarker.reduce((acc, { key }) => {
   return acc;
 }, {} as Record<string, boolean>);
 
-export const useMapToggleStore = create<MapToggleStore>((set, get) => ({
+export const useMapToggleStore = create<MapToggleStore>((set) => ({
   ...initialState,
 
   toggleLayer: (key: string) => {
     const toggleKey = `show${capitalize(key)}` as keyof MapToggleStore;
-    set((state) => ({
+    set((state: any) => ({
       [toggleKey]: !state[toggleKey],
     }));
   },

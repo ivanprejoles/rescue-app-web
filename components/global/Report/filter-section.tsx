@@ -26,8 +26,6 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   setSearchTerm,
   statusFilter,
   setStatusFilter,
-  priorityFilter,
-  setPriorityFilter,
 }) => {
   return (
     <GlowingWrapper>

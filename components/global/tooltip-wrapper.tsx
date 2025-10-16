@@ -20,8 +20,8 @@ const TooltipWrapper = ({ text, maxLength = 15, className }: WrapperProps) => {
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 640px)");
 
-  const truncatedText = truncateText(text, maxLength);
-  const showFullText = text.length > maxLength;
+  const truncatedText = truncateText(text, isMobile ? 10 : maxLength);
+  const showFullText = text.length > (isMobile ? 10 : maxLength);
 
   if (isMobile) {
     return (
@@ -29,7 +29,7 @@ const TooltipWrapper = ({ text, maxLength = 15, className }: WrapperProps) => {
         <DialogTrigger asChild>
           <Button
             variant="link"
-            className={`h-auto p-0 text-left ${className}`}
+            className={`h-auto p-0 text-left ${className} w-auto`}
           >
             {truncatedText}
             {showFullText && (

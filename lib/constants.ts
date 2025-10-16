@@ -1,23 +1,10 @@
-import {
-  AlertTriangle,
-  Waves,
-  Droplets,
-  Home,
-  Mountain,
-  Building2,
-  Hospital,
-} from "lucide-react";
+import { Waves, Mountain, Building2, Hospital } from "lucide-react";
 import { TypeConfig } from "./types";
 import {
   IconMountain,
-  IconAlertSmall,
-  IconAmbulance,
   IconSwimming,
-  IconEaseI,
-  IconBuildingHospitalnOut,
   IconStorm,
   IconBuildingHospital,
-  IconEaseInOut,
   IconBuildingEstate,
   IconFlag,
   IconFlagFilled,
@@ -36,7 +23,7 @@ export const legendMarker = [
     icon: "🚣‍♀️",
     iconName: "swimmer",
     key: "flood",
-    color: "#ef4444", // from original cyan-500: tailwind cyan-500 = #06b6d4
+    color: "#ef4444",
     iconColor: "#212121",
     svgIcon: IconSwimming,
   },
@@ -45,7 +32,7 @@ export const legendMarker = [
     icon: "⛰️",
     iconName: "mountain",
     key: "landslide",
-    color: "#ef4444", // from original green-600: tailwind green-600 = #15803d
+    color: "#ef4444",
     iconColor: "#212121",
     svgIcon: IconMountain,
   },
@@ -54,19 +41,16 @@ export const legendMarker = [
     icon: "🌊",
     iconName: "water",
     key: "stormsurge",
-    color: "#ef4444", // from original blue-500: tailwind blue-500 = #3b82f6
+    color: "#ef4444",
     iconColor: "#212121",
     svgIcon: IconStorm,
   },
-  // #3b82f6 -blue
-  // #15803d -green
-  // #ef4444 -red
   {
     label: "Barangays",
     icon: "🏘️",
     iconName: "city",
     key: "barangay",
-    color: "#3b82f6", // from original cyan-500 = #06b6d4 instead of #34495e
+    color: "#3b82f6",
     iconColor: "#212121",
     svgIcon: IconBuildingEstate,
   },
@@ -75,7 +59,7 @@ export const legendMarker = [
     icon: "🏫",
     iconName: "hospital",
     key: "evacuationCenters",
-    color: "#15803d", // from original red-500 = #ef4444 instead of #27ae60
+    color: "#15803d",
     iconColor: "#212121",
     svgIcon: IconBuildingHospital,
   },
@@ -164,8 +148,6 @@ export const UserMarker = [
   },
 ];
 
-// DOCS
-
 // rotating card slider
 export const rotatingSliderCard = [
   {
@@ -195,7 +177,6 @@ export const rotatingSliderCard = [
   },
 ];
 
-// table marker status color
 export const statusTextColors: Record<
   "Pending" | "Assigned" | "Resolved" | "Failed" | "Active",
   string
@@ -205,4 +186,11 @@ export const statusTextColors: Record<
   Resolved: "text-green-600",
   Failed: "text-red-500",
   Active: "text-red-500",
+};
+
+export const statusMarkerColor = {
+  Pending: "#EAB308",
+  Assigned: "#3B82F6",
+  Resolved: "#16A34A",
+  Failed: "#EF4444",
 };

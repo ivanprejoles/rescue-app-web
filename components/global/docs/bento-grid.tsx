@@ -1,8 +1,11 @@
+"use client";
+
 import { LightBeams } from "@/components/ui/lightbeam";
-import { useEffect, useRef } from "react";
-import createGlobe from "cobe";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { PinContainer } from "@/components/ui/3d-pin";
+import createGlobe from "cobe";
+import Image from "next/image";
 
 const BentoGrid = () => {
   return (
@@ -11,17 +14,14 @@ const BentoGrid = () => {
         Unmatched features
       </h2>
       <p className="mt-4 leading-tight text-black tracking-tight lg:mt-5 sm:mt-3 md:text-lg">
-        Huly is a platform that combines project, time, and knowledge management
-        with real-time rescue features. It allows users and rescue teams to
+        The platform that combines project, time, and knowledge management with
+        real-time rescue features. It allows users and rescue teams to
         collaborate efficiently, track locations live, access nearest evacuation
         points, and view current weather updates—all in one place for improved
         safety and coordination.
       </p>
       <ul className="mt-10 layout-switcher gap-5 lg:mt-9 lg:gap-4 md:mt-6 sm:mt-5 items-center justify-center mx-auto">
-        {/* Realtime map */}
-        {/* here */}
         <li className="type-1 relative grid grid-cols-1 grid-rows-1 overflow-hidden rounded-xl bg-grey-2 bg-clip-padding ring-[6px] ring-white/40  order-2 ">
-          {/* title description */}
           <div className="absolute bottom-0 z-10 col-span-full flex w-full items-end px-6 pb-6 lg:px-5 lg:pb-5 md:px-4 md:pb-4 sm:px-5 sm:pb-5 after:absolute after:bottom-0 after:left-0 after:z-0 after:h-[180%] after:w-full after:bg-[linear-gradient(180deg,rgba(9,10,12,0)_0%,#090A0C_40.76%)] after:blur-md">
             <p className="relative z-10 font-light leading-snug tracking-snugger text-white/65 md:leading-[1.2] sm:text-15">
               <span className="font-medium text-white">
@@ -32,7 +32,6 @@ const BentoGrid = () => {
               during rescue operations.
             </p>
           </div>
-          {/* content */}
           <div className="relative col-span-full row-span-full bg-black">
             <LightBeams />
             <div className="absolute left-0 top-2 h-full w-full">
@@ -40,18 +39,16 @@ const BentoGrid = () => {
             </div>
           </div>
         </li>
-
-        {/* Messaging feature */}
         <li className="type-2 relative grid grid-cols-1 grid-rows-1 overflow-hidden rounded-xl bg-grey-2 bg-clip-padding ring-[6px] ring-white/40 order-1">
-          {/* title description */}
           <div className="absolute bottom-0 z-10 col-span-full flex w-full items-end px-6 pb-6 lg:px-5 lg:pb-5 md:px-4 md:pb-4 sm:px-5 sm:pb-5 after:absolute after:bottom-0 after:left-0 after:z-0 after:h-[180%] after:w-full after:bg-[linear-gradient(180deg,rgba(9,10,12,0)_0%,#090A0C_40.76%)] after:blur-md">
             <p className="relative z-10 font-light leading-snug tracking-snugger text-white/65 md:leading-[1.2] sm:text-15 max-w-[436px] md:max-w-[344px]">
-              <span className="font-medium text-white">{"Messaging. "}</span>
-              Enables users to send messages and updates without requiring
-              immediate replies.
+              <span className="font-medium text-white">
+                {"Messaging & Calling."}
+              </span>
+              Allows users to send messages, make calls, or dial contacts
+              directly without requiring immediate replies.
             </p>
           </div>
-          {/* content */}
           <div className="relative col-span-full row-span-full bg-black">
             <LightBeams variant="fire" />
             <div className="absolute left-0 top-0 w-full p-3">
@@ -59,10 +56,7 @@ const BentoGrid = () => {
             </div>
           </div>
         </li>
-
-        {/* Rescuer Reliability */}
         <li className="type-1 relative grid grid-cols-1 grid-rows-1 overflow-hidden rounded-xl bg-grey-2 bg-clip-padding ring-[6px] ring-white/40 order-3">
-          {/* title description */}
           <div className="absolute bottom-0 z-10 col-span-full flex w-full items-end px-6 pb-6 lg:px-5 lg:pb-5 md:px-4 md:pb-4 sm:px-5 sm:pb-5 after:absolute after:bottom-0 after:left-0 after:z-0 after:h-[180%] after:w-full after:bg-[linear-gradient(180deg,rgba(9,10,12,0)_0%,#090A0C_40.76%)] after:blur-md">
             <p className="relative z-10 font-light leading-snug tracking-snugger text-white/65 md:leading-[1.2] sm:text-15">
               <span className="font-medium text-white">
@@ -72,7 +66,6 @@ const BentoGrid = () => {
               effective support during emergencies.
             </p>
           </div>
-          {/* content */}
           <div className="relative col-span-full row-span-full bg-black">
             <LightBeams variant="sunset" />
             <div className="absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 h-4/5 w-full p-4">
@@ -80,7 +73,6 @@ const BentoGrid = () => {
             </div>
           </div>
         </li>
-
         {/* 4: Time-blocking */}
         <li className="type-2 relative grid grid-cols-1 grid-rows-1 overflow-hidden rounded-xl bg-grey-2 bg-clip-padding ring-[6px] ring-white/40 order-4">
           {/* title description */}
@@ -102,11 +94,20 @@ const BentoGrid = () => {
                   containerClassName="w-3/5 h-3/5 bottom-0 left-0 mx-auto right-0 absolute"
                 >
                   <div className="flex basis-full flex-col p-1 tracking-tight text-slate-100/50 sm:basis-1/2 w-[15rem] h-[10rem] ">
-                    <img
+                    {/* <img
                       className="w-full h-3/4 opacity-85 mx-auto rounded-md"
                       src={"/images/map-neon.jpg"}
                       alt="guide"
-                    />
+                    /> */}
+                    <div className="relative w-full h-3/4 mx-auto rounded-md overflow-hidden opacity-85">
+                      <Image
+                        src="/images/map-neon.jpg"
+                        alt="guide"
+                        layout="fill"
+                        objectFit="cover"
+                        priority={true}
+                      />
+                    </div>
                   </div>
                 </PinContainer>
               </div>
@@ -147,8 +148,6 @@ export const Globe = ({ className }: { className?: string }) => {
         { location: [40.7128, -74.006], size: 0.1 },
       ],
       onRender: (state) => {
-        // Called on every animation frame.
-        // `state` will be an empty object, return updated params.
         state.phi = phi;
         phi += 0.01;
       },
@@ -169,42 +168,32 @@ export const Globe = ({ className }: { className?: string }) => {
 };
 
 const SkeletonOne = () => {
+  const [isActive, setIsActive] = useState(false);
+
   const variants = {
-    initial: {
-      x: 0,
-    },
-    animate: {
-      x: 10,
-      rotate: 5,
-      transition: {
-        duration: 0.2,
-      },
-    },
+    initial: { x: 0 },
+    animate: { x: 10, rotate: 5, transition: { duration: 0.2 } },
   };
   const variantsSecond = {
-    initial: {
-      x: 0,
-    },
-    animate: {
-      x: -10,
-      rotate: -5,
-      transition: {
-        duration: 0.2,
-      },
-    },
+    initial: { x: 0 },
+    animate: { x: -10, rotate: -5, transition: { duration: 0.2 } },
   };
+
+  const toggleActive = () => setIsActive(!isActive);
 
   return (
     <motion.div
       initial="initial"
+      animate={isActive ? "animate" : "initial"}
+      onTap={toggleActive}
       whileHover="animate"
       className="flex flex-1 w-full h-full min-h-[6rem] dark:bg-dot-white/[0.2] bg-dot-black/[0.2] flex-col space-y-2"
     >
       <motion.div
         variants={variants}
-        className="flex flex-row rounded-2xl border border-neutral-100 dark:border-white/[0.2] p-2  items-start space-x-2 bg-white dark:bg-black"
+        className="flex flex-row rounded-2xl border border-neutral-100 dark:border-white/[0.2] p-2 items-start space-x-2 bg-white dark:bg-black"
       >
-        <img
+        <Image
           src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
           alt="avatar"
           height="100"
@@ -218,7 +207,7 @@ const SkeletonOne = () => {
       </motion.div>
       <motion.div
         variants={variantsSecond}
-        className=" flex flex-row rounded-2xl border border-neutral-100 dark:border-white/[0.2] p-2  items-start space-x-2 bg-white dark:bg-black"
+        className="flex flex-row rounded-2xl border border-neutral-100 dark:border-white/[0.2] p-2 items-start space-x-2 bg-white dark:bg-black"
       >
         <p className="text-xs text-neutral-300">
           Help is on the way. Stay safe and keep your phone on for updates.
@@ -229,7 +218,7 @@ const SkeletonOne = () => {
         variants={variants}
         className="flex flex-row rounded-full border border-neutral-100 dark:border-white/[0.2] p-2 items-center space-x-2 w-3/4 mr-auto bg-white dark:bg-black"
       >
-        <img
+        <Image
           src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
           alt="avatar"
           height="100"
@@ -243,30 +232,24 @@ const SkeletonOne = () => {
 };
 
 const SkeletonFour = () => {
+  const [isActive, setIsActive] = useState(false);
+
   const first = {
-    initial: {
-      x: 20,
-      rotate: -5,
-    },
-    hover: {
-      x: 0,
-      rotate: 0,
-    },
+    initial: { x: 20, rotate: -5 },
+    hover: { x: 0, rotate: 0 },
   };
   const second = {
-    initial: {
-      x: -20,
-      rotate: 5,
-    },
-    hover: {
-      x: 0,
-      rotate: 0,
-    },
+    initial: { x: -20, rotate: 5 },
+    hover: { x: 0, rotate: 0 },
   };
+
+  const toggleActive = () => setIsActive(!isActive);
+
   return (
     <motion.div
       initial="initial"
-      animate="animate"
+      animate={isActive ? "hover" : "initial"}
+      onTap={toggleActive}
       whileHover="hover"
       className="flex flex-1 w-full h-full min-h-[6rem] dark:bg-dot-white/[0.2] bg-dot-black/[0.2] flex-row space-x-2"
     >
@@ -274,7 +257,7 @@ const SkeletonFour = () => {
         variants={first}
         className="h-full w-1/3 rounded-2xl bg-white p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
       >
-        <img
+        <Image
           src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
           alt="avatar"
           height="100"
@@ -289,7 +272,7 @@ const SkeletonFour = () => {
         </p>
       </motion.div>
       <motion.div className="h-full relative z-20 w-1/3 rounded-2xl bg-white p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center">
-        <img
+        <Image
           src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
           alt="avatar"
           height="100"
@@ -307,7 +290,7 @@ const SkeletonFour = () => {
         variants={second}
         className="h-full w-1/3 rounded-2xl bg-white p-4 dark:bg-black dark:border-white/[0.1] border border-neutral-200 flex flex-col items-center justify-center"
       >
-        <img
+        <Image
           src="https://pbs.twimg.com/profile_images/1417752099488636931/cs2R59eW_400x400.jpg"
           alt="avatar"
           height="100"

@@ -4,7 +4,6 @@ import { insertedMarker } from "@/lib/constants";
 import { GradientWrapper } from "@/components/ui/background-gradient";
 import { Button } from "@/components/ui/button";
 import { MapPinPlus } from "lucide-react";
-import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { Card, CardContent } from "@/components/ui/card";
 import { FloatingMarker } from "@/components/ui/floating-marker";
 

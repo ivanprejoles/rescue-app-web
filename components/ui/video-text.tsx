@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, JSX } from "react";
 
 interface VideoMaskProps {
   src: string;
@@ -112,8 +112,10 @@ const VideoText: React.FC<VideoMaskProps> = ({
     WebkitMaskPosition: "center",
   };
 
-  return (
-    <Component className={`relative w-full h-full ${className}`}>
+  return React.createElement(
+    Component,
+    { className: `relative w-full h-full ${className}` },
+    <>
       <div
         className="absolute inset-0 flex items-center justify-center"
         style={maskStyle}
@@ -132,7 +134,7 @@ const VideoText: React.FC<VideoMaskProps> = ({
       </div>
       {/* Accessibility: hidden text for screen readers */}
       <span className="sr-only">{dynamicContent}</span>
-    </Component>
+    </>
   );
 };
 

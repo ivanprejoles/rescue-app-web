@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { GradientWrapper } from "@/components/ui/background-gradient";
-import { Eye, Megaphone } from "lucide-react";
+import { Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ClientUser } from "@/lib/types";
 import dynamic from "next/dynamic";
@@ -77,7 +77,7 @@ export default function ShowAlertOnce({ user }: Props) {
 
   const onSubmit = async (values: FormData) => {
     try {
-      const response = await fetch("/api/client/reports", {
+      const response = await fetch("/api/client/marker", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -164,14 +164,14 @@ export default function ShowAlertOnce({ user }: Props) {
                     latitude={
                       form.watch("latitude")
                         ? Number(form.watch("latitude"))
-                        : null
+                        : undefined
                     }
                     longitude={
                       form.watch("longitude")
                         ? Number(form.watch("longitude"))
-                        : null
+                        : undefined
                     }
-                    onChange={(lat: number, lng: number) => {
+                    onChange={(lat: { toString: () => string }, lng: { toString: () => string }) => {
                       form.setValue("latitude", lat.toString(), {
                         shouldValidate: true,
                         shouldDirty: true,

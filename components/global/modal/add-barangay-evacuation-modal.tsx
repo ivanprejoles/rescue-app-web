@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import {
   Dialog,
@@ -206,7 +207,7 @@ export function AddUpdateBarangaysModal({
             <Button
               type="submit"
               disabled={isLoading}
-              className="cursor-pointer"
+              className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
             >
               {isLoading ? "Updating..." : "Update Barangays"}
             </Button>

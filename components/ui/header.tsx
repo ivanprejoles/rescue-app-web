@@ -1,24 +1,44 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Bell } from "lucide-react";
-import { ClerkLoading, SignedIn, UserButton } from "@clerk/nextjs";
-import { ModeToggle } from "./mode-toggle";
-import { Badge } from "./badge";
-import { Skeleton } from "./skeleton";
+// Dynamically import Clerk components with SSR disabled
+const ClerkLoading = dynamic(
+  () => import("@clerk/nextjs").then((mod) => mod.ClerkLoading),
+  { ssr: false }
+);
+const SignedIn = dynamic(
+  () => import("@clerk/nextjs").then((mod) => mod.SignedIn),
+  { ssr: false }
+);
+const UserButton = dynamic(
+  () => import("@clerk/nextjs").then((mod) => mod.UserButton),
+  { ssr: false }
+);
+
 import { GlowingWrapper } from "./glowing-effect";
+import ShowAnnouncementModal from "../global/modal/show-announcement-modal";
+import { Skeleton } from "./skeleton";
 
 interface Props {
   withSideBar?: boolean;
 }
 
 export function MainHeader({ withSideBar = true }: Props) {
+  const [isClient, setIsClient] = useState(false);
+
+  // Track hydration so client-only UI renders after mount
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <GlowingWrapper>
       <header
-        className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] flex h-(--header-height) shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) sticky top-0 rounded-xl"
+        className="border-[0.75px] bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] flex h-[var(--header-height)] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-[var(--header-height)] sticky top-0 rounded-xl"
         suppressHydrationWarning
       >
         <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
@@ -27,34 +47,35 @@ export function MainHeader({ withSideBar = true }: Props) {
             orientation="vertical"
             className="mx-2 data-[orientation=vertical]:h-4"
           />
-          <h1 className="text-base font-medium">Documents</h1>
+          <h1 className="text-base font-medium">Kawit Emergency App</h1>
           <div className="ml-auto flex items-center gap-2">
             {/* Notifications */}
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-red-500">
-                3
-              </Badge>
-            </Button>
+            <ShowAnnouncementModal />
 
-            <ModeToggle />
-
-            {/* clerk icon */}
-              <ClerkLoading>
-                <div className="flex items-center justify-center h-9 w-9">
-                  <Skeleton className="rounded-full h-9 w-9" />
-                </div>
-              </ClerkLoading>
-              <SignedIn>
-                <UserButton
-                  // afterSignOutUrl="/"
-                  appearance={{
-                    elements: {
-                      userButtonAvatarBox: "w-9 h-9",
-                    },
-                  }}
-                />
-              </SignedIn>
+            {/* Clerk loading and UserButton rendered client-side only */}
+            {isClient ? (
+              <>
+                <ClerkLoading>
+                  <div className="flex items-center justify-center h-9 w-9">
+                    <Skeleton className="rounded-full h-9 w-9" />
+                  </div>
+                </ClerkLoading>
+                <SignedIn>
+                  <UserButton
+                    appearance={{
+                      elements: {
+                        userButtonAvatarBox: "w-9 h-9",
+                      },
+                    }}
+                  />
+                </SignedIn>
+              </>
+            ) : (
+              // Fallback skeleton placeholder during SSR
+              <div className="flex items-center justify-center h-9 w-9">
+                <Skeleton className="rounded-full h-9 w-9" />
+              </div>
+            )}
           </div>
         </div>
       </header>

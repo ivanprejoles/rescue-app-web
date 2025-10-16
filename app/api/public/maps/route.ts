@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getPublicMarkers } from "@/lib/supabase/request/request-map";
 import { NextResponse } from "next/server";
 

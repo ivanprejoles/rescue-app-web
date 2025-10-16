@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ import type { User } from "@/lib/types";
 import { useAdminQuery } from "@/lib/useQuery";
 import { getRescuersAndUsersClient } from "@/lib/client-fetchers";
 import SidebarHeader from "../header";
-import { AlertTriangle, Bell, Users } from "lucide-react";
+import { AlertTriangle, Users } from "lucide-react";
 import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { ChartRadialStack } from "../chart/user-radial-stack";
 

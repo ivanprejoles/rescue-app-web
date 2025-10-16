@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { GlowingEffect } from "./glowing-effect";
 
 interface RippleProps {
   mainCircleSize?: number;

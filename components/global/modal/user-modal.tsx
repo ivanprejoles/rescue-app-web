@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React from "react";
@@ -131,19 +132,27 @@ export const UserModal: React.FC<UserModalProps> = ({
         <div className="space-y-4">
           {/* Readonly user info with inputs for layout consistency */}
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name" className="text-gray-500">
+              Name (disabled)
+            </Label>
             <ReadOnlyInput id="name" value={user.name} />
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-gray-500">
+              Email (disabled)
+            </Label>
             <ReadOnlyInput id="email" value={user.email} />
           </div>
           <div>
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone" className="text-gray-500">
+              Phone Number (disabled)
+            </Label>
             <ReadOnlyInput id="phone" value={user.phone_number} />
           </div>
           <div>
-            <Label htmlFor="address">Barangay Address</Label>
+            <Label htmlFor="address" className="text-gray-500">
+              Barangay Address (disabled)
+            </Label>
             <ReadOnlyInput
               id="address"
               value={user.barangays?.address ?? "N/A"}
@@ -196,7 +205,7 @@ export const UserModal: React.FC<UserModalProps> = ({
             Cancel
           </Button>
           <Button
-            className="cursor-pointer"
+            className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
             onClick={handleSave}
             disabled={mutation.isPending}
           >

@@ -74,7 +74,7 @@ const UserSection = ({ markers, evacuationCenters, user }: Props) => {
         // showSummary={true}
         groupBy="type"
         defaultCollapsed={false}
-        userBrgyId={user.brgy_id}
+        user={user}
       />
     </>
   );

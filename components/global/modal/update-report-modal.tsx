@@ -21,7 +21,7 @@ import {
   SelectLabel,
   SelectItem,
 } from "@/components/ui/select";
-import { MapData, MarkerWithRelations } from "@/lib/types";
+import { MapData } from "@/lib/types";
 import { Flag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -111,8 +111,6 @@ export const ReportModal: React.FC = () => {
 
   if (!report) return null;
 
-
-
   return (
     <Dialog open={isOpen} onOpenChange={closeModal}>
       <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-auto scroll-thin">
@@ -149,7 +147,7 @@ export const ReportModal: React.FC = () => {
             <label className="font-semibold block text-gray-500">
               Barangay (disabled)
             </label>
-            <Input value={report.barangay.name} disabled />
+            <Input value={report.barangay?.name} disabled />
           </div>
           <div>
             <label className="font-semibold block text-gray-500">
@@ -166,19 +164,19 @@ export const ReportModal: React.FC = () => {
             <label className="font-semibold block text-gray-500">
               Contact Number (disabled)
             </label>
-            <Input value={report.user.phone_number} disabled />
+            <Input value={report.user?.phone_number} disabled />
           </div>
           <div>
             <label className="font-semibold block text-gray-500">
               Date Reported (disabled)
             </label>
-            <Input value={formatDate(report.created_at)} disabled />
+            <Input value={formatDate(report.created_at as string)} disabled />
           </div>
 
           <div className="space-y-2">
             <LocationPickerMap // Use the updated component
-              latitude={report.latitude ? Number(report.latitude) : null}
-              longitude={report.longitude ? Number(report.longitude) : null}
+              latitude={report.latitude ? Number(report.latitude) : undefined}
+              longitude={report.longitude ? Number(report.longitude) : undefined}
               onChange={() =>
                 // lat: { toString: () => string },
                 // lng: { toString: () => string }

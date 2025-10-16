@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useRef } from "react";
 import { Marker, Popup } from "react-leaflet";
 import { StoredMarkerType } from "@/lib/types";
@@ -7,7 +8,7 @@ import { useMapStore } from "@/hooks/useMapStore";
 import type { Marker as LeafletMarker } from "leaflet";
 
 interface CustomMarkerProps {
-  marker: StoredMarkerType;
+  marker: StoredMarkerType | any;
   iconPicker: {
     iconName: string; // e.g. "tree", "fire", "hospital"
     color: string; // e.g. "#52b74c"

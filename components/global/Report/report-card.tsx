@@ -52,13 +52,13 @@ const ReportCard: React.FC<ReportCardProps> = ({
           <StatCard
             icon={User}
             label="Reported by"
-            value={report.reportedBy}
+            value={report.reportedBy as string}
             iconColor="text-blue-400"
           />
           <StatCard
             icon={Calendar}
             label="Date Reported"
-            value={formatDate(report.dateReported)}
+            value={formatDate(report.dateReported as string)}
             iconColor="text-red-400"
           />
         </div>
@@ -68,7 +68,7 @@ const ReportCard: React.FC<ReportCardProps> = ({
           <ContactButton
             icon={Phone}
             label="Contact Number"
-            value={report.contactNumber}
+            value={report.contactNumber as string}
             onClick={() => callNumber(report.contactNumber!)}
             iconColor="text-green-400"
           />
@@ -86,23 +86,6 @@ const ReportCard: React.FC<ReportCardProps> = ({
 
         {/* Actions Row */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-border">
-          {/* <Select
-            value={report.status}
-            onValueChange={(value) => onStatusUpdate(report.id, value)}
-          >
-            <SelectTrigger className="w-full sm:w-[140px] text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Status</SelectLabel>
-                <SelectItem value="Pending">Pending</SelectItem>
-                <SelectItem value="Assigned">Assigned</SelectItem>
-                <SelectItem value="Resolved">Resolved</SelectItem>
-                <SelectItem value="Failed">Failed</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select> */}
           <div className="flex gap-2">
             <GradientWrapper>
               <Button

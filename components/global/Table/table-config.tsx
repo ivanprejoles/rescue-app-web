@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 '"use client";';
 
 import {
@@ -8,25 +9,21 @@ import {
   MapPinHouse,
   Settings,
 } from "lucide-react";
-import {
-  ColumnConfig,
-  MarkerWithRelations,
-  MapBarangay,
-  MapEvacuationCenter,
-} from "@/lib/types";
+import { ColumnConfig } from "@/lib/types";
 import TooltipWrapper from "../tooltip-wrapper";
 import LocateButtons from "./locate-buttons";
 import SettingsButton from "./settings-button";
 import { statusTextColors } from "@/lib/constants";
 
 // Columns for MapMarkers
+// MarkerWithRelations type for renders
 export const defaultMarkerColumns: ColumnConfig[] = [
   {
     key: "location",
     label: "Barangay",
     icon: MapPinHouse,
-    render: (marker: MarkerWithRelations) => (
-      <TooltipWrapper text={marker.barangay?.name || "Unknown"} />
+    render: (marker: any) => (
+      <TooltipWrapper text={marker.barangay?.name || "  Unknown  "} />
     ),
     sortable: false,
     width: "w-40",
@@ -35,8 +32,8 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "placed_by",
     label: "Placed By",
     icon: User,
-    render: (marker: MarkerWithRelations) => (
-      <TooltipWrapper text={marker.user?.name || "Unknown"} />
+    render: (marker: any) => (
+      <TooltipWrapper text={marker.user?.name || "  Admin  "} />
     ),
     sortable: true,
     width: "w-32",
@@ -45,7 +42,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "created_at",
     label: "Created",
     icon: Clock,
-    render: (marker: MarkerWithRelations) =>
+    render: (marker: any) =>
       marker.created_at ? (
         <TooltipWrapper
           maxLength={25}
@@ -58,7 +55,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
           })}
         />
       ) : (
-        "-"
+        "  Unknown  "
       ),
     sortable: true,
     width: "w-44",
@@ -67,7 +64,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "status",
     label: "Status",
     icon: Activity,
-    render: (marker: MarkerWithRelations) => (
+    render: (marker: any) => (
       <div className="flex items-center space-x-2">
         <span
           className={`text-sm font-medium capitalize ${
@@ -87,13 +84,13 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "phone",
     label: "Phone",
     icon: MapPin,
-    render: (marker: MarkerWithRelations) => (
+    render: (marker: any) => (
       <div>
         <TooltipWrapper
           text={
             marker.type === "report"
               ? (marker.user?.phone_number as string)
-              : "None"
+              : "   None   "
           }
         />
       </div>
@@ -105,7 +102,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "map",
     label: "Location",
     icon: MapPin,
-    render: (marker: MarkerWithRelations) => <LocateButtons id={marker.id} />,
+    render: (marker: any) => <LocateButtons id={marker.id} />,
     sortable: false,
     width: "w-28",
   },
@@ -113,7 +110,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "actions",
     label: "Actions",
     icon: Settings,
-    render: (marker: MarkerWithRelations) => (
+    render: (marker: any) => (
       <SettingsButton
         address={marker.address}
         location={{ lat: marker.latitude, lng: marker.longitude }}
@@ -132,13 +129,14 @@ export const defaultMarkerColumns: ColumnConfig[] = [
 ];
 
 // Columns for MapBarangay
+// MapBarangay as type for render
 export const defaultBarangayColumns: ColumnConfig[] = [
   {
     key: "name",
     label: "Name",
     icon: MapPinHouse,
-    render: (barangay: MapBarangay) => (
-      <TooltipWrapper text={barangay.name || "Unknown"} maxLength={25} />
+    render: (barangay: any) => (
+      <TooltipWrapper text={barangay.name || " Unknown "} maxLength={25} />
     ),
     sortable: true,
     width: "w-56",
@@ -147,8 +145,8 @@ export const defaultBarangayColumns: ColumnConfig[] = [
     key: "address",
     label: "Address",
     icon: MapPin,
-    render: (barangay: MapBarangay) => (
-      <TooltipWrapper text={barangay.address || "Unknown"} maxLength={40} />
+    render: (barangay: any) => (
+      <TooltipWrapper text={barangay.address || " Unknown "} maxLength={40} />
     ),
     sortable: false,
     width: "flex-1",
@@ -157,7 +155,7 @@ export const defaultBarangayColumns: ColumnConfig[] = [
     key: "phone",
     label: "Phone",
     icon: User,
-    render: (barangay: MapBarangay) => barangay.phone || "Unknown",
+    render: (barangay: any) => barangay.phone || " Unknown ",
     sortable: false,
     width: "w-36",
   },
@@ -165,7 +163,7 @@ export const defaultBarangayColumns: ColumnConfig[] = [
     key: "map",
     label: "Location",
     icon: MapPin,
-    render: (barangay: MapBarangay) => <LocateButtons id={barangay.id} />,
+    render: (barangay: any) => <LocateButtons id={barangay.id} />,
     sortable: false,
     width: "w-28",
   },
@@ -173,7 +171,7 @@ export const defaultBarangayColumns: ColumnConfig[] = [
     key: "actions",
     label: "Actions",
     icon: Settings,
-    render: (barangay: MapBarangay) => (
+    render: (barangay: any) => (
       <SettingsButton
         address={barangay.address as string}
         location={{
@@ -190,13 +188,14 @@ export const defaultBarangayColumns: ColumnConfig[] = [
 ];
 
 // Columns for MapEvacuationCenter
+// MapEvacuationCenter as type for render
 export const defaultEvacuationColumns: ColumnConfig[] = [
   {
     key: "name",
     label: "Name",
     icon: MapPinHouse,
-    render: (evac: MapEvacuationCenter) => (
-      <TooltipWrapper text={evac.name || "Unknown"} maxLength={25} />
+    render: (evac: any) => (
+      <TooltipWrapper text={evac.name || "  Unknown  "} maxLength={25} />
     ),
     sortable: true,
     width: "w-56",
@@ -205,8 +204,8 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
     key: "address",
     label: "Address",
     icon: MapPin,
-    render: (evac: MapEvacuationCenter) => (
-      <TooltipWrapper text={evac.address || "Unknown"} maxLength={25} />
+    render: (evac: any) => (
+      <TooltipWrapper text={evac.address || "  Unknown  "} maxLength={25} />
     ),
     sortable: false,
     width: "flex-1",
@@ -215,7 +214,7 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
     key: "phone",
     label: "Phone",
     icon: User,
-    render: (evac: MapEvacuationCenter) => evac.phone || "-",
+    render: (evac: any) => evac.phone || "  Unknown  ",
     sortable: false,
     width: "w-36",
   },
@@ -223,7 +222,7 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
     key: "map",
     label: "Location",
     icon: MapPin,
-    render: (evac: MapEvacuationCenter) => <LocateButtons id={evac.id} />,
+    render: (evac: any) => <LocateButtons id={evac.id} />,
     sortable: false,
     width: "w-28",
   },
@@ -231,7 +230,7 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
     key: "actions",
     label: "Actions",
     icon: Settings,
-    render: (evac: MapEvacuationCenter) => (
+    render: (evac: any) => (
       <SettingsButton
         address={evac.address || undefined}
         location={{

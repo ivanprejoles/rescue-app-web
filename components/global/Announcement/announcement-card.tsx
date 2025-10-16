@@ -82,7 +82,9 @@ export default function AnnouncementCard({
           <div className="flex items-start justify-between">
             <div className="flex items-start space-x-4 flex-1">
               <div className={`${config?.bgColor} p-2 rounded-lg`}>
-                <IconComponent className={`h-5 w-5 ${config?.iconColor}`} />
+                {IconComponent && (
+                  <IconComponent className={`h-5 w-5 ${config?.iconColor}`} />
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-3 mb-2 flex-wrap">

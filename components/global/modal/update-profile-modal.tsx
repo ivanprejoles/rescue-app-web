@@ -22,7 +22,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateClientProfile } from "@/lib/client-request/client";
 import { useProfileModalStore } from "@/hooks/modals/use-update-profile-modal";
-import { ClientAccessResponse, ClientAccessWithBarangays } from "@/lib/types";
+import { ClientAccessWithBarangays } from "@/lib/types";
 
 export const ProfileEditModal = () => {
   const { isOpen, closeModal, form, setForm } = useProfileModalStore();

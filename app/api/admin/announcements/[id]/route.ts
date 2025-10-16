@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { deleteAnnouncement } from "@/lib/supabase/request/request-announcement";
 import { auth } from "@clerk/nextjs/server";
 import { Params } from "next/dist/server/request/params";

@@ -235,9 +235,11 @@ export const BarangayModal: React.FC = () => {
             <div className="space-y-2">
               <Label className="text-sm font-medium">Select Location *</Label>
               <LocationPickerMap // Use the updated component
-                latitude={formData.latitude ? Number(formData.latitude) : null}
+                latitude={
+                  formData.latitude ? Number(formData.latitude) : undefined
+                }
                 longitude={
-                  formData.longitude ? Number(formData.longitude) : null
+                  formData.longitude ? Number(formData.longitude) : undefined
                 }
                 onChange={(
                   lat: { toString: () => string },

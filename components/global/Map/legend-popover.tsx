@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMapToggleStore } from "@/hooks/use-mapToggleStore";
-import { capitalize, cn } from "@/lib/utils";
+import { capitalize } from "@/lib/utils";
 import { legendMarker } from "@/lib/constants"; // Only import the unified legendMarker
 import { GradientWrapper } from "@/components/ui/background-gradient";
 import { Button } from "@/components/ui/button";
@@ -16,12 +16,12 @@ const popupVariants = {
     opacity: 1,
     x: 0,
     pointerEvents: "auto",
-    transition: { type: "spring", stiffness: 400, damping: 24 },
+    transition: { type: "spring" as const, stiffness: 400, damping: 24 },
   },
   exit: {
     opacity: 0,
     x: -24,
-    transition: { type: "spring", stiffness: 400, damping: 24 },
+    transition: { type: "spring" as const, stiffness: 400, damping: 24 },
   },
 };
 

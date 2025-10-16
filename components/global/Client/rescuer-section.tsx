@@ -72,7 +72,7 @@ const RescuerSection = ({ markers, evacuationCenters, user }: Props) => {
         evacuationCenters={evacuationCenters}
         groupBy="type"
         defaultCollapsed={false}
-        userBrgyId={user.brgy_id}
+        user={user}
       />
     </>
   );

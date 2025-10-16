@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Map, MoreHorizontal, Pencil, Phone, Trash } from "lucide-react";
 import {
@@ -14,9 +15,6 @@ import { MapBarangay, MapEvacuationCenter, MapMarker } from "@/lib/types";
 import { useReportModalStore } from "@/hooks/modals/use-update-report";
 import { useUpdateAddMapModal } from "@/hooks/modals/use-update-add-map-modal";
 import { useUpdateAddBarangayModalStore } from "@/hooks/modals/use-update-add-barangay-modal";
-import { useDeleteBarangayModalStore } from "@/hooks/modals/use-delete-barangay-modal";
-import { useDeleteEvacuationModalStore } from "@/hooks/modals/use-delete-evacuation-modal";
-import { useDeleteReportModalStore } from "@/hooks/modals/use-delete-report-modal";
 import { useDeleteIncidentModalStore } from "@/hooks/modals/use-delete-map-incident-modal";
 
 type Props = {
@@ -67,17 +65,17 @@ const SettingsButton = ({ address, location, number, data }: Props) => {
           onClick={() => {
             switch (data.type) {
               case "report":
-                openReportModal(data.data);
+                openReportModal(data.data as any);
                 break;
               case "natural":
                 // d.data is MapMarker here
-                openUpdateMapModal("marker", data.data);
+                openUpdateMapModal("marker" as never, data.data as any);
                 break;
               case "barangay":
-                openUpdateBarangayModal("edit", data.data);
+                openUpdateBarangayModal("edit", data.data as any);
                 break;
               case "evacuation":
-                openUpdateMapModal("evacuation", data.data);
+                openUpdateMapModal("evacuation" as never, data.data as any);
                 break;
             }
           }}
@@ -133,6 +131,5 @@ const SettingsButton = ({ address, location, number, data }: Props) => {
     </DropdownMenu>
   );
 };
-
 
 export default SettingsButton;

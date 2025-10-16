@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { User } from "@clerk/nextjs/server";
 import { createServerSupabaseClient } from "../server";
 import { ClientAccessUser } from "@/lib/types";
@@ -9,7 +10,6 @@ export async function handleClientAccess(clerkUser: User): Promise<{
   const supabase = await createServerSupabaseClient();
 
   try {
-    // Select minimal public user data
     const { data: existingUser, error: selectError } = await supabase
       .from("users")
       .select("id, name, brgy_id")
@@ -18,7 +18,6 @@ export async function handleClientAccess(clerkUser: User): Promise<{
 
     if (selectError) {
       console.error("Error fetching user", selectError);
-      // Return no user, isUser false if select failed with error
       return { user: null, isUser: false };
     }
 
@@ -26,7 +25,6 @@ export async function handleClientAccess(clerkUser: User): Promise<{
       return { user: existingUser, isUser: true };
     }
 
-    // Insert new user with minimal info
     const { data: newUser, error: insertError } = await supabase
       .from("users")
       .insert({
@@ -45,10 +43,9 @@ export async function handleClientAccess(clerkUser: User): Promise<{
     }
 
     if (newUser) {
-      return { user: newUser, isUser: true }; // User now exists
+      return { user: newUser, isUser: true };
     }
 
-    // fallback if no user data returned
     return { user: null, isUser: false };
   } catch (error) {
     console.error("Unexpected error in handleClientAccess:", error);
@@ -166,7 +163,7 @@ export async function getClientReport(userId: string) {
       brgy_id
     `
     )
-    .eq("user_id", userId) // Clerk userId string
+    .eq("user_id", userId)
     .maybeSingle();
 
   if (userError || !existingUser) {
@@ -227,4 +224,114 @@ export async function getClientReport(userId: string) {
     markers: markersRes.data,
     evacuationCenters: evacuationRes.data,
   };
+}
+
+export async function createClientReport(data: {
+  latitude: number;
+  longitude: number;
+  description: string;
+  user_id: string;
+  brgy_id: string;
+}) {
+  const supabase = await createServerSupabaseClient();
+
+  const { data: inserted, error } = await supabase
+    .from("markers")
+    .insert({
+      type: "report",
+      latitude: data.latitude,
+      longitude: data.longitude,
+      description: data.description,
+      brgy_id: data.brgy_id,
+      user_id: data.user_id,
+      status: "Pending",
+    })
+    .select(
+      `
+        id,
+        type,
+        description,
+        latitude,
+        longitude,
+        status,
+        created_at,
+        updated_at,
+        user: user_id (
+          id,
+          name,
+          email,
+          phone_number,
+          status,
+          brgy_id
+        ),
+        rescuer: rescuer_id (
+          id,
+          name,
+          email,
+          phone_number,
+          status,
+          brgy_id
+        ),
+        barangay: brgy_id (
+          id,
+          phone,
+          name,
+          address
+        )
+      `
+    )
+    .single();
+  if (error) {
+    console.error("Error creating report", error);
+    throw error;
+  }
+  return inserted;
+}
+
+export async function updateClientReport(id: string, updates: Partial<any>) {
+  const supabase = await createServerSupabaseClient();
+  const { data: updated, error } = await supabase
+    .from("markers")
+    .update(updates)
+    .eq("id", id)
+    .select(
+      `id,
+        type,
+        description,
+        latitude,
+        longitude,
+        status,
+        created_at,
+        updated_at,
+        user: user_id (
+          id,
+          name,
+          email,
+          phone_number,
+          status,
+          brgy_id
+        ),
+        rescuer: rescuer_id (
+          id,
+          name,
+          email,
+          phone_number,
+          status,
+          brgy_id
+        ),
+        barangay: brgy_id (
+          id,
+          phone,
+          name,
+          address
+        )
+      `
+    )
+    .single();
+
+  if (error) {
+    console.error("[updateClientReport]", error.message);
+    throw error;
+  }
+  return updated;
 }

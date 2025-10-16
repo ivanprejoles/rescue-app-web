@@ -31,6 +31,8 @@ export default async function ReportPage() {
     queryFn: () => Promise.resolve(reports),
   });
 
+  console.log(reports);
+
   const cachedData = queryClient.getQueryData<ClientData>(["client-report"]);
 
   // Extract user_type safely with type guards
@@ -46,7 +48,7 @@ export default async function ReportPage() {
     <HydrationBoundary state={dehydrate(queryClient)}>
       {/* Example conditional rendering based on user_type */}
       {userType === "rescuer" ? (
-      <ClientSideMarkerRescuer />
+        <ClientSideMarkerRescuer />
       ) : (
         <ClientSideMarkerUser />
       )}

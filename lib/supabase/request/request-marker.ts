@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createServerSupabaseClient } from "../server";
 
 export async function getReportMarkersOnly(userId: string) {
@@ -80,7 +81,40 @@ export async function updateMarker(id: string, updates: Partial<any>) {
     .from("markers")
     .update(updates)
     .eq("id", id)
-    .select()
+    .select(
+      `
+        id,
+        type,
+        description,
+        latitude,
+        longitude,
+        status,
+        created_at,
+        updated_at,
+        user: user_id (
+          id,
+          name,
+          email,
+          phone_number,
+          status,
+          brgy_id
+        ),
+        rescuer: rescuer_id (
+          id,
+          name,
+          email,
+          phone_number,
+          status,
+          brgy_id
+        ),
+        barangay: brgy_id (
+          id,
+          phone,
+          name,
+          address
+        )
+      `
+    )
     .single();
 
   if (error) {

@@ -68,7 +68,7 @@ export default function PublicMap() {
             <VideoText
               src="https://cdn.magicui.design/ocean-small.webm"
               content="Evacuation Point"
-              className="h-44 w-full"
+              className="h-20 md:h-44 w-full"
             />
           </>
         }

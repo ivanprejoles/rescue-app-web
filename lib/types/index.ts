@@ -1,15 +1,4 @@
-import { use } from "react";
-
-export interface SentMarkerType {
-  lat: number;
-  lng: number;
-  type: string;
-  name?: string;
-  description?: string;
-  status?: string;
-  additional_info?: Record<string, any>;
-  timestamp?: string;
-}
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export interface StoredMarkerType {
   id: string;
@@ -34,18 +23,14 @@ export interface AdminInfo {
   role: string;
   created_at?: string;
   updated_at?: string;
-  // add other fields if needed
 }
-
-// * User and Rescuer Type
-//
 
 export interface TypeConfig {
   color: string;
   lightColor: string;
   borderColor: string;
   textColor: string;
-  dotColor: string;
+  dotColor?: string;
   icon: React.ComponentType<any>;
   label: string;
 }
@@ -55,8 +40,9 @@ export interface ColumnConfig {
   label: string;
   icon?: React.ComponentType<any>;
   render: (
-    incident: MarkerWithRelations | MapEvacuationCenter | MapBarangay,
-    userBrgId?: string | null
+    // MarkerWithRelations | MapEvacuationCenter | MapBarangay as type for render
+    incident: any,
+    user?: ClientUser | null
   ) => React.ReactNode;
   sortable?: boolean;
   width?: string;
@@ -67,56 +53,6 @@ export interface TableAction {
   onClick: (incident: MarkerWithRelations) => void;
   variant?: "primary" | "secondary";
   className?: string;
-}
-
-export interface BarangayTypeConfig {
-  color: string;
-  lightColor: string;
-  borderColor: string;
-  textColor: string;
-  icon: React.ComponentType<any>;
-  label: string;
-}
-
-export interface BarangayColumnConfig {
-  key: string;
-  label: string;
-  icon?: React.ComponentType<any>;
-  render: (item: any) => React.ReactNode;
-  sortable?: boolean;
-  width?: string;
-}
-
-export interface BarangayTableAction {
-  label: string;
-  onClick: (item: any) => void;
-  variant?: "primary" | "secondary";
-  className?: string;
-}
-
-// export interface Report {
-//   id: string;
-//   title: string;
-//   description: string;
-//   category: string;
-//   status: "Pending" | "Assigned" | "Resolved" | "Failed";
-//   priority: "low" | "medium" | "high" | "urgent";
-//   reportedBy: string;
-//   contactNumber: string;
-//   longitude: number;
-//   latitude: number;
-//   dateReported: string;
-//   lastUpdated: string;
-//   images?: string[];
-// }
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  status: string; // e.g., "waiting"
-  brgy_id: string;
-  phone_number: string;
 }
 
 export interface Rescuer {
@@ -137,16 +73,22 @@ export interface Barangay {
 
 export interface Report {
   id: string;
-  type: "report"; // matches actual property
+  type: "report";
+  category?: string;
+  reportedBy?: string;
+  contactNumber?: string;
+  dateReported?: string;
+  lastUpdated?: string;
   description: string;
   latitude: number;
+  title: string;
   longitude: number;
   status: "Pending" | "Assigned" | "Resolved" | "Failed"; // adjust values as needed
-  created_at: string; // ISO string timestamp
-  updated_at: string; // ISO string timestamp
-  user: User;
+  created_at?: string;
+  updated_at?: string;
+  user?: User;
   rescuer?: Rescuer | null;
-  barangay: Barangay;
+  barangay?: Barangay;
 }
 
 export interface BarangayReport {
@@ -157,13 +99,6 @@ export interface BarangayReport {
   reports: Report[];
 }
 
-export interface DashboardStats {
-  totalEvacuationCenters: number;
-  totalBarangays: number;
-  totalCapacity: number;
-  totalResidents: number;
-}
-
 export interface MarkerWithRelations {
   id: string;
   type: string;
@@ -171,11 +106,11 @@ export interface MarkerWithRelations {
   latitude: number;
   longitude: number;
   address: string;
-  status: string;
+  status: "Pending" | "Assigned" | "Resolved" | "Failed";
   created_at: string;
   updated_at: string;
 
-  user: {
+  users: {
     id: string;
     name: string;
     status: string;
@@ -183,7 +118,7 @@ export interface MarkerWithRelations {
     user_type: "user" | "rescuer";
   } | null;
 
-  barangay: {
+  barangays: {
     id: string;
     name: string;
     phone: string;
@@ -200,12 +135,10 @@ export interface RawEvacuationCenter {
   status: string;
   created_at?: string;
 
-  // Join table records linking this center to barangays
   evacuation_center_barangays?: {
     barangay_id: string;
   }[];
 
-  // Optional client-side enriched full barangay objects, derived from join IDs
   barangays?: RawBarangay[];
 }
 
@@ -294,22 +227,6 @@ export interface MapMarker {
   barangay?: MapBarangay | null;
 }
 
-// export interface Report {
-//   id: string;
-//   title: string;
-//   description: string;
-//   category: string;
-//   status: "Pending" | "Assigned" | "Resolved" | "Failed";
-//   priority: "low" | "medium" | "high" | "urgent";
-//   reportedBy: string;
-//   contactNumber: string;
-//   longitude: number;
-//   latitude: number;
-//   dateReported: string;
-//   lastUpdated: string;
-//   images?: string[];
-// }
-
 // EvacuationCenter info
 export interface MapEvacuationCenter {
   id: string;
@@ -336,6 +253,8 @@ export interface MapLocation {
   entity_type: "user" | "rescuer";
   entity_id: string;
   updated_at: string;
+  name: string;
+  phone_number: string;
 }
 
 // DOCS

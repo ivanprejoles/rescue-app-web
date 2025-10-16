@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   deleteMarker,
   updateMarker,
@@ -54,6 +55,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
       latitude,
       longitude,
       status,
+      rescuer_id,
     } = await req.json();
 
     if (!id) {
@@ -67,6 +69,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
       latitude,
       longitude,
       status,
+      rescuer_id,
     });
 
     console.log(updatedMarker);

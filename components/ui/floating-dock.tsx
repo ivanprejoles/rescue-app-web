@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Note: Use position fixed according to your needs
  * Desktop navbar is better positioned at the bottom
@@ -26,7 +27,7 @@ export const FloatingDock = ({
     icon: React.ReactNode;
     // href?: string;
     onClick?: () => void;
-    active?: boolean;
+    active?: any;
   }[];
   desktopClassName?: string;
 }) => {

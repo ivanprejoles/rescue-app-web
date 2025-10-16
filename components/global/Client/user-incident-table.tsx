@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import {
   MapBarangay,
   MapEvacuationCenter,
   ColumnConfig,
+  ClientUser,
 } from "@/lib/types";
 import { typeConfigs } from "@/lib/constants";
 import { GlowingWrapper } from "@/components/ui/glowing-effect";
@@ -23,7 +25,7 @@ interface IncidentTableProps {
   columns?: ColumnConfig[]; // optional to allow default inside component
   groupBy?: string;
   defaultCollapsed?: boolean;
-  userBrgyId?: string | null;
+  user?: ClientUser;
 }
 
 const UserIncidentTable: React.FC<IncidentTableProps> = ({
@@ -33,7 +35,7 @@ const UserIncidentTable: React.FC<IncidentTableProps> = ({
   columns,
   groupBy = "type",
   defaultCollapsed = false,
-  userBrgyId = null,
+  user = null,
 }) => {
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
     defaultCollapsed ? new Set(Object.keys(typeConfigs)) : new Set()
@@ -147,12 +149,13 @@ const UserIncidentTable: React.FC<IncidentTableProps> = ({
       const selectedMarker = items.filter(
         (item) =>
           // Check if 'barangay' exists and has 'id' matching
-          ("barangay" in item && (item as any).barangay?.id === userBrgyId) ||
+          ("barangay" in item &&
+            (item as any).barangay?.id === user?.brgy_id) ||
           // Check if any 'evacuation_center_barangays' has 'barangay_id' matching
           ("evacuation_center_barangays" in item &&
             Array.isArray((item as any).evacuation_center_barangays) &&
             (item as any).evacuation_center_barangays.some(
-              (b: { barangay_id: string }) => b.barangay_id === userBrgyId
+              (b: { barangay_id: string }) => b.barangay_id === user?.brgy_id
             ))
       );
 
@@ -201,7 +204,7 @@ const UserIncidentTable: React.FC<IncidentTableProps> = ({
 
             {!isCollapsed && (
               <CardContent className="overflow-x-auto p-0">
-                <div className="px-6 py-3 border-b border-gray-200">
+                <div className="px-6 py-3 border-b  border-gray-200">
                   <div className="flex items-center space-x-4">
                     {columnsToUse.map((column, idx) => {
                       const Icon = column.icon;
@@ -228,7 +231,7 @@ const UserIncidentTable: React.FC<IncidentTableProps> = ({
                     })}
                   </div>
                 </div>
-                <div className="divide-y divide-gray-100">
+                <div className="divide-y divide-gray-100 ">
                   {items.map((item, idx) => (
                     <div
                       key={idx}
@@ -240,7 +243,7 @@ const UserIncidentTable: React.FC<IncidentTableProps> = ({
                             key={colIdx}
                             className={column.width || "flex-1"}
                           >
-                            {column.render(item, userBrgyId)}
+                            {column.render(item, user)}
                           </div>
                         ))}
                       </div>

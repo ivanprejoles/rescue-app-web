@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
-import { Save, Calendar, Type, FileText } from "lucide-react";
+import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,13 +20,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
 import { Announcement } from "@/lib/types";
 
 interface AnnouncementFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (announcement: Omit<Announcement, "id">, id?: string) => void;
+  // Omit<Announcement, "id"> announcement
+  onSave: (announcement: any, id?: string) => void;
   editingAnnouncement?: Announcement | null;
 }
 
@@ -111,7 +112,6 @@ export default function AnnouncementForm({
               {/* Title Field */}
               <div className="space-y-2">
                 <Label htmlFor="title" className="flex items-center space-x-2">
-                  <Type className="h-4 w-4" />
                   <span>Title</span>
                 </Label>
                 <Input
@@ -133,7 +133,6 @@ export default function AnnouncementForm({
                   htmlFor="description"
                   className="flex items-center space-x-2"
                 >
-                  <FileText className="h-4 w-4" />
                   <span>Content</span>
                 </Label>
                 <Textarea
@@ -173,7 +172,6 @@ export default function AnnouncementForm({
 
                 <div className="space-y-2">
                   <Label htmlFor="date" className="flex items-center space-x-2">
-                    <Calendar className="h-4 w-4" />
                     <span>Date</span>
                   </Label>
                   <Input
@@ -203,7 +201,7 @@ export default function AnnouncementForm({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="cursor-pointer"
+              className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
             >
               {isSubmitting ? (
                 <>
