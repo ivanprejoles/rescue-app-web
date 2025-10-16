@@ -15,7 +15,7 @@ import { ClientUser, MapEvacuationCenter, MapMarker } from "@/lib/types";
 import ClientFullScreen from "./client-full-screen";
 
 const LeafletMap = dynamic(
-  () => import("@/components/global/Docs/leaflet-map"),
+  () => import("@/components/global/docs/leaflet-map"),
   {
     ssr: false,
   }

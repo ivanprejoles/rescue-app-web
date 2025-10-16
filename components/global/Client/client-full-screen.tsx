@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 import { useDialogStore } from "@/hooks/use-full-screen";
 
 const LeafletMap = dynamic(
-  () => import("@/components/global/Docs/leaflet-map"),
+  () => import("@/components/global/docs/leaflet-map"),
   {
     ssr: false,
   }

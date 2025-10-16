@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 import React from "react";
 
 const LeafletMap = dynamic(
-  () => import("@/components/global/Docs/leaflet-map"),
+  () => import("@/components/global/docs/leaflet-map"),
   {
     ssr: false,
   }

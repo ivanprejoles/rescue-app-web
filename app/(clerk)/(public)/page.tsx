@@ -1,12 +1,12 @@
 import { GridPattern } from "@/components/ui/grid-pattern";
-import BentoGrid from "@/components/global/Docs/bento-grid";
-import CanvasRevealCard from "@/components/global/Docs/canvas-reveal-card";
-import DownloadSection from "@/components/global/Docs/3d-download-section";
-import MarkerTypeCard from "@/components/global/Docs/marker-type-slider";
-import WeatherForecast from "@/components/global/Docs/weather-forecast";
+import BentoGrid from "@/components/global/docs/bento-grid";
+import CanvasRevealCard from "@/components/global/docs/canvas-reveal-card";
+import DownloadSection from "@/components/global/docs/3d-download-section";
+import MarkerTypeCard from "@/components/global/docs/marker-type-slider";
+import WeatherForecast from "@/components/global/docs/weather-forecast";
 import MainHeader from "@/components/global/public/MainHeader";
 import MainFooter from "@/components/global/public/MainFooter";
-import WeatherTheme from "@/components/global/Docs/weather-theme";
+import WeatherTheme from "@/components/global/docs/weather-theme";
 
 export default function PublicPage() {
   return (

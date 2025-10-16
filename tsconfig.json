@@ -18,10 +18,9 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",                    // Added baseUrl pointing to project root
     "paths": {
-      "@/*": ["./*"]                  // Path alias relative to baseUrl
-    },
+      "@/*": ["./*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/global/Evacuation/barangay-management.txr"],
   "exclude": ["node_modules"]

@@ -1,11 +1,11 @@
 "use client";
 import { GridPattern } from "@/components/ui/grid-pattern";
-import PublicMap from "@/components/global/Docs/public-map";
-import BentoGrid from "@/components/global/Docs/bento-grid";
-import CanvasRevealCard from "@/components/global/Docs/canvas-reveal-card";
-import DownloadSection from "@/components/global/Docs/3d-download-section";
-import MarkerTypeCard from "@/components/global/Docs/marker-type-slider";
-import WeatherForecast from "@/components/global/Docs/weather-forecast";
+import PublicMap from "@/components/global/docs/public-map";
+import BentoGrid from "@/components/global/docs/bento-grid";
+import CanvasRevealCard from "@/components/global/docs/canvas-reveal-card";
+import DownloadSection from "@/components/global/docs/3d-download-section";
+import MarkerTypeCard from "@/components/global/docs/marker-type-slider";
+import WeatherForecast from "@/components/global/docs/weather-forecast";
 import { useWeatherStore } from "@/hooks/use-meteo-storage";
 import MainFooter from "@/components/global/public/MainFooter";
 import { cn } from "@/lib/utils";
