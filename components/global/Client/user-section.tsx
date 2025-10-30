@@ -46,7 +46,7 @@ const UserSection = ({ markers, evacuationCenters, user }: Props) => {
                 </CardDescription>
               </div>
               <div className="flex gap-2">
-                <ShowAlertOnce user={user} />
+                <ShowAlertOnce />
                 <ClientFullScreen
                   markers={markers}
                   evacuationCenters={evacuationCenters}
@@ -67,11 +67,7 @@ const UserSection = ({ markers, evacuationCenters, user }: Props) => {
       </GlowingWrapper>
       <UserIncidentTable
         markers={markers}
-        // barangays={data?.barangays}
         evacuationCenters={evacuationCenters}
-        // columns={defaultColumns}
-        // actions={defaultActions}
-        // showSummary={true}
         groupBy="type"
         defaultCollapsed={false}
         user={user}

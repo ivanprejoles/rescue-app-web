@@ -29,7 +29,7 @@ export async function updateEvacuationClient(
     status: string;
   }>
 ) {
-  const res = await fetch("/api/admin/evacuations", {
+  const res = await fetch(`/api/admin/evacuations/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id, ...data }),

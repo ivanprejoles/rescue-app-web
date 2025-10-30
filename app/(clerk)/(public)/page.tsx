@@ -17,7 +17,7 @@ export default function PublicPage() {
       <MainHeader />
       <div className="relative z-10 text-white">
         <main className="w-full h-screen relative">
-          <WeatherForecast />
+          <WeatherForecast isInSideBar={false} />
         </main>
         <WeatherTheme />
         <div className="w-full h-auto mx-auto px-6 relative bg-[#F4F5F6]">

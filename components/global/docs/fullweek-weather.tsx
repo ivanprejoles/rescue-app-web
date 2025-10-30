@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useRef, useState } from "react";
 import { useWeatherStore } from "@/hooks/use-meteo-storage";
 import useMediaQuery from "@/lib/media-query";
+import { useSidebar } from "@/components/ui/sidebar"; // ✅ keep only this import
 
-// Helper to get weekday name from date string
 function getWeekdayName(dateString: string, isMobile: boolean) {
   const date = new Date(dateString);
   if (isMobile) {
@@ -13,7 +14,11 @@ function getWeekdayName(dateString: string, isMobile: boolean) {
   return fullDay.charAt(0).toUpperCase() + fullDay.slice(1);
 }
 
-export default function WeeklyForecastInteractive() {
+interface Props {
+  isInSideBar?: boolean;
+}
+
+export default function WeeklyForecastInteractive({ isInSideBar = false }: Props) {
   const weeklyData = useWeatherStore((state) => state.weekly);
   const selectedDayIndex = useWeatherStore((state) => state.selectedDayIndex);
   const selectDay = useWeatherStore((state) => state.selectDay);
@@ -24,14 +29,22 @@ export default function WeeklyForecastInteractive() {
   const height = 120;
   const horizontalPadding = 32;
 
+  // ✅ safely handle sidebar context
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sidebarContext: any = isInSideBar ? useSidebar() : null;
+  const open = sidebarContext?.open;
+
   useEffect(() => {
-    function updateWidth() {
-      if (containerRef.current) setWidth(containerRef.current.clientWidth);
-    }
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, []);
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      const [entry] = entries;
+      if (entry) setWidth(entry.contentRect.width);
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [open]);
 
   if (width === 0 || weeklyData.length === 0) {
     return <div ref={containerRef} className="w-full h-[180px]" />;
@@ -71,6 +84,7 @@ export default function WeeklyForecastInteractive() {
       className="w-full max-w-full md:py-6 relative bg-transparent select-none"
       style={{ height: "180px" }}
     >
+      {/* Weekday labels */}
       <div className="flex justify-between mb-8 md:mb-10 text-center text-white/90 text-sm select-none md:px-1 md:gap-0 gap-1">
         {weeklyData.map(({ date, tempMax }, index) => (
           <div key={index} className="flex flex-col items-center w-12">
@@ -84,6 +98,7 @@ export default function WeeklyForecastInteractive() {
         ))}
       </div>
 
+      {/* Temperature curve */}
       <svg
         className="w-full"
         height={height}
@@ -97,7 +112,6 @@ export default function WeeklyForecastInteractive() {
             <stop offset="100%" stopColor="white" stopOpacity="0" />
           </linearGradient>
 
-          {/* Filter for subtle glow */}
           <filter
             id="lightGlow"
             x="-50%"
@@ -107,24 +121,12 @@ export default function WeeklyForecastInteractive() {
             colorInterpolationFilters="sRGB"
             filterUnits="userSpaceOnUse"
           >
-            <feDropShadow
-              dx="0"
-              dy="0"
-              stdDeviation="6" // bigger blur
-              floodColor="white"
-              floodOpacity="0.9" // higher opacity for brightness
-            />
-            <feDropShadow
-              dx="0"
-              dy="0"
-              stdDeviation="3" // layered smaller glow to intensify
-              floodColor="white"
-              floodOpacity="0.6"
-            />
+            <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="white" floodOpacity="0.9" />
+            <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="white" floodOpacity="0.6" />
           </filter>
         </defs>
 
-        {/* Curved white line */}
+        {/* Main path */}
         <path
           d={pathD}
           fill="none"
@@ -134,6 +136,7 @@ export default function WeeklyForecastInteractive() {
           strokeLinejoin="round"
         />
 
+        {/* Interactive weather dots */}
         {scaledTemps.map((point, i) => {
           const cx =
             horizontalPadding +
@@ -150,9 +153,7 @@ export default function WeeklyForecastInteractive() {
               role="button"
               onClick={() => handleDotClick(i)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  handleDotClick(i);
-                }
+                if (e.key === "Enter" || e.key === " ") handleDotClick(i);
               }}
               style={{ cursor: "pointer" }}
               aria-label={`Click for details of ${getWeekdayName(

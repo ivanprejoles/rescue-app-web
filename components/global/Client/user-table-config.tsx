@@ -37,7 +37,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
       />
     ),
     sortable: false,
-    width: "w-52 md:flex-1",
+    width: "w-28",
   },
   {
     key: "placed_by",
@@ -45,6 +45,16 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     icon: User,
     render: (marker: any) => (
       <TooltipWrapper text={marker.user?.name || "   Admin   "} />
+    ),
+    sortable: true,
+    width: "w-32",
+  },
+  {
+    key: "description",
+    label: "Description",
+    icon: User,
+    render: (marker: any) => (
+      <TooltipWrapper text={marker.description || "   Unknown   "} />
     ),
     sortable: true,
     width: "w-32",

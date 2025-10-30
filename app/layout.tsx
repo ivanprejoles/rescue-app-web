@@ -1,5 +1,5 @@
-import "leaflet/dist/leaflet.css";
 import "./globals.css";
+import "leaflet/dist/leaflet.css";
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";

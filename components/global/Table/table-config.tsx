@@ -39,6 +39,16 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     width: "w-32",
   },
   {
+    key: "description",
+    label: "Description",
+    icon: User,
+    render: (marker: any) => (
+      <TooltipWrapper text={marker.description || "   Unknown   "} />
+    ),
+    sortable: true,
+    width: "w-32",
+  },
+  {
     key: "created_at",
     label: "Created",
     icon: Clock,

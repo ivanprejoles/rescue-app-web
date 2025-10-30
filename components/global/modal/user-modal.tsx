@@ -13,9 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-
-// Use the default input props type for ReadOnlyInput
-type InputProps = React.ComponentProps<"input">;
 import {
   Select,
   SelectTrigger,
@@ -26,17 +23,12 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateUserRescuerClient } from "@/lib/client-request/rescuer-user";
 
-interface UserModalProps {
-  user: User | null;
-  onClose: () => void;
-  onUpdated?: () => void; // optional callback after successful update
-  getStatusColor?: (status: string) => string; // optional styling helper
-}
-
+// Reusable readonly input component
+type InputProps = React.ComponentProps<"input">;
 const ReadOnlyInput = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, ...props }, ref) => (
     <Input
-      className={`cursor-default ring-0 focus-visible:ring-0 placeholder:text-muted-foreground ${className}`}
+      className={`cursor-default ring-0 focus-visible:ring-0 text-gray-500 bg-gray-50 ${className}`}
       readOnly
       ref={ref}
       {...props}
@@ -45,13 +37,19 @@ const ReadOnlyInput = React.forwardRef<HTMLInputElement, InputProps>(
 );
 ReadOnlyInput.displayName = "ReadOnlyInput";
 
+interface UserModalProps {
+  user: User | null;
+  onClose: () => void;
+  onUpdated?: () => void;
+  getStatusColor?: (status: string) => string;
+}
+
 export const UserModal: React.FC<UserModalProps> = ({
   user,
   onClose,
   onUpdated,
 }) => {
-  const queryClient = useQueryClient(); // <-- get shared query client
-
+  const queryClient = useQueryClient();
   const [open, setOpen] = React.useState(false);
   const [userType, setUserType] = React.useState<User["user_type"]>("user");
   const [error, setError] = React.useState<string | null>(null);
@@ -130,25 +128,28 @@ export const UserModal: React.FC<UserModalProps> = ({
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Readonly user info with inputs for layout consistency */}
+          {/* Readonly fields with consistent gray tone */}
           <div>
             <Label htmlFor="name" className="text-gray-500">
               Name (disabled)
             </Label>
-            <ReadOnlyInput id="name" value={user.name} />
+            <ReadOnlyInput id="name" value={user.name ?? ""} />
           </div>
+
           <div>
             <Label htmlFor="email" className="text-gray-500">
               Email (disabled)
             </Label>
-            <ReadOnlyInput id="email" value={user.email} />
+            <ReadOnlyInput id="email" value={user.email ?? ""} />
           </div>
+
           <div>
             <Label htmlFor="phone" className="text-gray-500">
               Phone Number (disabled)
             </Label>
-            <ReadOnlyInput id="phone" value={user.phone_number} />
+            <ReadOnlyInput id="phone" value={user.phone_number ?? ""} />
           </div>
+
           <div>
             <Label htmlFor="address" className="text-gray-500">
               Barangay Address (disabled)
@@ -158,23 +159,24 @@ export const UserModal: React.FC<UserModalProps> = ({
               value={user.barangays?.address ?? "N/A"}
             />
           </div>
+
           <div>
-            <Label htmlFor="currentUserType">Current User Type</Label>
-            <ReadOnlyInput
-              id="currentUserType"
-              value={user.user_type}
-              className={user.barangays?.address ?? "N/A"}
-            />
+            <Label htmlFor="currentUserType" className="text-gray-500">
+              Current User Type (disabled)
+            </Label>
+            <ReadOnlyInput id="currentUserType" value={user.user_type ?? ""} />
           </div>
 
           {/* Select to update user_type */}
           <div>
-            <Label htmlFor="userTypeSelect">Change User Type</Label>
+            <Label htmlFor="userTypeSelect" className="">
+              Change User Type
+            </Label>
             <Select
               value={userType}
               onValueChange={(value) => setUserType(value as User["user_type"])}
             >
-              <SelectTrigger>
+              <SelectTrigger className="to-white">
                 <SelectValue placeholder="Select user type" />
               </SelectTrigger>
               <SelectContent>
@@ -184,7 +186,6 @@ export const UserModal: React.FC<UserModalProps> = ({
             </Select>
           </div>
 
-          {/* Error message */}
           {error && (
             <p className="text-sm text-red-600 mt-2" role="alert">
               {error}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   Tooltip,
   TooltipContent,
@@ -40,7 +40,7 @@ const TooltipWrapper = ({ text, maxLength = 15, className }: WrapperProps) => {
         <DialogContent
           className={`sm:max-w-[500px] text-xs md:text-sm px-2 ${className}`}
         >
-          <p>{text}</p>
+          <DialogTitle>{text}</DialogTitle>
         </DialogContent>
       </Dialog>
     );

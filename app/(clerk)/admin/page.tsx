@@ -18,7 +18,7 @@ export default function PublicPage() {
       {/* Main Content - Add top padding to account for fixed header */}
       <div className="relative z-10 text-white">
         <main className="w-full h-screen relative">
-          <WeatherForecast />
+          <WeatherForecast isInSideBar={true}/>
         </main>
 
         {/* public map */}

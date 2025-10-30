@@ -80,9 +80,6 @@ const UserIncidentTable: React.FC<IncidentTableProps> = ({
     return sorted;
   };
 
-  // Use default columns if not provided
-  // const markerColumns = columns || defaultMarkerColumns;
-
   // Group and sort data
   const groupedMarkers = useMemo(
     () => groupByField<MapMarker>(markers),

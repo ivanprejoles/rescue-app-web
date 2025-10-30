@@ -182,6 +182,8 @@ export const EvacuationCenterModal: React.FC = () => {
       status: formData.status as "active" | "inactive" | "maintenance" | "full",
     };
 
+    console.log(payload);
+
     if (mode === "add") {
       await createMutation.mutateAsync(payload);
     } else if (mode === "edit" && evacuationCenter?.id) {

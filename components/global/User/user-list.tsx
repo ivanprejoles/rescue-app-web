@@ -58,7 +58,8 @@ export const UserList: FC<Props> = ({ users, formatTimeAgo, onSelectUser }) => {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-semibold text-sm">
-                    {user.name.charAt(0).toUpperCase()}
+                    {user.name.charAt(0).toUpperCase() ||
+                      user.email.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                     <h4 className="font-semibold text-lg">{user.name}</h4>

@@ -6,16 +6,20 @@ import React from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
 
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+// Import your marker image from the public folder.
+// Ensure marker.png is located at /public/images/marker.png
+const customMarkerIcon = L.icon({
+  iconUrl: "/images/marker.png",
+  iconSize: [41, 41], // Adjust to the size of your marker image
+  iconAnchor: [20.5, 41], // Point of the icon that corresponds to the marker's location
+});
+
 import BoundDragHandler from "./bound-non-sticky";
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
+// IMPORTANT: We no longer need to import the default Leaflet icons or
+// use L.Icon.Default.mergeOptions, as it's unreliable.
+// The customIcon approach is more robust.
+// We also no longer need to delete L.Icon.Default.prototype._getIconUrl.
 
 const kawitBoundary: any = [
   [14.4, 120.85],
@@ -47,7 +51,8 @@ export default function LocationPickerMap({
     });
 
     return latitude && longitude ? (
-      <Marker position={[latitude, longitude]} />
+      // Pass the customIcon object directly to the Marker component's icon prop
+      <Marker position={[latitude, longitude]} icon={customMarkerIcon} />
     ) : null;
   }
 

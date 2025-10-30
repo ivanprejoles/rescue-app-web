@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import WeeklyForecastInteractive from "./fullweek-weather";
 import WordPullUp from "@/components/ui/word-pull-up";
 import BlurIn from "@/components/ui/word-blur-in";
@@ -8,10 +8,18 @@ import Counter from "@/components/ui/number-ticker";
 import { cn } from "@/lib/utils";
 import { fetchWeeklyWeatherData } from "@/hooks/use-meteo";
 import { useWeatherStore } from "@/hooks/use-meteo-storage";
+import { usePathname } from "next/navigation";
 
-const WeatherForecast = () => {
+interface Props {
+  isInSideBar: boolean;
+}
+
+const WeatherForecast = ({ isInSideBar = false }: Props) => {
   const { setWeeklyData, weekly, selectedDayIndex } = useWeatherStore();
   const dataPromise = fetchWeeklyWeatherData(14.44656, 120.90803);
+  const pathname = usePathname();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoSrc = weekly[selectedDayIndex]?.weather.video;
 
   useEffect(() => {
     let isMounted = true;
@@ -25,20 +33,44 @@ const WeatherForecast = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Ensure video source updates properly
+    video.load();
+
+    const controlVideo = async () => {
+      if (pathname === "/admin") {
+        await video.pause();
+      } else {
+        try {
+          await video.play();
+        } catch {
+          // Ignore autoplay restrictions
+        }
+      }
+    };
+
+    // Add a small delay to ensure the element is ready
+    const timeout = setTimeout(controlVideo, 100);
+
+    return () => clearTimeout(timeout);
+  }, [pathname, videoSrc]);
+
   return (
     <>
       <div className="w-full h-full absolute top-0 left-0 overflow-hidden">
         {/* Background video for light/dark mode */}
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
           playsInline
           className="w-full h-full object-cover"
-          src={
-            weekly[selectedDayIndex] && weekly[selectedDayIndex].weather.video
-          }
-        ></video>
+          src={videoSrc}
+        />
 
         {weekly[selectedDayIndex] &&
         weekly[selectedDayIndex].weather.color == "light" ? (
@@ -99,7 +131,7 @@ const WeatherForecast = () => {
 
           {/* right */}
         </div>
-        <WeeklyForecastInteractive />
+        <WeeklyForecastInteractive isInSideBar={isInSideBar} />
       </div>
     </>
   );
