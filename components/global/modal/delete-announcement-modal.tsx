@@ -10,6 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Announcement {
   id: string;
@@ -22,12 +23,14 @@ interface DeleteAnnouncementModalProps {
   onDeleted?: () => void; // callback after successful delete
 }
 
-export const DeleteAnnouncementModal: React.FC<
-  DeleteAnnouncementModalProps
-> = ({ announcement, onClose, onDeleted }) => {
+export const DeleteAnnouncementModal: React.FC<DeleteAnnouncementModalProps> = ({
+  announcement,
+  onClose,
+  onDeleted,
+}) => {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (announcement) {
@@ -39,14 +42,10 @@ export const DeleteAnnouncementModal: React.FC<
     }
   }, [announcement]);
 
-  async function handleDelete() {
-    if (!announcement) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`/api/announcements/${announcement.id}`, {
+  // ✅ Mutation for deleting announcement
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/admin/announcements/${id}`, {
         method: "DELETE",
       });
 
@@ -54,16 +53,18 @@ export const DeleteAnnouncementModal: React.FC<
         const data = await response.json();
         throw new Error(data.message || "Failed to delete announcement");
       }
-
+      return true;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["announcements"] }); // Refetch announcements
       onDeleted?.();
       setOpen(false);
       onClose();
-    } catch (err: any) {
+    },
+    onError: (err: any) => {
       setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  }
+    },
+  });
 
   if (!announcement) return null;
 
@@ -100,16 +101,16 @@ export const DeleteAnnouncementModal: React.FC<
               setOpen(false);
               onClose();
             }}
-            disabled={loading}
+            disabled={deleteMutation.isPending}
           >
             Cancel
           </Button>
           <Button
-            onClick={handleDelete}
-            disabled={loading}
+            onClick={() => announcement && deleteMutation.mutate(announcement.id)}
+            disabled={deleteMutation.isPending}
             className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
           >
-            {loading ? "Deleting..." : "Confirm"}
+            {deleteMutation.isPending ? "Deleting..." : "Confirm"}
           </Button>
         </DialogFooter>
       </DialogContent>

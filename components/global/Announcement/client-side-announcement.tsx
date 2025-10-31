@@ -24,16 +24,16 @@ import { DeleteAnnouncementModal } from "../modal/delete-announcement-modal";
 
 export default function ClientSideAnnouncement() {
   const queryClient = useQueryClient();
-  const {
-    data: announcements,
-    isLoading,
-    error,
-  } = useAdminQuery<Announcement[]>(["announcements"], getAnnouncementsClient, {
-    staleTime: Infinity,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-  });
+    const {
+      data: announcements,
+      isLoading,
+      error,
+    } = useAdminQuery<Announcement[]>(["announcements"], getAnnouncementsClient, {
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+    });
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] =
