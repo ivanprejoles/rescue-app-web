@@ -57,14 +57,21 @@ const MainHeader = () => {
                 </Button>
               </Link>
             )}
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-transparent text-white hover:bg-white/20 cursor-pointer drop-shadow-[0_0_2px_rgba(0,0,0,0.7)] text-xs md:text-base"
+            <Link
+              href="https://www.dropbox.com/scl/fi/kzcmdom6jqg7nexx1epi0/application-7ff286b0-160d-4aaf-b867-7c30ed536e5d.apk?rlkey=az4zq8bu2e5aa4qifyik88yfy&st=hqmw5mga&dl=1"
+              download
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <Download className="h-4 w-4 mr-2 drop-shadow-[0_0_2px_rgba(0,0,0,0.7)]" />
-              Download App
-            </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="bg-transparent text-white hover:bg-white/20 cursor-pointer drop-shadow-[0_0_2px_rgba(0,0,0,0.7)] text-xs md:text-base"
+              >
+                <Download className="h-4 w-4 mr-2 drop-shadow-[0_0_2px_rgba(0,0,0,0.7)]" />
+                Download App
+              </Button>
+            </Link>
           </div>
         </div>
       </GlowingWrapper>

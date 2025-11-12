@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "motion/react";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
 import { useState } from "react";
+import Link from "next/link";
 
 const DownloadSection = () => {
   const [hovered, setHovered] = useState(false);
@@ -58,21 +59,20 @@ const DownloadSection = () => {
                       instant access to rescue services on your mobile device.
                     </p>
                     <div className="flex flex-col z-20 sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                      <Button
-                        size="lg"
-                        className="glass-effect text-white hover:bg-green-500/20 border border-green-500/30 flex-1 cursor-pointer"
+                      <Link
+                        href="https://www.dropbox.com/scl/fi/kzcmdom6jqg7nexx1epi0/application-7ff286b0-160d-4aaf-b867-7c30ed536e5d.apk?rlkey=az4zq8bu2e5aa4qifyik88yfy&st=hqmw5mga&dl=1"
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        <Download className="h-5 w-5 mr-2" />
-                        Download for Android
-                      </Button>
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="border-white/20 text-white hover:bg-white/10 glass-effect flex-1 cursor-pointer"
-                      >
-                        <Download className="h-5 w-5 mr-2" />
-                        Download for iOS
-                      </Button>
+                        <Button
+                          size="lg"
+                          className="glass-effect text-white hover:bg-green-500/20 border border-green-500/30 flex-1 cursor-pointer"
+                        >
+                          <Download className="h-5 w-5 mr-2" />
+                          Download for Android
+                        </Button>
+                      </Link>
                     </div>
                     <div className="flex z-20 items-center justify-center gap-6 mt-8 text-sm text-gray-400">
                       <div className="flex items-center gap-2">

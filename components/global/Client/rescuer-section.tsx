@@ -28,8 +28,6 @@ type Props = {
 };
 
 const RescuerSection = ({ markers, evacuationCenters, user }: Props) => {
-  console.log(evacuationCenters);
-  console.log(markers);
 
   return (
     <>
