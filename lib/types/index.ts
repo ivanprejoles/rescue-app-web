@@ -224,7 +224,7 @@ export interface MapMarker {
   status?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
-  imageUrl: string | null;
+  imageUrl?: string | null;
   user?: MapUser | null;
   rescuer?: MapUser | null;
   barangay?: MapBarangay | null;

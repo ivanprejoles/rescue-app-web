@@ -28,7 +28,6 @@ type Props = {
 };
 
 const RescuerSection = ({ markers, evacuationCenters, user }: Props) => {
-
   return (
     <>
       <GlowingWrapper>
