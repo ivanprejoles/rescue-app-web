@@ -247,7 +247,6 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
     return reports.evacuationCenters.map((evac, index) => {
       if (!evac.latitude || !evac.longitude) return null;
 
-      console.log("evacuation center marker:", evac);
       return (
         <CustomMarker
           key={index}

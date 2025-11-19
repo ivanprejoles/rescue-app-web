@@ -71,14 +71,14 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
           }}
           onClick={handleMarkerClick}
         >
-          <h1 className="w-full text-center mb-2 text-sm font-bold">
+          <h1 className="w-full text-center text-sm mb-2 font-bold">
             {evac.name}
           </h1>
           <div className="w-full h-auto justify-center mb-2 text-sm font-bold relative flex">
             <div className="w-3/4 relative overflow-hidden rounded-md bg-white aspect-video text-sm font-bold">
               <Image
                 alt="marker-image"
-                src={"/images/marker.png"}
+                src={evac.imageUrl || "/images/no-image-provided.png"}
                 fill
                 className="object-cover"
               />
@@ -146,7 +146,7 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
             <div className="w-3/4 relative overflow-hidden rounded-md bg-white aspect-video text-sm font-bold">
               <Image
                 alt="marker-image"
-                src={"/images/marker.png"}
+                src={report.imageUrl || "/images/no-image-provided.png"}
                 fill
                 className="object-cover"
               />
