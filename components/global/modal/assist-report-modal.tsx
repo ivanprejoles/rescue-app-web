@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { assistMarkerRescuer } from "@/lib/client-request/marker";
 import { ClientData, Marker } from "@/lib/types";
 import { useAssistReportModalStore } from "@/hooks/modals/use-assist-report-modal";
+import { toast } from "sonner";
 
 export const AssistReportModal: React.FC = () => {
   const { isOpen, userIds, closeModal } = useAssistReportModalStore();
@@ -50,6 +51,9 @@ export const AssistReportModal: React.FC = () => {
         queryClient.setQueryData(["client-report"], context.previousData);
       }
       setError("Failed to update rescuer");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update rescuer"
+      );
       console.error(err);
     },
     onSuccess: (updatedMarker: Marker) => {
@@ -63,6 +67,7 @@ export const AssistReportModal: React.FC = () => {
         };
       });
       closeModal();
+      toast.success("Rescuer assigned successfully");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["client-report"] });

@@ -21,6 +21,7 @@ import {
   updateBarangayClient,
 } from "@/lib/client-request/barangay";
 import { RawBarangay, RawEvacuationCenter } from "@/lib/types";
+import { toast } from "sonner";
 
 const LocationPickerMap = dynamic(() => import("@/lib/map/location-picker"), {
   ssr: false, // disables server side rendering for this component
@@ -44,9 +45,11 @@ export const BarangayModal: React.FC = () => {
           barangays: [...oldData.barangays, newBarangay],
         };
       });
+      toast.success("Barangay created successfully");
     },
     onError: (error) => {
       console.error("Create barangay error:", error);
+      toast.error("Failed to create barangay");
     },
   });
 
@@ -66,9 +69,11 @@ export const BarangayModal: React.FC = () => {
           ),
         };
       });
+      toast.success("Barangay updated successfully");
     },
     onError: (error) => {
       console.error("Update barangay error:", error);
+      toast.error("Failed to update barangay");
     },
   });
 
@@ -146,7 +151,6 @@ export const BarangayModal: React.FC = () => {
       }
     } catch (error) {
       console.error("Error saving barangay:", error);
-      alert(error instanceof Error ? error.message : "Error occurred");
     } finally {
       closeModal(); // Close modal after mutation finishes (success or failure)
     }

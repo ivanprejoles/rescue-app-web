@@ -62,9 +62,13 @@ export const RescuerList: FC<RescuerListProps> = ({
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white font-semibold text-sm">
-                    {rescuer.name.charAt(0).toUpperCase()}
+                    {rescuer.name.length > 0
+                      ? rescuer.name.charAt(0).toUpperCase()
+                      : rescuer.email.charAt(0).toLocaleUpperCase()}
                   </div>
-                  <h4 className="font-semibold text-lg">{rescuer.name}</h4>
+                  <h4 className="font-semibold text-lg">
+                    {rescuer.name.length > 0 ? rescuer.name : rescuer.email}
+                  </h4>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-white bg-purple-500 px-3 py-1 rounded-full">
                   <Clock className="h-3 w-3" />
@@ -92,16 +96,26 @@ export const RescuerList: FC<RescuerListProps> = ({
                         icon={Phone}
                         label="Contact Number"
                         value={rescuer.phone_number}
-                        onClick={() => callNumber(rescuer.phone_number!)}
+                        onClick={() => {
+                          if (rescuer.phone_number.length > 0) {
+                            callNumber(rescuer.phone_number!);
+                          } else {
+                            return;
+                          }
+                        }}
                         iconColor="text-green-400"
                       />
                       <ContactButton
                         icon={Mail}
                         label="Email"
                         value={rescuer.email}
-                        onClick={() =>
-                          openGmailComposeWithRecipient(rescuer.email)
-                        }
+                        onClick={() => {
+                          if (rescuer.email.length > 0) {
+                            openGmailComposeWithRecipient(rescuer.email);
+                          } else {
+                            return;
+                          }
+                        }}
                         iconColor="text-blue-400"
                       />
                       <ContactButton

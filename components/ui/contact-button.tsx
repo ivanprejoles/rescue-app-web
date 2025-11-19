@@ -34,7 +34,7 @@ export const ContactButton: React.FC<ContactButtonProps> = ({
         className={`group/contact border-0.75 bg-transparent dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 p-3 flex flex-col items-center gap-1 rounded-lg px-2 py-1 cursor-pointer shadow-sm ${className}`}
       >
         <div className="flex flex-row gap-2 w-full">
-          <div className="w-fit rounded-md border border-gray-600 p-1">
+          <div className="w-fit rounded-md border border-gray-600 p-0.5">
             <Icon className={`h-4 w-4 border-gray-600 ${iconColor}`} />
           </div>
           <span className="text-md text-muted-foreground">{label}</span>
@@ -43,8 +43,8 @@ export const ContactButton: React.FC<ContactButtonProps> = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="group-hover/contact:underline text-foreground ml-auto w-full text-center line-clamp-1 cursor-pointer">
-                {value}
+              <span className="group-hover/contact:underline text-1xs text-foreground ml-auto w-full text-center line-clamp-1 cursor-pointer">
+                {value || "N/A"}
               </span>
             </TooltipTrigger>
 

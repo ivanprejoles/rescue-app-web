@@ -15,6 +15,7 @@ export async function getReportMarkersOnly(userId: string) {
       description,
       latitude,
       longitude,
+      imageUrl,
       status,
       created_at,
       updated_at,
@@ -58,6 +59,7 @@ export async function createMarker(data: any) {
     .insert({
       type: data.type,
       latitude: data.latitude,
+      imageUrl: data.imageUrl || null,
       longitude: data.longitude,
       description: data.description || null,
       status: data.status || "Active",
@@ -89,6 +91,7 @@ export async function updateMarker(id: string, updates: Partial<any>) {
         latitude,
         longitude,
         status,
+        imageUrl,
         created_at,
         updated_at,
         user: user_id (

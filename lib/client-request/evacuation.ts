@@ -2,6 +2,7 @@ export async function createEvacuationClient(data: {
   name: string;
   address?: string;
   latitude: number;
+  imageUrl: string | null;
   longitude: number;
   phone?: string;
   status: string;
@@ -24,6 +25,7 @@ export async function updateEvacuationClient(
     name: string;
     address?: string;
     latitude: number;
+    imageUrl: string | null;
     longitude: number;
     phone?: string;
     status: string;

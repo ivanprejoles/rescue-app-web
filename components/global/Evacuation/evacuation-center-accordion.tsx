@@ -22,6 +22,7 @@ import { formatReadableDate } from "@/lib/utils";
 import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { GradientWrapper } from "@/components/ui/background-gradient";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface EvacuationCenterAccordionProps {
   center: RawEvacuationCenter;
@@ -68,8 +69,17 @@ export const EvacuationCenterAccordion: React.FC<
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-black rounded-2xl flex items-center justify-center shadow-lg">
-                  <Shield size={24} className="text-white" />
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-black rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden">
+                  {center.imageUrl ? (
+                    <Image
+                      alt="marker-image"
+                      src={center.imageUrl}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <Shield size={24} className="text-white" />
+                  )}
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-1">{center.name}</h3>
@@ -176,8 +186,9 @@ export const EvacuationCenterAccordion: React.FC<
                     <StatCard
                       icon={Building2}
                       label="Barangays"
-                      value={`${center.barangays?.length || 0} barangay
-                      ${(center.barangays?.length || 0) !== 1 ? "s" : ""}`}
+                      value={`${center.barangays?.length || 0} barangay${
+                        (center.barangays?.length || 0) !== 1 ? "s" : ""
+                      }`}
                       iconColor="text-blue-400"
                     />
                     <StatCard

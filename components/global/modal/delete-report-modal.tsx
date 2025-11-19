@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { deleteMarkerClient } from "@/lib/client-request/marker";
 import { MarkerWithRelations } from "@/lib/types";
+import { toast } from "sonner";
 
 export const DeleteReportModal: React.FC = () => {
   const { isOpen, report, closeModal, onDeleted, setOnDeleted } =
@@ -31,9 +32,11 @@ export const DeleteReportModal: React.FC = () => {
       );
       onDeleted?.();
       closeModal();
+      toast.success("Report deleted successfully");
       setOnDeleted(undefined);
     },
     onError: (error: Error) => {
+      toast.error("Failed to delete report");
       setError(error instanceof Error ? error.message : "Failed to delete");
     },
   });
@@ -45,6 +48,7 @@ export const DeleteReportModal: React.FC = () => {
     try {
       await deleteMutation.mutateAsync(report.id);
     } catch {
+      toast.error(`Failed to delete report`);
       // error handled in onError callback
     }
   };

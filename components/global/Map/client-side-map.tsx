@@ -16,6 +16,10 @@ import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import FullScreen from "./full-screen";
 import { MapPinned } from "lucide-react";
 import StatisticsMap from "./statistics-map";
+import { useRealtimeMap } from "@/lib/supabase/realtime/admin";
+import { useMapStore } from "@/hooks/useMapStore";
+import { useDialogStore } from "@/hooks/use-full-screen";
+import { useCallback } from "react";
 
 const ReportsMap = dynamic(
   () => import("@/components/global/Map/reports-map"),
@@ -39,14 +43,30 @@ export async function fetchMarkers() {
 }
 
 export default function ClientSideMap() {
+  const { setActiveMarkerId } = useMapStore();
+  const { setOpen } = useDialogStore();
+  const handleSetMarkerId = useCallback(
+    (id: string) => {
+      setActiveMarkerId(id);
+    },
+    [setActiveMarkerId]
+  );
+
+  const handleSetOpen = useCallback(
+    (val: boolean) => {
+      setOpen(val);
+    },
+    [setOpen]
+  );
   // Fetch initial markers with React Query
-  const { data, isLoading, error } = useQuery<MapData>({
+  const { data, isPending, error } = useQuery<MapData>({
     queryKey: ["markers"],
     queryFn: fetchMarkers,
     staleTime: 1000 * 60 * 5,
   });
 
-  if (isLoading) return <p>Loading markers...</p>;
+  useRealtimeMap(handleSetMarkerId, handleSetOpen);
+  if (isPending) return <p>Loading markers...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (

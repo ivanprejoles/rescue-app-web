@@ -13,6 +13,7 @@ import { useDeleteIncidentModalStore } from "@/hooks/modals/use-delete-map-incid
 import { deleteBarangayClient } from "@/lib/client-request/barangay";
 import { deleteEvacuationClient } from "@/lib/client-request/evacuation";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import { toast } from "sonner";
 
 export const DeleteIncidentModal: React.FC = () => {
   const { isOpen, report, closeModal } = useDeleteIncidentModalStore();
@@ -40,9 +41,13 @@ export const DeleteIncidentModal: React.FC = () => {
     onSuccess: () => {
       // Invalidate "markers" cache to trigger refetch and update UI
       queryClient.invalidateQueries({ queryKey: ["markers"] });
+      toast.success(
+        `${capitalizeFirstLetter(report?.type || "item")} deleted successfully`
+      );
       closeModal();
     },
     onError: (error: Error) => {
+      toast.error(`Failed to delete ${report?.type}`);
       setError(error instanceof Error ? error.message : "Failed to delete");
     },
   });
@@ -54,6 +59,7 @@ export const DeleteIncidentModal: React.FC = () => {
     try {
       await deleteMutation.mutateAsync(report.id);
     } catch {
+      toast.error(`Failed to delete ${report?.type}`);
       // error handled in onError callback
     }
   };

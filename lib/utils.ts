@@ -65,22 +65,23 @@ export function transformMarkersToBarangayReports(
   const grouped: Record<string, BarangayReport> = {};
 
   markers.forEach((marker) => {
-    const barangayId = marker.barangays?.id;
-    const barangayName = marker.barangays?.name || "Unknown Barangay";
+    // 🟦 If barangay is null, use a fallback group
+    const barangayId = marker.barangays?.id ?? "no-barangay";
+    const barangayName = marker.barangays?.name ?? "No Barangay Assigned";
 
-    if (!barangayId) return;
-
+    // 🟦 Create barangay bucket if missing
     if (!grouped[barangayId]) {
       grouped[barangayId] = {
         id: barangayId,
         name: barangayName,
-        captain: "N/A",
         residents: 0,
         reports: [],
       };
     }
 
+    // 🟦 Push report
     grouped[barangayId].reports.push({
+      name: barangayName,
       id: marker.id,
       title: marker.description,
       description: marker.description,

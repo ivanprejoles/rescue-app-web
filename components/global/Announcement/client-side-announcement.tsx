@@ -21,19 +21,20 @@ import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { GradientWrapper } from "@/components/ui/background-gradient";
 import { ChartRadar } from "../chart/announcement-chart-radar";
 import { DeleteAnnouncementModal } from "../modal/delete-announcement-modal";
+import { toast } from "sonner";
 
 export default function ClientSideAnnouncement() {
   const queryClient = useQueryClient();
-    const {
-      data: announcements,
-      isLoading,
-      error,
-    } = useAdminQuery<Announcement[]>(["announcements"], getAnnouncementsClient, {
-      staleTime: Infinity,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      refetchOnMount: false,
-    });
+  const {
+    data: announcements,
+    isLoading,
+    error,
+  } = useAdminQuery<Announcement[]>(["announcements"], getAnnouncementsClient, {
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] =
@@ -64,13 +65,14 @@ export default function ClientSideAnnouncement() {
       );
 
       setIsFormOpen(false);
+      toast.success("Announcement created successfully");
     } catch (error) {
       // On error, rollback by removing temporary optimistic announcement
       queryClient.setQueryData(["announcements"], (old: Announcement[] = []) =>
         old.filter((ann) => ann.id !== tempId)
       );
 
-      alert(
+      toast.error(
         error && typeof error === "object" && "message" in error
           ? (error as { message: string }).message
           : "Failed to create announcement"
@@ -106,11 +108,12 @@ export default function ClientSideAnnouncement() {
 
       setEditingAnnouncement(null);
       setIsFormOpen(false);
+      toast.success("Announcement updated successfully");
     } catch (error) {
       // Rollback on error
       queryClient.setQueryData(["announcements"], previousAnnouncements);
 
-      alert(
+      toast.error(
         error && typeof error === "object" && "message" in error
           ? (error as { message: string }).message
           : "Failed to update announcement"
@@ -284,7 +287,7 @@ export default function ClientSideAnnouncement() {
         }}
         onSave={
           editingAnnouncement
-            ? handleEditAnnouncement as any
+            ? (handleEditAnnouncement as any)
             : handleCreateAnnouncement
         }
         editingAnnouncement={editingAnnouncement}

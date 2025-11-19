@@ -14,6 +14,7 @@ import { MarkerWithRelations, Report } from "@/lib/types";
 import { useReportModalStore } from "@/hooks/modals/use-update-report";
 import { useDeleteReportModalStore } from "@/hooks/modals/use-delete-report-modal";
 import { Flag } from "lucide-react";
+import { useRealtimeReportMarkers } from "@/lib/supabase/realtime/admin";
 
 export default function ClientSideReport() {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
@@ -23,6 +24,8 @@ export default function ClientSideReport() {
     getMarkersClient
   );
 
+  // Subscribe to realtime updates for report markers
+  useRealtimeReportMarkers();
   const { openModal: openReport } = useReportModalStore();
   const { openModal: openDeleteReport } = useDeleteReportModalStore();
 
@@ -30,6 +33,7 @@ export default function ClientSideReport() {
     return data ? transformMarkersToBarangayReports(data) : [];
   }, [data]);
 
+  console.log(data);
   const {
     searchTerm,
     setSearchTerm,
@@ -62,6 +66,7 @@ export default function ClientSideReport() {
 
   if (isLoading) return <p>Loading reports...</p>;
   if (error) return <p>Error loading reports.</p>;
+  console.log(filteredBarangays);
 
   return (
     <div className="min-h-screen gap-3 mt-3 flex flex-col">

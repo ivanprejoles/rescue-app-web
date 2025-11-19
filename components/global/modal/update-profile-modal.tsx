@@ -23,6 +23,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateClientProfile } from "@/lib/client-request/client";
 import { useProfileModalStore } from "@/hooks/modals/use-update-profile-modal";
 import { ClientAccessWithBarangays } from "@/lib/types";
+import { toast } from "sonner";
 
 export const ProfileEditModal = () => {
   const { isOpen, closeModal, form, setForm } = useProfileModalStore();
@@ -61,6 +62,12 @@ export const ProfileEditModal = () => {
         }
       );
       closeModal();
+      toast.success("Profile updated successfully");
+    },
+    onError: (error: Error) => {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update profile"
+      );
     },
   });
 

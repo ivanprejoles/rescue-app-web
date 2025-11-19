@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateUserRescuerClient } from "@/lib/client-request/rescuer-user";
+import { toast } from "sonner";
 
 // Reusable readonly input component
 type InputProps = React.ComponentProps<"input">;
@@ -96,6 +97,9 @@ export const UserModal: React.FC<UserModalProps> = ({
       if (context?.previousData) {
         queryClient.setQueryData(["rescuers-users"], context.previousData);
       }
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update user type"
+      );
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["rescuers-users"] });
@@ -104,6 +108,7 @@ export const UserModal: React.FC<UserModalProps> = ({
       onUpdated?.();
       setOpen(false);
       onClose();
+      toast.success("User type updated successfully");
     },
   });
 

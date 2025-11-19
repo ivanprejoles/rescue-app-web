@@ -531,3 +531,18 @@
 .touch-action-manipulation {
   touch-action: manipulation;
 }
+
+/* text size */
+
+.text-1xs {
+  font-size: 11px !important;
+  font-weight: bold;
+}
+.text-2xs {
+  font-size: 10px !important;
+  font-weight: bold;
+}
+.text-3xs {
+  font-size: 7px !important;
+  font-weight: bold;
+} 

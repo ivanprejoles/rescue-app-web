@@ -8,6 +8,7 @@ import {
   Activity,
   MapPinHouse,
   Settings,
+  Phone,
 } from "lucide-react";
 import { ColumnConfig } from "@/lib/types";
 import TooltipWrapper from "../tooltip-wrapper";
@@ -26,7 +27,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
       <TooltipWrapper text={marker.barangay?.name || "  Unknown  "} />
     ),
     sortable: false,
-    width: "w-40",
+    width: "w-32",
   },
   {
     key: "placed_by",
@@ -55,7 +56,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     render: (marker: any) =>
       marker.created_at ? (
         <TooltipWrapper
-          maxLength={25}
+          maxLength={12}
           text={new Date(marker.created_at).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
@@ -68,7 +69,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
         "  Unknown  "
       ),
     sortable: true,
-    width: "w-44",
+    width: "w-32",
   },
   {
     key: "status",
@@ -77,7 +78,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     render: (marker: any) => (
       <div className="flex items-center space-x-2">
         <span
-          className={`text-sm font-medium capitalize ${
+          className={`font-medium capitalize text-1xs ${
             statusTextColors[
               (marker.status as keyof typeof statusTextColors) ?? "Pending"
             ] || "text-gray-700"
@@ -93,7 +94,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
   {
     key: "phone",
     label: "Phone",
-    icon: MapPin,
+    icon: Phone,
     render: (marker: any) => (
       <div>
         <TooltipWrapper
@@ -146,28 +147,34 @@ export const defaultBarangayColumns: ColumnConfig[] = [
     label: "Name",
     icon: MapPinHouse,
     render: (barangay: any) => (
-      <TooltipWrapper text={barangay.name || " Unknown "} maxLength={25} />
+      <TooltipWrapper text={barangay.name || " Unknown "} maxLength={12} />
     ),
     sortable: true,
-    width: "w-56",
+    width: "w-32",
   },
   {
     key: "address",
     label: "Address",
     icon: MapPin,
     render: (barangay: any) => (
-      <TooltipWrapper text={barangay.address || " Unknown "} maxLength={40} />
+      <TooltipWrapper text={barangay.address || " Unknown "} maxLength={12} />
     ),
     sortable: false,
-    width: "flex-1",
+    width: "w-32",
   },
   {
     key: "phone",
     label: "Phone",
-    icon: User,
-    render: (barangay: any) => barangay.phone || " Unknown ",
+    icon: Phone,
+    render: (barangay: any) => (
+      <div>
+        <TooltipWrapper
+          text={(barangay.phone_number as string) || "   None   "}
+        />
+      </div>
+    ),
     sortable: false,
-    width: "w-36",
+    width: "flex-1",
   },
   {
     key: "map",
@@ -205,28 +212,32 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
     label: "Name",
     icon: MapPinHouse,
     render: (evac: any) => (
-      <TooltipWrapper text={evac.name || "  Unknown  "} maxLength={25} />
+      <TooltipWrapper text={evac.name || "  Unknown  "} maxLength={12} />
     ),
     sortable: true,
-    width: "w-56",
+    width: "w-32",
   },
   {
     key: "address",
     label: "Address",
     icon: MapPin,
     render: (evac: any) => (
-      <TooltipWrapper text={evac.address || "  Unknown  "} maxLength={25} />
+      <TooltipWrapper text={evac.address || "  Unknown  "} maxLength={12} />
     ),
     sortable: false,
-    width: "flex-1",
+    width: "w-32",
   },
   {
     key: "phone",
     label: "Phone",
-    icon: User,
-    render: (evac: any) => evac.phone || "  Unknown  ",
+    icon: Phone,
+    render: (evac: any) => (
+      <div>
+        <TooltipWrapper text={(evac.phone as string) || "   None   "} />
+      </div>
+    ),
     sortable: false,
-    width: "w-36",
+    width: "flex-1",
   },
   {
     key: "map",

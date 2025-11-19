@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     }
 
     // ✅ Step 2: Extract data from body
-    const { latitude, longitude, description, brgy_id, user_id } =
+    const { latitude, longitude, description, brgy_id, user_id, imageUrl } =
       await request.json();
 
     if (!latitude || !longitude) {
@@ -48,6 +48,7 @@ export async function POST(request: Request) {
       longitude,
       description,
       user_id, // Supabase UUID
+      imageUrl,
       brgy_id,
     });
 

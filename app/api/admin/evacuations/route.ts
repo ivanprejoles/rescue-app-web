@@ -28,7 +28,8 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const { name, address, latitude, longitude, phone, status } = body;
+    const { name, address, latitude, longitude, phone, status, imageUrl } =
+      body;
 
     if (!name || latitude === undefined || longitude === undefined) {
       return NextResponse.json(
@@ -44,6 +45,7 @@ export async function POST(req: Request) {
       latitude,
       longitude,
       phone,
+      imageUrl,
       status,
     });
 

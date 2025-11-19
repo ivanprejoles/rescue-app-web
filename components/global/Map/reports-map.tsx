@@ -26,6 +26,7 @@ import { Ambulance, MapPin, Phone, User } from "lucide-react";
 import RenderLocations from "./render-locations";
 import BoundDragHandler from "@/lib/map/bound-non-sticky";
 import { useUpdateAddMapModal } from "@/hooks/modals/use-update-add-map-modal";
+import Image from "next/image";
 
 export default function ReportsMap({ reports }: { reports?: MapData }) {
   const queryClient = useQueryClient();
@@ -105,13 +106,23 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
           }}
           onClick={handleMarkerClick}
         >
-          <h1 className="w-full text-center mb-2 text-lg font-bold">
+          <h1 className="w-full text-center mb-2 text-sm font-bold">
             {report.type === "report"
               ? `${report.user?.name || "Guest"} Report`
               : typeConfigs[report.type].label}
           </h1>
+          <div className="w-full h-auto justify-center mb-2 text-sm font-bold relative flex">
+            <div className="w-3/4 relative overflow-hidden rounded-md bg-white aspect-video text-sm font-bold">
+              <Image
+                alt="marker-image"
+                src={report.imageUrl || "/images/no-image-provided.png"}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
           {report.type === "report" ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <ContactButton
                 icon={User}
                 label="Email"
@@ -148,7 +159,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-2">
               <ContactButton
                 icon={MapPin}
                 label="Location"
@@ -196,10 +207,10 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
           }}
           onClick={handleMarkerClick}
         >
-          <h1 className="w-full text-center mb-2 text-lg font-bold">
-            {brgy.name}
+          <h1 className="w-full text-center mb-2 text-sm font-bold">
+            Barangay {brgy.name}
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <ContactButton
               icon={Phone}
               label="Phone"
@@ -236,6 +247,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
     return reports.evacuationCenters.map((evac, index) => {
       if (!evac.latitude || !evac.longitude) return null;
 
+      console.log("evacuation center marker:", evac);
       return (
         <CustomMarker
           key={index}
@@ -253,10 +265,20 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
           }}
           onClick={handleMarkerClick}
         >
-          <h1 className="w-full text-center mb-2 text-lg font-bold">
+          <h1 className="w-full text-center text-sm mb-2 font-bold">
             {evac.name}
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="w-full h-auto justify-center mb-2 text-sm font-bold relative flex">
+            <div className="w-3/4 relative overflow-hidden rounded-md bg-white aspect-video text-sm font-bold">
+              <Image
+                alt="marker-image"
+                src={evac.imageUrl || "/images/no-image-provided.png"}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <ContactButton
               icon={Phone}
               label="Phone"

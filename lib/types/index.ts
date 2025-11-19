@@ -7,6 +7,7 @@ export interface StoredMarkerType {
   description?: string;
   user_id?: string | null;
   rescuer_id?: string | null;
+  imageUrl: string;
   status?: string;
   additional_info?: Record<string, any> | null;
   latitude: number;
@@ -72,11 +73,13 @@ export interface Barangay {
 }
 
 export interface Report {
+  name: string;
   id: string;
   type: "report";
   category?: string;
   reportedBy?: string;
   contactNumber?: string;
+  imageUrl?: string;
   dateReported?: string;
   lastUpdated?: string;
   description: string;
@@ -94,7 +97,6 @@ export interface Report {
 export interface BarangayReport {
   id: string;
   name: string;
-  captain: string;
   residents: number;
   reports: Report[];
 }
@@ -134,7 +136,7 @@ export interface RawEvacuationCenter {
   phone?: string;
   status: string;
   created_at?: string;
-
+  imageUrl: string | null;
   evacuation_center_barangays?: {
     barangay_id: string;
   }[];
@@ -164,6 +166,7 @@ export interface Marker {
   id: string;
   type: string;
   description: string | null;
+  imageUrl: string | null;
   latitude: number;
   longitude: number;
   status: string | null;
@@ -221,7 +224,7 @@ export interface MapMarker {
   status?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
-
+  imageUrl: string | null;
   user?: MapUser | null;
   rescuer?: MapUser | null;
   barangay?: MapBarangay | null;
@@ -232,6 +235,7 @@ export interface MapEvacuationCenter {
   id: string;
   name: string;
   address?: string | null;
+  imageUrl: string;
   latitude?: number | null;
   longitude?: number | null;
   phone?: string | null;

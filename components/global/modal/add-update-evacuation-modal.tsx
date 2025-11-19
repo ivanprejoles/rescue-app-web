@@ -27,15 +27,21 @@ import {
   createEvacuationClient,
   updateEvacuationClient,
 } from "@/lib/client-request/evacuation";
+import { FileUploader } from "../file-uploader";
+import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 const LocationPickerMap = dynamic(() => import("@/lib/map/location-picker"), {
   ssr: false,
 });
 
 export const EvacuationCenterModal: React.FC = () => {
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const { isOpen, evacuationCenter, mode, closeModal } =
     useEvacuationCenterModalStore();
   const queryClient = useQueryClient();
+  const supabase = createClient();
 
   const createMutation = useMutation({
     mutationFn: createEvacuationClient,
@@ -53,10 +59,13 @@ export const EvacuationCenterModal: React.FC = () => {
         };
       });
       closeModal();
+      toast.success("Evacuation center created successfully");
     },
     onError: (error) => {
       console.error("Create evacuation center error:", error);
-      alert(error instanceof Error ? error.message : "Failed to create center");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create center"
+      );
     },
   });
 
@@ -91,16 +100,20 @@ export const EvacuationCenterModal: React.FC = () => {
         };
       });
       closeModal();
+      toast.success("Evacuation center updated successfully");
     },
     onError: (error) => {
       console.error("Update evacuation center error:", error);
-      alert(error instanceof Error ? error.message : "Failed to update center");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update center"
+      );
     },
   });
 
   const [formData, setFormData] = useState({
     name: "",
     address: "",
+    imageUrl: "",
     latitude: "",
     longitude: "",
     phone: "",
@@ -124,18 +137,21 @@ export const EvacuationCenterModal: React.FC = () => {
               ? evacuationCenter.longitude.toString()
               : "",
           phone: evacuationCenter.phone || "",
+          imageUrl: evacuationCenter.imageUrl || "",
           status: evacuationCenter.status || "active",
         });
       } else {
         setFormData({
           name: "",
           address: "",
+          imageUrl: "",
           latitude: "",
           longitude: "",
           phone: "",
           status: "active",
         });
       }
+      setImageFile(null);
       setErrors({});
     }
   }, [isOpen, mode, evacuationCenter]);
@@ -173,28 +189,80 @@ export const EvacuationCenterModal: React.FC = () => {
     e.preventDefault();
     if (isLoading || !validateForm()) return;
 
-    const payload = {
-      name: formData.name.trim(),
-      address: formData.address.trim(),
-      latitude: Number(formData.latitude),
-      longitude: Number(formData.longitude),
-      phone: formData.phone.trim() || undefined,
-      status: formData.status as "active" | "inactive" | "maintenance" | "full",
-    };
+    try {
+      let uploadedImageUrl = formData.imageUrl || null;
+      let oldFilePath: string | null = null;
 
-    console.log(payload);
+      // Store old image path for deletion (if update succeeds)
+      if (mode === "edit" && formData.imageUrl) {
+        try {
+          const url = new URL(formData.imageUrl);
+          const pathParts = url.pathname.split("/");
+          oldFilePath = `${pathParts[pathParts.length - 2]}/${pathParts.pop()}`;
+        } catch {
+          oldFilePath = null;
+        }
+      }
 
-    if (mode === "add") {
-      await createMutation.mutateAsync(payload);
-    } else if (mode === "edit" && evacuationCenter?.id) {
-      await updateMutation.mutateAsync({
-        id: evacuationCenter.id,
-        data: payload,
-      });
+      // 🔥 Upload ONLY if user chooses a new image
+      if (imageFile instanceof File) {
+        const folder = "evacuation";
+        const fileName = `evac-${Date.now()}-${imageFile.name}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("report-storage")
+          .upload(`${folder}/${fileName}`, imageFile, {
+            upsert: false, // important!
+          });
+
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          alert("Failed to upload image");
+          return;
+        }
+
+        // Generate public URL for DB
+        uploadedImageUrl = supabase.storage
+          .from("report-storage")
+          .getPublicUrl(`${folder}/${fileName}`).data.publicUrl;
+      }
+
+      // ---------- Save to Database ----------
+      const payload = {
+        name: formData.name.trim(),
+        address: formData.address.trim(),
+        latitude: Number(formData.latitude),
+        longitude: Number(formData.longitude),
+        phone: formData.phone.trim() || undefined,
+        status: formData.status,
+        imageUrl: uploadedImageUrl,
+      };
+
+      if (mode === "add") {
+        await createMutation.mutateAsync(payload);
+      } else if (mode === "edit" && evacuationCenter?.id) {
+        await updateMutation.mutateAsync({
+          id: evacuationCenter.id,
+          data: payload,
+        });
+      }
+
+      // ---------- Delete old image if new upload successful ----------
+      if (oldFilePath && imageFile instanceof File) {
+        await supabase.storage.from("report-storage").remove([oldFilePath]);
+      }
+    } catch (error) {
+      console.error("Submit failed:", error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to save evacuation center"
+      );
     }
   };
 
   const onClose = () => {
+    setImageFile(null);
     closeModal();
   };
 
@@ -249,6 +317,40 @@ export const EvacuationCenterModal: React.FC = () => {
             {errors.address && (
               <p className="text-sm text-red-600">{errors.address}</p>
             )}
+          </div>
+          <Label className="text-sm font-medium text-center">
+            Upload Marker Image
+          </Label>
+          <div className="flex flex-col gap-4 md:flex-row items-center space-y-4">
+            {/* File uploader */}
+
+            <div className="w-full max-w-xs relative overflow-hidden">
+              <FileUploader
+                multiple={false}
+                onChange={(files) => setImageFile(files[0])}
+                removeIndex={null}
+              />
+            </div>
+
+            {/* Image preview */}
+            <div className="w-[180px] h-[180px] border rounded-md overflow-hidden shadow-sm relative">
+              {imageFile || formData.imageUrl ? (
+                <Image
+                  src={
+                    imageFile
+                      ? URL.createObjectURL(imageFile) // New file selected
+                      : formData.imageUrl // Existing URL
+                  }
+                  alt="Evacuation Preview"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full h-full text-sm text-muted-foreground">
+                  No image selected
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Map picker + Lat/Lon */}
@@ -365,6 +467,7 @@ export const EvacuationCenterModal: React.FC = () => {
             <Button
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 cursor-pointer text-white"
+              disabled={isLoading}
             >
               {isLoading
                 ? "Saving..."

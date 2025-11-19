@@ -53,6 +53,7 @@ export async function PUT(
       latitude,
       longitude,
       status,
+      imageUrl,
       rescuer_id,
     } = await req.json();
 
@@ -65,6 +66,7 @@ export async function PUT(
       brgy_id,
       description,
       latitude,
+      imageUrl,
       longitude,
       status,
       rescuer_id,

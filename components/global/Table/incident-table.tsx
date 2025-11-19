@@ -16,6 +16,14 @@ import {
   defaultBarangayColumns,
   defaultEvacuationColumns,
 } from "./table-config";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface IncidentTableProps {
   markers?: MapMarker[];
@@ -184,53 +192,54 @@ const IncidentTable: React.FC<IncidentTableProps> = ({
             </CardHeader>
 
             {!isCollapsed && (
-              <CardContent className="overflow-x-auto p-0">
-                <div className="px-6 py-3 border-b border-gray-200">
-                  <div className="flex items-center space-x-4">
-                    {columnsToUse.map((column, idx) => {
-                      const Icon = column.icon;
-                      const isSorted = sortConfig?.key === column.key;
-                      return (
-                        <div
-                          key={idx}
-                          className={`flex items-center space-x-1 ${
-                            column.width || "flex-1"
-                          } ${
-                            column.sortable ? "cursor-pointer" : ""
-                          }  text-sm font-medium`}
-                          onClick={() => handleSort(column.key)}
-                        >
-                          {Icon && <Icon className="w-4 h-4" />}
-                          <span>{column.label}</span>
-                          {column.sortable && isSorted && (
-                            <span className="text-xs">
-                              {sortConfig?.direction === "asc" ? "↑" : "↓"}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="divide-y divide-gray-100">
-                  {items.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="px-6 py-4 hover:bg-muted transition-colors duration-200"
-                    >
-                      <div className="flex items-center space-x-4">
+              <CardContent className="p-0 overflow-x-auto">
+                <Table className="min-w-max">
+                  <TableHeader>
+                    <TableRow>
+                      {columnsToUse.map((column, idx) => {
+                        const Icon = column.icon;
+                        const isSorted = sortConfig?.key === column.key;
+
+                        return (
+                          <TableHead
+                            key={idx}
+                            className={`whitespace-nowrap text-1xs font-medium ${
+                              column.sortable
+                                ? "cursor-pointer select-none"
+                                : ""
+                            }`}
+                            onClick={() => handleSort(column.key)}
+                          >
+                            <div className="flex items-center gap-1">
+                              {Icon && <Icon className="w-4 h-4" />}
+                              <span>{column.label}</span>
+                              {column.sortable && isSorted && (
+                                <span className="text-xs">
+                                  {sortConfig?.direction === "asc" ? "↑" : "↓"}
+                                </span>
+                              )}
+                            </div>
+                          </TableHead>
+                        );
+                      })}
+                    </TableRow>
+                  </TableHeader>
+
+                  <TableBody>
+                    {items.map((item, idx) => (
+                      <TableRow key={idx} className="hover:bg-muted/50">
                         {columnsToUse.map((column, colIdx) => (
-                          <div
+                          <TableCell
                             key={colIdx}
-                            className={column.width || "flex-1"}
+                            className="whitespace-nowrap text-center"
                           >
                             {column.render(item)}
-                          </div>
+                          </TableCell>
                         ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </CardContent>
             )}
           </Card>

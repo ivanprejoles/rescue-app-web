@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -37,6 +37,10 @@ import * as z from "zod";
 import { MapData } from "@/lib/types";
 import { useUpdateAddMapModal } from "@/hooks/modals/use-update-add-map-modal";
 import { fetchMarkers } from "../Map/client-side-map";
+import { FileUploader } from "../file-uploader";
+import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 const LocationPickerMap = dynamic(() => import("@/lib/map/location-picker"), {
   ssr: false,
@@ -46,6 +50,7 @@ const formSchema = z.object({
   type: z.string().min(1, "Type is required").optional(),
   brgyId: z.string().min(1, "Barangay is required").optional(),
   description: z.string().optional(),
+  imageUrl: z.string().nullable().optional(),
   name: z.string().min(1, "Name is required").optional(),
   address: z.string().optional(),
   phone: z
@@ -67,6 +72,7 @@ const HAZARD_TYPES = [
 ];
 
 export const UpdateAddMapModal: React.FC = () => {
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const { isOpen, mode, initialData, closeModal } = useUpdateAddMapModal();
   const { data, isLoading: mapLoading } = useQuery<MapData>({
     queryKey: ["markers"],
@@ -75,6 +81,7 @@ export const UpdateAddMapModal: React.FC = () => {
   });
 
   const queryClient = useQueryClient();
+  const supabase = createClient();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -85,6 +92,7 @@ export const UpdateAddMapModal: React.FC = () => {
       name: "",
       address: "",
       phone: "",
+      imageUrl: "",
       latitude: "",
       longitude: "",
     },
@@ -95,6 +103,7 @@ export const UpdateAddMapModal: React.FC = () => {
     if (!isOpen) return;
 
     // Clear form first
+    setImageFile(null);
     form.reset();
 
     // Then set values based on mode and data
@@ -102,6 +111,7 @@ export const UpdateAddMapModal: React.FC = () => {
       form.reset({
         type: initialData?.type || "",
         brgyId: initialData.barangay?.id || "",
+        imageUrl: initialData.imageUrl || "",
         description: initialData.description || "",
         latitude: String(initialData.latitude || ""),
         longitude: String(initialData.longitude || ""),
@@ -114,6 +124,7 @@ export const UpdateAddMapModal: React.FC = () => {
         name: initialData.name || "",
         address: initialData.address || "",
         phone: initialData.phone || "",
+        imageUrl: initialData.imageUrl || "",
         latitude: String(initialData.latitude || ""),
         longitude: String(initialData.longitude || ""),
         type: undefined,
@@ -130,6 +141,7 @@ export const UpdateAddMapModal: React.FC = () => {
         address: mode === "evacuation" ? "" : undefined,
         phone: mode === "evacuation" ? "" : undefined,
         latitude: "",
+        imageUrl: "",
         longitude: "",
       });
     }
@@ -140,118 +152,164 @@ export const UpdateAddMapModal: React.FC = () => {
     const previousData = queryClient.getQueryData<MapData>(queryKey);
 
     try {
-      if (mode === "marker") {
-        const payload = {
-          type: values.type,
-          brgyId: values.brgyId,
-          description: values.description,
-          latitude: Number(values.latitude),
-          longitude: Number(values.longitude),
-          status: "Active",
-        };
+      // ---------- 1️⃣ Handle image upload ----------
+      let uploadedImageUrl = values.imageUrl || null;
+      let oldFilePath: string | null = null;
 
-        if (initialData?.id) {
-          console.log("updating");
-          await fetch(`/api/admin/markers/${initialData.id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
+      // Store old image path for deletion (if update succeeds)
+      if (initialData?.id && values.imageUrl) {
+        try {
+          const url = new URL(values.imageUrl);
+          const pathParts = url.pathname.split("/");
+          oldFilePath = `${pathParts[pathParts.length - 2]}/${pathParts.pop()}`;
+        } catch {
+          oldFilePath = null;
+        }
+      }
+
+      // Upload ONLY if user chooses a new image
+      if (imageFile instanceof File) {
+        const folder = mode === "marker" ? "reports" : "evacuation";
+        const fileName = `${mode}-${Date.now()}-${imageFile.name}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("report-storage")
+          .upload(`${folder}/${fileName}`, imageFile, {
+            upsert: false, // important: prevents overwriting
           });
-          queryClient.setQueryData<MapData>(queryKey, (old: any) => {
-            if (!old) return old;
+
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          alert("Failed to upload image");
+          return;
+        }
+
+        uploadedImageUrl = supabase.storage
+          .from("report-storage")
+          .getPublicUrl(`${folder}/${fileName}`).data.publicUrl;
+      }
+
+      // ---------- 2️⃣ Prepare payload ----------
+      const payload: any =
+        mode === "marker"
+          ? {
+              type: values.type,
+              brgyId: values.brgyId,
+              description: values.description,
+              imageUrl: uploadedImageUrl,
+              latitude: Number(values.latitude),
+              longitude: Number(values.longitude),
+              status: "Active",
+            }
+          : {
+              name: values.name,
+              address: values.address || null,
+              phone: values.phone || null,
+              imageUrl: uploadedImageUrl,
+              latitude: Number(values.latitude),
+              longitude: Number(values.longitude),
+              status: "Active",
+            };
+
+      // ---------- 3️⃣ Handle API request ----------
+      if (initialData?.id) {
+        // Update
+        const endpoint =
+          mode === "marker"
+            ? `/api/admin/markers/${initialData.id}`
+            : `/api/admin/evacuations/${initialData.id}`;
+
+        const res = await fetch(endpoint, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          toast.error("Failed to update");
+          throw new Error("Failed to update");
+        }
+
+        toast.success(
+          mode === "marker"
+            ? "Hazard marker updated successfully"
+            : "Evacuation center updated successfully"
+        );
+
+        queryClient.setQueryData<MapData>(queryKey, (old: any) => {
+          if (!old) return old;
+          if (mode === "marker") {
             return {
               ...old,
               markers: old.markers.map((m: any) =>
                 m.id === initialData.id ? { ...m, ...payload } : m
               ),
             };
-          });
-        } else {
-          console.log("adding");
-          queryClient.setQueryData<MapData>(queryKey, (old: any) =>
-            old
-              ? {
-                  ...old,
-                  markers: [
-                    ...old.markers,
-                    {
-                      id: `temp-id-${Date.now()}`,
-                      ...payload,
-                      created_at: new Date().toISOString(),
-                      rescuer: null,
-                      user: null,
-                    },
-                  ],
-                }
-              : old
-          );
-          const res = await fetch("/api/admin/markers", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (!res.ok) throw new Error("Failed to save marker");
-        }
-      } else if (mode === "evacuation") {
-        const payload = {
-          name: values.name,
-          address: values.address || null,
-          phone: values.phone || null,
-          latitude: Number(values.latitude),
-          longitude: Number(values.longitude),
-          status: "Active",
-        };
-
-        if (initialData?.id) {
-          await fetch(`/api/admin/evacuations/${initialData.id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          queryClient.setQueryData<MapData>(queryKey, (old: any) => {
-            if (!old) return old;
+          } else {
             return {
               ...old,
               evacuationCenters: old.evacuationCenters.map((e: any) =>
                 e.id === initialData.id ? { ...e, ...payload } : e
               ),
             };
-          });
-        } else {
-          queryClient.setQueryData<MapData>(queryKey, (old: any) =>
-            old
-              ? {
-                  ...old,
-                  evacuationCenters: [
-                    ...old.evacuationCenters,
-                    {
-                      id: `temp-id-${Date.now()}`,
-                      ...payload,
-                      created_at: new Date().toISOString(),
-                    },
-                  ],
-                }
-              : old
-          );
-          const res = await fetch("/api/admin/evacuations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (!res.ok) throw new Error("Failed to save evacuation center");
+          }
+        });
+
+        // Delete old image after successful upload
+        if (oldFilePath && imageFile instanceof File) {
+          await supabase.storage.from("report-storage").remove([oldFilePath]);
         }
+      } else {
+        // Create
+        const endpoint =
+          mode === "marker" ? "/api/admin/markers" : "/api/admin/evacuations";
+
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          toast.error("Failed to create");
+          throw new Error("Failed to create");
+        }
+
+        toast.success(
+          mode === "marker"
+            ? "Hazard marker added successfully"
+            : "Evacuation center added successfully"
+        );
+
+        queryClient.setQueryData<MapData>(queryKey, (old: any) => {
+          if (!old) return old;
+          const tempItem = {
+            id: `temp-id-${Date.now()}`,
+            ...payload,
+            created_at: new Date().toISOString(),
+            rescuer: null,
+            user: null,
+          };
+          if (mode === "marker") {
+            return { ...old, markers: [...old.markers, tempItem] };
+          } else {
+            return {
+              ...old,
+              evacuationCenters: [...old.evacuationCenters, tempItem],
+            };
+          }
+        });
       }
 
+      // ---------- 4️⃣ Clear imageFile & refresh ----------
+      setImageFile(null);
       await queryClient.invalidateQueries({ queryKey });
       closeModal();
     } catch (error) {
       console.error("Save failed", error);
-      if (previousData) {
-        queryClient.setQueryData(queryKey, previousData);
-      }
+      if (previousData) queryClient.setQueryData(queryKey, previousData);
+      alert(error instanceof Error ? error.message : "Failed to save data");
     }
   };
-
   const isEditing = Boolean(initialData?.id);
   const isSubmitting = form.formState.isSubmitting;
 
@@ -443,6 +501,48 @@ export const UpdateAddMapModal: React.FC = () => {
                   </div>
                 </div>
               )}
+              <Label className="text-sm font-medium text-center">
+                Upload Marker Image
+              </Label>
+              <div className="flex flex-col gap-4 md:flex-row items-center space-y-4">
+                {/* File uploader */}
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={() => (
+                    <FormItem className="w-full max-w-xs relative overflow-hidden">
+                      <FormControl>
+                        <FileUploader
+                          multiple={false}
+                          onChange={(files) => setImageFile(files[0])}
+                          removeIndex={null}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Image preview */}
+                <div className="w-[180px] h-[180px] border rounded-md overflow-hidden shadow-sm relative">
+                  {imageFile || form.watch("imageUrl") ? (
+                    <Image
+                      src={
+                        imageFile
+                          ? URL.createObjectURL(imageFile) // New file selected
+                          : form.watch("imageUrl")! // Existing URL
+                      }
+                      alt="Marker Preview"
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full text-sm text-muted-foreground">
+                      No image selected
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Location Fields */}
               <div className="space-y-4">

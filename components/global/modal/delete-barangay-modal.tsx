@@ -11,6 +11,7 @@ import { useDeleteBarangayModalStore } from "@/hooks/modals/use-delete-barangay-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteBarangayClient } from "@/lib/client-request/barangay";
 import { RawBarangay, RawEvacuationCenter } from "@/lib/types";
+import { toast } from "sonner";
 
 export function DeleteBarangayModal() {
   const { isOpen, barangayName, barangayId, closeModal } =
@@ -31,7 +32,11 @@ export function DeleteBarangayModal() {
               }
             | undefined
         ) => {
-          if (!oldData) return oldData;
+          if (!oldData) {
+            return oldData;
+          }
+
+          toast.success("Barangay deleted successfully");
 
           const updatedEvacuations = oldData.evacuations.map((center) => {
             const updatedJoin = center.evacuation_center_barangays?.filter(
@@ -60,7 +65,7 @@ export function DeleteBarangayModal() {
     },
     onError: (error) => {
       console.error("Delete barangay failed", error);
-      // Optionally show error UI
+      toast.error("Failed to delete barangay");
     },
   });
 
@@ -71,6 +76,7 @@ export function DeleteBarangayModal() {
     try {
       await deleteMutation.mutateAsync(barangayId);
     } catch (error) {
+      toast.error("Failed to delete barangay");
       console.error("Delete failed:", error);
       // Optionally show user error feedback here
     } finally {

@@ -44,6 +44,7 @@ export async function createEvacuationCenter(data: {
   name: string;
   address?: string | null;
   latitude?: number | null;
+  imageUrl?: string | null;
   longitude?: number | null;
   phone?: string | null;
   status?: string;
@@ -59,6 +60,7 @@ export async function createEvacuationCenter(data: {
         latitude: data.latitude ?? null,
         longitude: data.longitude ?? null,
         phone: data.phone ?? null,
+        imageUrl: data.imageUrl ?? null,
         status: data.status ?? "open",
       },
     ])
@@ -115,6 +117,7 @@ export async function updateEvacuationCenter(
     longitude?: number | null;
     phone?: string | null;
     status?: string | null;
+    imageUrl?: string | null;
   }>
 ) {
   const supabase = await createServerSupabaseClient();
@@ -123,11 +126,6 @@ export async function updateEvacuationCenter(
     .from("evacuation_centers")
     .update({
       ...updates,
-      address: updates.address ?? undefined,
-      latitude: updates.latitude ?? undefined,
-      longitude: updates.longitude ?? undefined,
-      phone: updates.phone ?? undefined,
-      status: updates.status ?? undefined,
     })
     .eq("id", id)
     .select()

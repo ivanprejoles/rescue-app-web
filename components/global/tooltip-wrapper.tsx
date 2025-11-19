@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Tooltip,
   TooltipContent,
@@ -16,7 +21,7 @@ interface WrapperProps {
   className?: string;
 }
 
-const TooltipWrapper = ({ text, maxLength = 15, className }: WrapperProps) => {
+const TooltipWrapper = ({ text, maxLength = 12, className }: WrapperProps) => {
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 640px)");
 
@@ -40,7 +45,7 @@ const TooltipWrapper = ({ text, maxLength = 15, className }: WrapperProps) => {
         <DialogContent
           className={`sm:max-w-[500px] text-xs md:text-sm px-2 ${className}`}
         >
-          <DialogTitle>{text}</DialogTitle>
+          <DialogTitle className="text-1xs">{text}</DialogTitle>
         </DialogContent>
       </Dialog>
     );
@@ -50,14 +55,16 @@ const TooltipWrapper = ({ text, maxLength = 15, className }: WrapperProps) => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className={`cursor-help ${className}`}>
+          <span
+            className={`cursor-help text-1xs text-start line-clamp-1 truncate ${className}`}
+          >
             {truncatedText}
             {showFullText && <span className="text-muted-foreground">...</span>}
           </span>
         </TooltipTrigger>
         <TooltipContent
           side="bottom"
-          className={`max-auto bg-muted text-muted-foreground px-3 py-2 rounded-md shadow-lg ${className}`}
+          className={`max-auto bg-muted text-muted-foreground px-3 py-2 rounded-md shadow-lg  ${className}`}
         >
           {text}
         </TooltipContent>

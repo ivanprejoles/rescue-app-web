@@ -11,6 +11,7 @@ export async function getAllMarkersForMap() {
         description,
         latitude,
         longitude,
+        imageUrl,
         status,
         created_at,
         updated_at,
@@ -44,7 +45,9 @@ export async function getAllMarkersForMap() {
 
     (await supabase)
       .from("evacuation_centers")
-      .select("id, name, address, latitude, longitude, phone, status"),
+      .select(
+        "id, name, address, latitude, longitude, phone, status, imageUrl"
+      ),
   ]);
 
   if (markersRes.error) throw markersRes.error;

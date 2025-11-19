@@ -25,7 +25,7 @@ export async function assistMarkerRescuer(
   const res = await fetch(`/api/admin/markers/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...data }),
+    body: JSON.stringify({ ...data, status: "Assigned" }),
   });
   if (!res.ok) {
     const errorData = await res.json();

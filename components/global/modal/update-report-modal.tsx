@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import dynamic from "next/dynamic";
 import { formatDate } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const LocationPickerMap = dynamic(() => import("@/lib/map/location-picker"), {
   ssr: false, // disables server side rendering for this component
@@ -75,7 +76,7 @@ export const ReportModal: React.FC = () => {
         queryClient.setQueryData(["markers"], context.previousData);
       }
       setError("Failed to update status");
-      console.error(err);
+      toast.error("Failed to update status");
     },
 
     onSuccess: (updatedMarker) => {
@@ -88,6 +89,7 @@ export const ReportModal: React.FC = () => {
           ),
         };
       });
+      toast.success("Status updated successfully");
       closeModal();
     },
 
@@ -176,7 +178,9 @@ export const ReportModal: React.FC = () => {
           <div className="space-y-2">
             <LocationPickerMap // Use the updated component
               latitude={report.latitude ? Number(report.latitude) : undefined}
-              longitude={report.longitude ? Number(report.longitude) : undefined}
+              longitude={
+                report.longitude ? Number(report.longitude) : undefined
+              }
               onChange={() =>
                 // lat: { toString: () => string },
                 // lng: { toString: () => string }

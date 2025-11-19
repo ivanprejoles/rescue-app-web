@@ -23,17 +23,6 @@ type Props = {
 
 const EvacuationManagement = ({ evacuationCenters, allBarangays }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
-  // const queryClient = useQueryClient();
-  // const [selectedCenter, setSelectedCenter] = useState<
-  //   RawEvacuationCenter | undefined
-  // >();
-  // const [centerModalMode, setCenterModalMode] = useState<"add" | "edit">("add");
-  // const [isCenterModalOpen, setIsCenterModalOpen] = useState(false);
-  // const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // const [centerToDelete, setCenterToDelete] = useState<{
-  //   id: string;
-  //   name: string;
-  // } | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
   const [assignedCenterId, setAssignedCenterId] = useState<string>("");
   const [assignedBarangayIds, setAssignedBarangayIds] = React.useState<
@@ -52,6 +41,7 @@ const EvacuationManagement = ({ evacuationCenters, allBarangays }: Props) => {
         )
     );
   }, [evacuationCenters, searchTerm]);
+  console.log(filteredCenters);
 
   const handleAddCenter = () => {
     openAddUpdateModal("add");

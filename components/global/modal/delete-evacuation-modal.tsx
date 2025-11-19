@@ -11,6 +11,7 @@ import { useDeleteEvacuationModalStore } from "@/hooks/modals/use-delete-evacuat
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteEvacuationClient } from "@/lib/client-request/evacuation";
 import { RawBarangay, RawEvacuationCenter } from "@/lib/types";
+import { toast } from "sonner";
 
 export function DeleteEvacuationModal() {
   const { isOpen, evacuationName, evacuationId, closeModal } =
@@ -43,10 +44,12 @@ export function DeleteEvacuationModal() {
           };
         }
       );
+      toast.success("Evacuation center deleted successfully");
       closeModal();
     },
     onError: (error) => {
       console.error("[deleteEvacuationMutation] error:", error);
+      toast.error("Failed to delete evacuation center");
       // Optional: Display error to user here
     },
   });
@@ -62,7 +65,7 @@ export function DeleteEvacuationModal() {
       await deleteMutation.mutateAsync(evacuationId);
     } catch (error) {
       console.error("delete evacuation center error:", error);
-      alert(error instanceof Error ? error.message : "Failed to delete center");
+      toast.error("Failed to delete evacuation center");
     } finally {
       setIsLoading(false);
     }

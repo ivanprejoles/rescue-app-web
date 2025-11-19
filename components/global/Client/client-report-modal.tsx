@@ -31,6 +31,9 @@ import { ClientData } from "@/lib/types";
 import { useAdminQuery } from "@/lib/useQuery";
 import { getUserMarkersClient } from "@/lib/client-fetchers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FileUploader } from "../file-uploader";
+import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
 
 const LocationPickerMap = dynamic(() => import("@/lib/map/location-picker"), {
   ssr: false,
@@ -39,6 +42,7 @@ const LocationPickerMap = dynamic(() => import("@/lib/map/location-picker"), {
 const formSchema = z.object({
   description: z.string().optional(),
   brgy_id: z.string().optional(),
+  imageUrl: z.string().nullable().optional(),
   latitude: z.string().min(1, "Latitude required"),
   longitude: z.string().min(1, "Longitude required"),
 });
@@ -46,8 +50,11 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function ClientReportModal() {
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
+
   const queryClient = useQueryClient();
+  const supabase = createClient();
 
   // ✅ Fetch logged-in client data
   const {
@@ -66,6 +73,7 @@ export default function ClientReportModal() {
     defaultValues: {
       description: "",
       brgy_id: "",
+      imageUrl: "",
       latitude: "",
       longitude: "",
     },
@@ -78,21 +86,75 @@ export default function ClientReportModal() {
       description: "",
       latitude: "",
       longitude: "",
+      imageUrl: "",
       brgy_id: clientData.user.brgy_id ? String(clientData.user.brgy_id) : "",
     });
   }, [open, clientData, form]);
 
   // ✅ Mutation for creating report
+  // const createReportMutation = useMutation({
+  //   mutationFn: async (values: FormData) => {
+  //     if (!clientData?.user?.id) throw new Error("No valid user ID found");
+
+  //     const response = await fetch("/api/client/marker", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         ...values,
+  //         user_id: clientData.user.id,
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.error || "Failed to submit report");
+  //     }
+
+  //     return response.json();
+  //   },
+  //   onSuccess: () => {
+  //     // ✅ Refresh client-report data
+  //     queryClient.invalidateQueries({ queryKey: ["client-report"] });
+  //     closeModal();
+  //   },
+  //   onError: (error) => {
+  //     console.error("Error submitting report:", error.message);
+  //   },
+  // });
   const createReportMutation = useMutation({
     mutationFn: async (values: FormData) => {
       if (!clientData?.user?.id) throw new Error("No valid user ID found");
 
+      // ---------- 1️⃣ Upload image if selected ----------
+      let uploadedImageUrl = null;
+
+      if (imageFile instanceof File) {
+        const fileName = `client-${Date.now()}-${imageFile.name}`;
+
+        const {  error } = await supabase.storage
+          .from("report-storage")
+          .upload(`reports/${fileName}`, imageFile, {
+            upsert: false,
+          });
+
+        if (error) {
+          console.error("Upload error:", error);
+          throw new Error("Failed to upload image");
+        }
+
+        uploadedImageUrl = supabase.storage
+          .from("report-storage")
+          .getPublicUrl(`reports/${fileName}`).data.publicUrl;
+      }
+
+      // ---------- 2️⃣ Send data to API ----------
       const response = await fetch("/api/client/marker", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...values,
-          user_id: clientData.user.id,
+          imageUrl: uploadedImageUrl, // attach uploaded URL
+          user_id: clientData.user.id, // required
         }),
       });
 
@@ -103,11 +165,14 @@ export default function ClientReportModal() {
 
       return response.json();
     },
+
+    // ---------- 3️⃣ After success ----------
     onSuccess: () => {
-      // ✅ Refresh client-report data
       queryClient.invalidateQueries({ queryKey: ["client-report"] });
+      setImageFile(null);
       closeModal();
     },
+
     onError: (error) => {
       console.error("Error submitting report:", error.message);
     },
@@ -175,6 +240,49 @@ export default function ClientReportModal() {
                   </FormItem>
                 )}
               />
+
+              <Label className="text-sm font-medium text-center">
+                Upload Marker Image
+              </Label>
+              <div className="flex flex-col gap-4 md:flex-row items-center space-y-4">
+                {/* File uploader */}
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={() => (
+                    <FormItem className="w-full max-w-xs relative overflow-hidden">
+                      <FormControl>
+                        <FileUploader
+                          multiple={false}
+                          onChange={(files) => setImageFile(files[0])}
+                          removeIndex={null}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Image preview */}
+                <div className="w-[180px] h-[180px] border rounded-md overflow-hidden shadow-sm relative">
+                  {imageFile || form.watch("imageUrl") ? (
+                    <Image
+                      src={
+                        imageFile
+                          ? URL.createObjectURL(imageFile) // New file selected
+                          : form.watch("imageUrl")! // Existing URL
+                      }
+                      alt="Marker Preview"
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full text-sm text-muted-foreground">
+                      No image selected
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Map Picker */}
               <div className="space-y-4">

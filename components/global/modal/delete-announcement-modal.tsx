@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface Announcement {
   id: string;
@@ -23,11 +24,9 @@ interface DeleteAnnouncementModalProps {
   onDeleted?: () => void; // callback after successful delete
 }
 
-export const DeleteAnnouncementModal: React.FC<DeleteAnnouncementModalProps> = ({
-  announcement,
-  onClose,
-  onDeleted,
-}) => {
+export const DeleteAnnouncementModal: React.FC<
+  DeleteAnnouncementModalProps
+> = ({ announcement, onClose, onDeleted }) => {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
@@ -51,6 +50,7 @@ export const DeleteAnnouncementModal: React.FC<DeleteAnnouncementModalProps> = (
 
       if (!response.ok) {
         const data = await response.json();
+        toast.error("Failed to delete announcement");
         throw new Error(data.message || "Failed to delete announcement");
       }
       return true;
@@ -60,9 +60,11 @@ export const DeleteAnnouncementModal: React.FC<DeleteAnnouncementModalProps> = (
       onDeleted?.();
       setOpen(false);
       onClose();
+      toast.success("Announcement deleted successfully");
     },
     onError: (err: any) => {
       setError(err.message || "Something went wrong");
+      toast.error(err.message || "Something went wrong");
     },
   });
 
@@ -106,7 +108,9 @@ export const DeleteAnnouncementModal: React.FC<DeleteAnnouncementModalProps> = (
             Cancel
           </Button>
           <Button
-            onClick={() => announcement && deleteMutation.mutate(announcement.id)}
+            onClick={() =>
+              announcement && deleteMutation.mutate(announcement.id)
+            }
             disabled={deleteMutation.isPending}
             className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
           >

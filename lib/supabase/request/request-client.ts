@@ -177,6 +177,7 @@ export async function getClientReport(userId: string) {
         description,
         latitude,
         longitude,
+        imageUrl,
         status,
         created_at,
         updated_at,
@@ -207,7 +208,8 @@ export async function getClientReport(userId: string) {
     supabase.from("evacuation_centers").select(
       `id,
       name, 
-      address, 
+      address,
+      imageUrl, 
       latitude, 
       longitude, 
       phone, 
@@ -232,6 +234,7 @@ export async function createClientReport(data: {
   description: string;
   user_id: string;
   brgy_id: string;
+  imageUrl: string;
 }) {
   const supabase = await createServerSupabaseClient();
 
@@ -241,6 +244,7 @@ export async function createClientReport(data: {
       type: "report",
       latitude: data.latitude,
       longitude: data.longitude,
+      imageUrl: data.imageUrl,
       description: data.description,
       brgy_id: data.brgy_id,
       user_id: data.user_id,
@@ -254,6 +258,7 @@ export async function createClientReport(data: {
         latitude,
         longitude,
         status,
+        imageUrl,
         created_at,
         updated_at,
         user: user_id (
@@ -299,6 +304,7 @@ export async function updateClientReport(id: string, updates: Partial<any>) {
         type,
         description,
         latitude,
+        imageUrl,
         longitude,
         status,
         created_at,

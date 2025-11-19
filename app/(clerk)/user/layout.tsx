@@ -5,7 +5,6 @@ import { handleClientAccess } from "@/lib/supabase/request/request-client";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ClientAppSidebar } from "@/components/ui/client-app-sidebar";
 import { MainHeader } from "@/components/ui/header";
-import { Spotlight } from "@/components/ui/spotlight-new";
 import { QueryClient } from "@tanstack/react-query";
 import ClientModalProvider from "@/components/providers/client-modal-provider";
 
@@ -59,9 +58,9 @@ export default async function UserLayout({
               </div>
             </div>
           </SidebarInset>
-          <div className="fixed top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%]">
+          {/* <div className="fixed top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%]">
             <Spotlight />
-          </div>
+          </div> */}
         </SidebarProvider>
         <ClientModalProvider />
       </>

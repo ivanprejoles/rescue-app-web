@@ -5,7 +5,7 @@ import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { handleAdminAccess } from "@/lib/supabase/request/request-admin";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 import { MainHeader } from "@/components/ui/header";
-import { Spotlight } from "@/components/ui/spotlight-new";
+// import { Spotlight } from "@/components/ui/spotlight-new";
 import { QueryClient } from "@tanstack/react-query";
 import AdminModalProvider from "@/components/providers/admin-modal-provider";
 
@@ -62,9 +62,9 @@ export default async function AdminLayout({
             </div>
           </div>
         </SidebarInset>
-        <div className="fixed top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%]">
+        {/* <div className="fixed top-1/2 left-1/2 -translate-x-[50%] -translate-y-[50%]">
           <Spotlight />
-        </div>
+        </div> */}
       </SidebarProvider>
       <AdminModalProvider />
     </>

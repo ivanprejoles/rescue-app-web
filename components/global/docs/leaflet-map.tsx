@@ -22,6 +22,7 @@ import {
 import { legendMarker, statusMarkerColor, typeConfigs } from "@/lib/constants";
 import { toggleReportSelection } from "@/lib/map/MarkerHandlers";
 import BoundDragHandler from "@/lib/map/bound-non-sticky";
+import Image from "next/image";
 
 interface Props {
   markers: MapMarker[];
@@ -70,9 +71,19 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
           }}
           onClick={handleMarkerClick}
         >
-          <h1 className="w-full text-center mb-2 text-lg font-bold">
+          <h1 className="w-full text-center mb-2 text-sm font-bold">
             {evac.name}
           </h1>
+          <div className="w-full h-auto justify-center mb-2 text-sm font-bold relative flex">
+            <div className="w-3/4 relative overflow-hidden rounded-md bg-white aspect-video text-sm font-bold">
+              <Image
+                alt="marker-image"
+                src={"/images/marker.png"}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <ContactButton
               icon={Phone}
@@ -126,12 +137,21 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
           }}
           onClick={handleMarkerClick}
         >
-          <h1 className="w-full text-center mb-2 text-lg font-bold">
+          <h1 className="w-full text-center mb-2 text-sm font-bold">
             {report.type === "report"
               ? `${report.user?.name || "Guest"} Report`
               : typeConfigs[report.type].label}
-            {/* capitalizeFirstLetter(report.type) */}
           </h1>
+          <div className="w-full h-auto justify-center mb-2 text-sm font-bold relative flex">
+            <div className="w-3/4 relative overflow-hidden rounded-md bg-white aspect-video text-sm font-bold">
+              <Image
+                alt="marker-image"
+                src={"/images/marker.png"}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
           {report.type === "report" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <ContactButton

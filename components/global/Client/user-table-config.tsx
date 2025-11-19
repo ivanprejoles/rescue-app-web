@@ -30,14 +30,14 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     render: (marker: any, user) => (
       <TooltipWrapper
         text={marker.barangay?.name || "  Unknown  "}
-        maxLength={50}
         className={
           marker.barangay?.id === user?.brgy_id ? "text-yellow-400" : ""
         }
+        maxLength={20}
       />
     ),
     sortable: false,
-    width: "w-28",
+    width: "w-32",
   },
   {
     key: "placed_by",
@@ -66,7 +66,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     render: (marker: any) =>
       marker.created_at ? (
         <TooltipWrapper
-          maxLength={25}
+          maxLength={12}
           text={new Date(marker.created_at).toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
@@ -79,7 +79,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
         "  Unknown  "
       ),
     sortable: true,
-    width: "w-55",
+    width: "w-32",
   },
   {
     key: "status",
@@ -88,7 +88,7 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     render: (marker: any) => (
       <div className="flex items-center space-x-2">
         <span
-          className={`text-sm font-medium capitalize ${
+          className={`text-1xs font-medium capitalize ${
             statusTextColors[
               (marker.status as keyof typeof statusTextColors) ?? "Pending"
             ] || "text-gray-700"
@@ -202,31 +202,35 @@ export const defaultEvacuationColumns: ColumnConfig[] = [
       return (
         <TooltipWrapper
           text={evac.name || "  Unknown  "}
-          maxLength={25}
+          maxLength={12}
           className={selectedBrgy ? "text-yellow-400" : ""}
         />
       );
     },
     sortable: true,
-    width: "flex-1",
+    width: "w-32",
   },
   {
     key: "address",
     label: "Address",
     icon: MapPin,
     render: (evac: MapEvacuationCenter) => (
-      <TooltipWrapper text={evac.address || "  Unknown  "} maxLength={25} />
+      <TooltipWrapper text={evac.address || "  Unknown  "} maxLength={12} />
     ),
     sortable: false,
-    width: "flex-1",
+    width: "w-32",
   },
   {
     key: "phone",
     label: "Phone",
     icon: User,
-    render: (evac: MapEvacuationCenter) => evac.phone || "  Unknown  ",
+    render: (evac: MapEvacuationCenter) => (
+      <div>
+        <TooltipWrapper text={(evac.phone as string) || "   None   "} />
+      </div>
+    ),
     sortable: false,
-    width: "w-36",
+    width: "flex-1",
   },
   {
     key: "map",

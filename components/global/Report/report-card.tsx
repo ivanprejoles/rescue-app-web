@@ -31,7 +31,7 @@ const ReportCard: React.FC<ReportCardProps> = ({
       <Card className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 transition-all px-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
           <div className="flex flex-wrap items-center gap-2">
-            <h4 className="text-lg font-bold text-foreground">
+            <h4 className="text-lg font-bold text-foreground ">
               {report.title}
             </h4>
           </div>
@@ -76,7 +76,7 @@ const ReportCard: React.FC<ReportCardProps> = ({
           <ContactButton
             icon={MapPin}
             label="Location"
-            value={report.title}
+            value={report.name}
             onClick={() =>
               openGoogleMaps({ lat: report.latitude, lng: report.longitude })
             }
