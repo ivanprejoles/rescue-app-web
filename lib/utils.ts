@@ -229,16 +229,18 @@ export function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function truncateText(text: string, maxLength: number = 30) {
-  try {
-    if (typeof text !== "string") throw new Error("Invalid text");
+export function truncateText(
+  text: string | null | undefined,
+  maxLength: number = 30
+) {
+  if (!text) return ""; // handles null, undefined, or empty string
 
-    return text.length > maxLength ? text.slice(0, maxLength) + "" : text;
-  } catch (error) {
-    console.error("Error in truncateText:", error);
-    return "";
-  }
+  // convert to string in case of other types
+  const str = String(text);
+
+  return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
 }
+
 export function capitalizeFirstLetter(text: string) {
   if (!text) return text; // handle empty or undefined input
   return text.charAt(0).toUpperCase() + text.slice(1);
