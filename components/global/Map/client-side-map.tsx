@@ -16,7 +16,7 @@ import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import FullScreen from "./full-screen";
 import { MapPinned } from "lucide-react";
 import StatisticsMap from "./statistics-map";
-import { useRealtimeMap } from "@/lib/supabase/realtime/admin";
+import { useRealtimeRescuerMarker } from "@/lib/supabase/realtime/admin";
 import { useMapStore } from "@/hooks/useMapStore";
 import { useDialogStore } from "@/hooks/use-full-screen";
 import { useCallback } from "react";
@@ -65,7 +65,7 @@ export default function ClientSideMap() {
     staleTime: 1000 * 60 * 5,
   });
 
-  useRealtimeMap(handleSetMarkerId, handleSetOpen);
+  useRealtimeRescuerMarker(handleSetMarkerId, handleSetOpen);
   if (isPending) return <p>Loading markers...</p>;
   if (error) return <p>Error: {error.message}</p>;
 

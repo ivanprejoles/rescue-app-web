@@ -84,10 +84,10 @@ export function useRealtimeMap(
   setOpen: { (val: boolean): void; (arg0: boolean): void }
 ) {
   const queryClient = useQueryClient();
+  const supabase = createClient();
 
   useEffect(() => {
     // create client inside effect to avoid unstable instance in deps
-    const supabase = createClient();
 
     // full select used in your API for a single marker
     const markerSelect = `
