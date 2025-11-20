@@ -67,7 +67,7 @@ export default function ClientSideMap() {
 
   useRealtimeRescuerMarker(handleSetMarkerId, handleSetOpen);
   if (isPending) return <p>Loading markers...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (error) return <p>Error : {error.message}</p>;
 
   return (
     <div className="min-h-screen gap-3 mt-3 flex flex-col">
