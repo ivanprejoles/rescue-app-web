@@ -125,7 +125,7 @@ export function useRealtimeMap(
     `;
 
     const channel = supabase
-      .channel("admin-map-realtime")
+      .channel("client-report-realtime")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "markers" },
@@ -204,9 +204,20 @@ export function useRealtimeMap(
                 : "Unknown time";
 
               const user: any = singleMarker.user;
+              const rescuer: any = singleMarker.rescuer;
               const userName = Array.isArray(user) ? user[0]?.name : user?.name;
+              const rescuerName = Array.isArray(rescuer)
+                ? rescuer[0]?.name
+                : rescuer?.name;
+              let message = "";
 
-              toast(`A new report has been created by ${userName}!`, {
+              if (payload.eventType === "INSERT") {
+                message = `A new report has been created by ${userName}!`;
+              } else if (payload.eventType === "UPDATE") {
+                message = `A report has been updated by rescuer ${rescuerName}!`;
+              }
+
+              toast(message, {
                 description: createdAt,
                 action: {
                   label: "Locate",
