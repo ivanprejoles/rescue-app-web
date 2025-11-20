@@ -16,7 +16,7 @@ import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import FullScreen from "./full-screen";
 import { MapPinned } from "lucide-react";
 import StatisticsMap from "./statistics-map";
-import { useRealtimeMap, useRealtimeRescuerMarker } from "@/lib/supabase/realtime/admin";
+import { useRealtimeMap } from "@/lib/supabase/realtime/admin";
 import { useMapStore } from "@/hooks/useMapStore";
 import { useDialogStore } from "@/hooks/use-full-screen";
 import { useCallback } from "react";
