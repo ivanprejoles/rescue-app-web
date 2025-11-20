@@ -83,8 +83,8 @@ export function transformMarkersToBarangayReports(
     grouped[barangayId].reports.push({
       name: barangayName,
       id: marker.id,
-      title: marker.description,
-      description: marker.description,
+      title: marker.description || "",
+      description: marker.description || "",
       category: marker.type,
       status: marker.status,
       reportedBy: marker.users?.name || "Unknown",
