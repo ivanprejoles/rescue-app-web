@@ -8,7 +8,6 @@ import {
   Mail,
   MapPin,
   Phone,
-  Pin,
   User,
   User2,
 } from "lucide-react";
