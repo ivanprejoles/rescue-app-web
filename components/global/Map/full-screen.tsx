@@ -49,10 +49,8 @@ export default function FullScreen({ data }: Props) {
         <div className="flex-1 rounded-md overflow-hidden">
           <ReportsMap
             reports={data}
-            // onReportClick={handleReportClick}
           />
         </div>
-        {/* <ProfileForm /> */}
       </DialogContent>
     </Dialog>
   );

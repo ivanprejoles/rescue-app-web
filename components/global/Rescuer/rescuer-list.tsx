@@ -11,7 +11,7 @@ import {
   Phone,
   Shield,
   House,
-  HeartHandshake,
+  MapPin,
 } from "lucide-react";
 import { ContactButton } from "@/components/ui/contact-button";
 import {
@@ -134,27 +134,10 @@ export const RescuerList: FC<RescuerListProps> = ({
                         iconColor="text-blue-400"
                       />
                       <ContactButton
-                        icon={HeartHandshake}
-                        label="Rescuing"
-                        value={
-                          rescuer.markers_as_rescuer.length > 0 &&
-                          rescuer.markers_as_rescuer[0].type
-                            ? "Active!"
-                            : "Inactive"
-                        }
-                        onClick={
-                          rescuer.markers_as_rescuer.length > 0
-                            ? () =>
-                                openGoogleMaps(
-                                  {
-                                    lat: rescuer.markers_as_rescuer[0].latitude,
-                                    lng: rescuer.markers_as_rescuer[0]
-                                      .longitude,
-                                  },
-                                  rescuer.barangays?.address
-                                )
-                            : undefined
-                        }
+                        icon={MapPin}
+                        label="Address"
+                        value={rescuer.address || "N/A"}
+                        // onClick={() => {}}
                         iconColor="text-red-400"
                       />
                     </div>

@@ -14,11 +14,23 @@ function getWeekdayName(dateString: string, isMobile: boolean) {
   return fullDay.charAt(0).toUpperCase() + fullDay.slice(1);
 }
 
+function formatShortDate(dateStr: string) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  const options: Intl.DateTimeFormatOptions = {
+    month: "short",
+    day: "numeric",
+  };
+  return d.toLocaleDateString("en-US", options);
+}
+
 interface Props {
   isInSideBar?: boolean;
 }
 
-export default function WeeklyForecastInteractive({ isInSideBar = false }: Props) {
+export default function WeeklyForecastInteractive({
+  isInSideBar = false,
+}: Props) {
   const weeklyData = useWeatherStore((state) => state.weekly);
   const selectedDayIndex = useWeatherStore((state) => state.selectedDayIndex);
   const selectDay = useWeatherStore((state) => state.selectDay);
@@ -88,6 +100,11 @@ export default function WeeklyForecastInteractive({ isInSideBar = false }: Props
       <div className="flex justify-between mb-8 md:mb-10 text-center text-white/90 text-sm select-none md:px-1 md:gap-0 gap-1">
         {weeklyData.map(({ date, tempMax }, index) => (
           <div key={index} className="flex flex-col items-center w-12">
+            {!isMobile && (
+              <span className="font-light text-2xs">
+                {formatShortDate(date)}
+              </span>
+            )}
             <span className="font-light text-xs">
               {getWeekdayName(date, isMobile)}
             </span>
@@ -121,8 +138,20 @@ export default function WeeklyForecastInteractive({ isInSideBar = false }: Props
             colorInterpolationFilters="sRGB"
             filterUnits="userSpaceOnUse"
           >
-            <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="white" floodOpacity="0.9" />
-            <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="white" floodOpacity="0.6" />
+            <feDropShadow
+              dx="0"
+              dy="0"
+              stdDeviation="6"
+              floodColor="white"
+              floodOpacity="0.9"
+            />
+            <feDropShadow
+              dx="0"
+              dy="0"
+              stdDeviation="3"
+              floodColor="white"
+              floodOpacity="0.6"
+            />
           </filter>
         </defs>
 

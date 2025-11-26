@@ -4,6 +4,7 @@ export async function updateClientProfile(
     name: string;
     brgyId: string;
     phone_number: string;
+    address: string;
   }>
 ) {
   const res = await fetch("/api/client/profile", {

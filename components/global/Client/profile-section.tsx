@@ -2,7 +2,16 @@
 
 import React from "react";
 import { useUser } from "@clerk/nextjs"; // or @clerk/clerk-react depending on your setup
-import { AtSign, Landmark, Mail, Phone, User, User2 } from "lucide-react";
+import {
+  AtSign,
+  Landmark,
+  Mail,
+  MapPin,
+  Phone,
+  Pin,
+  User,
+  User2,
+} from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -28,6 +37,7 @@ const ProfileSection = ({ data }: Props) => {
       id: data.id,
       name: data.name,
       phone_number: data.phone_number ?? "",
+      address: data.address ?? "",
       brgyId: data.barangays?.id ?? "",
     });
   };
@@ -170,8 +180,19 @@ const ProfileSection = ({ data }: Props) => {
                     Barangay
                   </Label>
                   <GlowingWrapper>
-                    <Card className="border-0.75 h-auto py-1 px-2 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 ">
+                    <Card className="border-0.75 text-sm h-auto py-1 px-2 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 ">
                       {data.barangays?.address || "N/A"}
+                    </Card>
+                  </GlowingWrapper>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">
+                    <MapPin className="w-5 h-5" />
+                    Address
+                  </Label>
+                  <GlowingWrapper>
+                    <Card className="border-0.75 text-sm h-auto py-1 px-2 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 ">
+                      {data.address || "N/A"}
                     </Card>
                   </GlowingWrapper>
                 </div>

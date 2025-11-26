@@ -76,6 +76,7 @@ export async function getPublicMarkers() {
         description,
         latitude,
         longitude,
+        imageUrl,
         status,
         created_at,
         updated_at,
@@ -106,7 +107,9 @@ export async function getPublicMarkers() {
       .not("type", "in", '("report")'),
     (await supabase)
       .from("evacuation_centers")
-      .select("id, name, address, latitude, longitude, phone, status"),
+      .select(
+        "id, name, address, latitude, longitude, phone, status, imageUrl"
+      ),
   ]);
 
   if (markersRes.error) throw markersRes.error;

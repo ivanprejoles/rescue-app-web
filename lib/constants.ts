@@ -135,8 +135,8 @@ export const UserMarker = [
   {
     key: "user",
     label: "User",
-    iconName: "truck",
-    color: "#e67e22",
+    iconName: "user",
+    color: "#7ae622",
     iconColor: "#212121",
   },
   {

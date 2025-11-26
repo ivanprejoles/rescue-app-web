@@ -12,7 +12,6 @@ import dynamic from "next/dynamic";
 import React from "react";
 import UserIncidentTable from "./user-incident-table";
 import { ClientUser, MapEvacuationCenter, MapMarker } from "@/lib/types";
-import ShowAlertOnce from "./client-report-modal";
 import ClientFullScreen from "./client-full-screen";
 
 const LeafletMap = dynamic(
@@ -46,7 +45,7 @@ const UserSection = ({ markers, evacuationCenters, user }: Props) => {
                 </CardDescription>
               </div>
               <div className="flex gap-2">
-                <ShowAlertOnce />
+                {/* <ShowAlertOnce /> */}
                 <ClientFullScreen
                   markers={markers}
                   evacuationCenters={evacuationCenters}
@@ -59,7 +58,7 @@ const UserSection = ({ markers, evacuationCenters, user }: Props) => {
               <LeafletMap
                 markers={markers}
                 evacuationCenters={evacuationCenters}
-                user={user}
+                userType={user.user_type}
               />
             </div>
           </CardContent>

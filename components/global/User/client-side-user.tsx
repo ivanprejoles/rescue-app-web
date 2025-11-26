@@ -276,14 +276,6 @@ export default function ClientSideUser() {
                     onSelectRescuer={setSelectedUser}
                   />
                 )}
-
-                {/* {selectedRescuer && (
-                  <RescuerModal
-                    rescuer={selectedRescuer}
-                    onClose={() => setSelectedRescuer(null)}
-                    getStatusColor={getRescuerStatusColor}
-                  />
-                )} */}
               </TabsContent>
             </GlowingWrapper>
             {selectedUser && (

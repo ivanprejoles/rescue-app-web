@@ -21,6 +21,41 @@ interface AnnouncementCardProps {
   announcement: Announcement;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getBadgeVariantByDate = (announcement: Announcement, variant: any) => {
+  const today = new Date();
+  const date = new Date(announcement.date);
+
+  const diffDays = Math.floor(
+    (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  // If urgent or warning older than 3 days → override
+  if (diffDays > 3) {
+    return "secondary"; // only return the variant string
+  }
+
+  // Otherwise keep original
+  return variant ?? "default";
+};
+
+// Separate helper for label text
+const getBadgeLabelByDate = (announcement: Announcement) => {
+  const today = new Date();
+  const date = new Date(announcement.date);
+
+  const diffDays = Math.floor(
+    (today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  if (diffDays > 3) {
+    return "Outdated";
+  }
+
+  // fallback to normal label
+  return getStatusConfig(announcement.status)?.label ?? "";
+};
+
 const getStatusConfig = (status: string) => {
   switch (status.toLowerCase()) {
     case "information":
@@ -36,7 +71,7 @@ const getStatusConfig = (status: string) => {
         icon: AlertCircle,
         bgColor: "bg-gradient-to-br from-yellow-500 to-black",
         iconColor: "text-white",
-        badgeVariant: "secondary" as const,
+        badgeVariant: "urgent" as const,
         label: "Urgent",
       };
     case "warning":
@@ -85,7 +120,14 @@ export default function ReadOnlyAnnouncementCard({
                   <h4 className="text-lg font-semibold truncate">
                     {announcement.title}
                   </h4>
-                  <Badge variant={config?.badgeVariant}>{config?.label}</Badge>
+                  <Badge
+                    variant={getBadgeVariantByDate(
+                      announcement,
+                      config?.badgeVariant
+                    )}
+                  >
+                    {getBadgeLabelByDate(announcement)}
+                  </Badge>
                   {isToday(announcement.date) && (
                     <Badge variant="blue">New</Badge>
                   )}

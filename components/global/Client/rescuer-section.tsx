@@ -57,7 +57,7 @@ const RescuerSection = ({ markers, evacuationCenters, user }: Props) => {
               <LeafletMap
                 markers={markers}
                 evacuationCenters={evacuationCenters}
-                user={user}
+                userType={user.user_type}
               />
             </div>
           </CardContent>

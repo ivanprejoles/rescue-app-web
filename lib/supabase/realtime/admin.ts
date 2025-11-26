@@ -5,42 +5,89 @@ import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "../client";
 import { SupabaseClient } from "@supabase/supabase-js";
 
-export function subscribeToLocationChanges(
+export function subscribeToGlobalLocationRealtime(
   supabase: SupabaseClient,
-  queryClient: QueryClient
+  queryClient: QueryClient,
+  userType: "user" | "rescuer" | "admin"
 ): () => void {
+  // Same logic as the queryFn
+  const targetTypes =
+    userType === "admin"
+      ? ["user", "rescuer"]
+      : userType === "user"
+      ? ["rescuer"]
+      : ["user"];
+
   const channel = supabase
-    .channel("public:locations")
+    .channel("public:locations:all")
     .on(
       "postgres_changes",
-      { event: "*", schema: "public", table: "locations" },
-      (payload) => {
-        queryClient.setQueryData<any[]>(["locations"], (oldData = []) => {
-          switch (payload.eventType) {
-            case "INSERT":
-              return [...oldData, payload.new as any];
-            case "UPDATE":
-              return oldData.map((location) =>
-                location.id === (payload.new as any).id
-                  ? (payload.new as any)
-                  : location
-              );
-            case "DELETE":
-              return oldData.filter(
-                (location) => location.id !== (payload.old as any).id
-              );
-            default:
-              return oldData;
+      {
+        event: "*",
+        schema: "public",
+        table: "locations",
+      },
+      async (payload) => {
+        const event = payload.eventType;
+        const newLoc = payload.new as any;
+        const oldLoc = payload.old as any;
+
+        // Fetch user info for the modified entity
+        let userInfo = null;
+        if (newLoc?.entity_id || oldLoc?.entity_id) {
+          const { data: user } = await supabase
+            .from("users")
+            .select("id, name, email, phone_number, user_type")
+            .eq("id", newLoc?.entity_id ?? oldLoc?.entity_id)
+            .single();
+
+          userInfo = user || null;
+        }
+
+        // Filter out wrong user types (like query does)
+        const matchesFilter = userInfo
+          ? targetTypes.includes(userInfo.user_type)
+          : false;
+
+        // Update cached locations
+        queryClient.setQueryData<any[]>(
+          ["locations", userType],
+          (oldList = []) => {
+            const list = [...oldList];
+
+            switch (event) {
+              case "INSERT":
+                if (!matchesFilter) return list;
+                return [
+                  {
+                    ...newLoc,
+                    userInfo,
+                  },
+                  ...list.filter((l) => l.id !== newLoc.id),
+                ];
+
+              case "UPDATE":
+                // remove if updated to wrong type
+                if (!matchesFilter)
+                  return list.filter((l) => l.id !== newLoc.id);
+
+                return list.map((l) =>
+                  l.id === newLoc.id ? { ...newLoc, userInfo } : l
+                );
+
+              case "DELETE":
+                return list.filter((l) => l.id !== oldLoc.id);
+
+              default:
+                return list;
+            }
           }
-        });
+        );
       }
     )
     .subscribe();
 
-  // Return cleanup function to unsubscribe
-  return () => {
-    supabase.removeChannel(channel);
-  };
+  return () => supabase.removeChannel(channel);
 }
 
 function applyRealtimeChangesToArray(markers: any[] = [], payload: any) {

@@ -22,6 +22,8 @@ import { GradientWrapper } from "@/components/ui/background-gradient";
 import { ChartRadar } from "../chart/announcement-chart-radar";
 import { DeleteAnnouncementModal } from "../modal/delete-announcement-modal";
 import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 export default function ClientSideAnnouncement() {
   const queryClient = useQueryClient();
@@ -121,7 +123,57 @@ export default function ClientSideAnnouncement() {
     }
   };
 
+  function groupAnnouncements(announcements: any[]) {
+    const today = new Date();
+    const dayMs = 1000 * 60 * 60 * 24;
+
+    const todayDateOnly = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    const groups: Record<string, any[]> = {
+      Today: [],
+      Yesterday: [],
+      "This Week": [],
+      "This Month": [],
+      "> 1 Month": [],
+    };
+
+    announcements.forEach((a) => {
+      const fullDate = new Date(a.date);
+      const dateOnly = new Date(
+        fullDate.getFullYear(),
+        fullDate.getMonth(),
+        fullDate.getDate()
+      );
+      const diffDays = Math.floor(
+        (todayDateOnly.getTime() - dateOnly.getTime()) / dayMs
+      );
+
+      if (diffDays === 0) groups["Today"].push(a);
+      else if (diffDays === 1) groups["Yesterday"].push(a);
+      else if (diffDays <= 7) groups["This Week"].push(a);
+      else if (
+        fullDate.getMonth() === today.getMonth() &&
+        fullDate.getFullYear() === today.getFullYear()
+      )
+        groups["This Month"].push(a);
+      else groups["> 1 Month"].push(a);
+    });
+
+    return groups;
+  }
+
   // Filter announcements by search term
+  // const filteredAnnouncements = announcements?.filter((announcement) =>
+  //   [announcement.title, announcement.description]
+  //     .join(" ")
+  //     .toLowerCase()
+  //     .includes(searchTerm.toLowerCase())
+  // );
+
   const filteredAnnouncements = announcements?.filter((announcement) =>
     [announcement.title, announcement.description]
       .join(" ")
@@ -129,6 +181,9 @@ export default function ClientSideAnnouncement() {
       .includes(searchTerm.toLowerCase())
   );
 
+  const groupedAnnouncements = groupAnnouncements(filteredAnnouncements || []);
+
+  // chart announcements
   const infoData = announcements?.filter((a) => a.status === "information");
   const warningData = announcements?.filter((a) => a.status === "warning");
   const urgentData = announcements?.filter((a) => a.status === "urgent");
@@ -262,17 +317,31 @@ export default function ClientSideAnnouncement() {
                 </CardContent>
               </Card>
             ) : (
-              filteredAnnouncements?.map((announcement, index) => (
-                <AnnouncementCard
-                  key={index}
-                  announcement={announcement}
-                  onEdit={(ann) => {
-                    setEditingAnnouncement(ann);
-                    setIsFormOpen(true);
-                  }}
-                  onDelete={setDeletingAnnouncement}
-                />
-              ))
+              Object.entries(groupedAnnouncements).map(([label, list]) =>
+                list.length > 0 ? (
+                  <div key={label} className="space-y-3">
+                    <Separator className="bg-gray-500" />
+                    <Badge
+                      variant="blue"
+                      className="text-muted-foreground px-2"
+                    >
+                      {label}
+                    </Badge>
+
+                    {list.map((announcement: any, index: number) => (
+                      <AnnouncementCard
+                        key={announcement.id ?? index}
+                        announcement={announcement}
+                        onEdit={(ann) => {
+                          setEditingAnnouncement(ann);
+                          setIsFormOpen(true);
+                        }}
+                        onDelete={setDeletingAnnouncement}
+                      />
+                    ))}
+                  </div>
+                ) : null
+              )
             )}
           </div>
         </div>

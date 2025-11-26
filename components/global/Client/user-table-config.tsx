@@ -105,7 +105,12 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     key: "map",
     label: "Location",
     icon: MapPin,
-    render: (marker: any) => <LocateButtons id={marker.id} />,
+    render: (marker: any) => (
+      <LocateButtons
+        id={marker.id}
+        userId={marker.type === "report" ? marker.user.id : null}
+      />
+    ),
     sortable: false,
     width: "w-28",
   },

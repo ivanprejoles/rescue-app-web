@@ -177,6 +177,7 @@ export interface Marker {
 export interface User {
   email: string;
   status: string;
+  address: string | null;
   id: string;
   user_id: string;
   phone_number: string;
@@ -285,6 +286,7 @@ export interface ClientAccessUser {
   name: string;
   email: string | null;
   phone_number: string | null;
+  address: string | null;
   status: string;
   created_at: string;
   user_type: "rescuer" | "user";

@@ -41,11 +41,13 @@ export const ProfileEditModal = () => {
       name: string;
       phone_number: string;
       brgyId: string;
+      address: string;
     }) =>
       updateClientProfile(data.id, {
         name: data.name,
         phone_number: data.phone_number,
         brgyId: data.brgyId,
+        address: data.address,
       }),
     onSuccess: (updatedUser) => {
       queryClient.setQueryData<ClientAccessWithBarangays>(
@@ -78,6 +80,7 @@ export const ProfileEditModal = () => {
       name: form.name,
       phone_number: form.phone_number,
       brgyId: form.brgyId,
+      address: form.address,
     });
   };
 
@@ -104,6 +107,15 @@ export const ProfileEditModal = () => {
               id="phone"
               value={form.phone_number}
               onChange={(e) => setForm({ phone_number: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="phone">Address</Label>
+            <Input
+              id="address"
+              value={form.address}
+              onChange={(e) => setForm({ address: e.target.value })}
             />
           </div>
 

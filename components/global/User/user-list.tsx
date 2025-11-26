@@ -11,7 +11,7 @@ import {
   Phone,
   User as UserIcon,
   House,
-  Megaphone,
+  MapPin,
 } from "lucide-react";
 import { ContactButton } from "@/components/ui/contact-button";
 import {
@@ -121,26 +121,9 @@ export const UserList: FC<Props> = ({ users, formatTimeAgo, onSelectUser }) => {
                         iconColor="text-blue-400"
                       />
                       <ContactButton
-                        icon={Megaphone}
-                        label="Report"
-                        value={
-                          user.markers_as_user.length > 0 &&
-                          user.markers_as_user[0].type
-                            ? "Emergency!"
-                            : "Inactive"
-                        }
-                        onClick={
-                          user.markers_as_user.length > 0
-                            ? () =>
-                                openGoogleMaps(
-                                  {
-                                    lat: user.markers_as_user[0].latitude,
-                                    lng: user.markers_as_user[0].longitude,
-                                  },
-                                  user.barangays?.address
-                                )
-                            : undefined // No click handler if no markers, so button is inert
-                        }
+                        icon={MapPin}
+                        label="Address"
+                        value={user.address || "N/A"}
                         iconColor="text-red-400"
                       />
                     </div>

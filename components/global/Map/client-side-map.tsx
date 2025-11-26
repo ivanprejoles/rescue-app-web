@@ -104,25 +104,12 @@ export default function ClientSideMap() {
                 </div>
                 <div className="flex gap-2">
                   <FullScreen data={data} />
-                  {/* <GradientWrapper>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="shadow-lg hover:shadow-xl transition-shadow rounded-[22px] cursor-pointer"
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      Full Screen
-                    </Button>
-                  </GradientWrapper> */}
                 </div>
               </div>
             </CardHeader>
             <CardContent className="px-2">
               <div className="h-[600px]">
-                <ReportsMap
-                  reports={data}
-                  // onReportClick={handleReportClick}
-                />
+                <ReportsMap reports={data} />
               </div>
             </CardContent>
           </Card>

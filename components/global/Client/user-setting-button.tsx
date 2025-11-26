@@ -1,5 +1,10 @@
 import React from "react";
-import { Ambulance, Map, MoreHorizontal, Phone } from "lucide-react";
+import {
+  // Ambulance,
+  Map,
+  MoreHorizontal,
+  Phone,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,13 +15,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { callNumber, openGoogleMaps } from "@/lib/utils";
 import {
-  ClientData,
+  // ClientData,
   MapBarangay,
   MapEvacuationCenter,
   MapMarker,
 } from "@/lib/types";
-import { useQueryClient } from "@tanstack/react-query";
-import { useAssistReportModalStore } from "@/hooks/modals/use-assist-report-modal";
+// import { useQueryClient } from "@tanstack/react-query";
+// import { useAssistReportModalStore } from "@/hooks/modals/use-assist-report-modal";
 
 type Props = {
   address?: string;
@@ -37,10 +42,11 @@ const ContactMenu = ({ number }: { number: string }) => {
   );
 };
 
-const UserSettingsButton = ({ address, location, number, data }: Props) => {
-  const queryClient = useQueryClient();
-  const { openModal } = useAssistReportModalStore();
-  const cachedData = queryClient.getQueryData<ClientData>(["client-report"]);
+// , data
+const UserSettingsButton = ({ address, location, number }: Props) => {
+  // const queryClient = useQueryClient();
+  // const { openModal } = useAssistReportModalStore();
+  // const cachedData = queryClient.getQueryData<ClientData>(["client-report"]);
 
   return (
     <DropdownMenu>
@@ -52,7 +58,8 @@ const UserSettingsButton = ({ address, location, number, data }: Props) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        {data.type === "report" &&
+        {/* WIP: for rescuer */}
+        {/* {data.type === "report" &&
           cachedData?.user &&
           cachedData?.user.user_type === "rescuer" && (
             <DropdownMenuItem
@@ -67,7 +74,7 @@ const UserSettingsButton = ({ address, location, number, data }: Props) => {
               <Ambulance className="text-green-600 focus:text-green-800" />
               Provide Assistance
             </DropdownMenuItem>
-          )}
+          )} */}
         <DropdownMenuItem onClick={() => openGoogleMaps(location, address)}>
           <Map />
           Google Map

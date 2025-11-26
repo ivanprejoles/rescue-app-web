@@ -4,6 +4,7 @@ interface ProfileForm {
   id: string;
   name: string;
   phone_number: string;
+  address: string;
   brgyId: string;
 }
 
@@ -20,6 +21,7 @@ export const useProfileModalStore = create<ProfileModalState>((set) => ({
   form: {
     id: "",
     name: "",
+    address: "",
     phone_number: "",
     brgyId: "",
   },
@@ -29,6 +31,7 @@ export const useProfileModalStore = create<ProfileModalState>((set) => ({
       form: {
         id: initialForm.id ?? "",
         name: initialForm.name ?? "",
+        address: initialForm.address ?? "",
         phone_number: initialForm.phone_number ?? "",
         brgyId: initialForm.brgyId ?? "",
       },
@@ -40,6 +43,7 @@ export const useProfileModalStore = create<ProfileModalState>((set) => ({
         id: "",
         name: "",
         phone_number: "",
+        address: "",
         brgyId: "",
       },
     }),

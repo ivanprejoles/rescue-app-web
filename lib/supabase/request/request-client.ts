@@ -67,6 +67,7 @@ export async function getClientProfile(userId: string) {
       phone_number,
       status,
       created_at,
+      address,
       user_type,
       barangays (
         id,
@@ -104,7 +105,7 @@ export async function getClientProfile(userId: string) {
 
 export async function updateClientProfile(
   id: string,
-  data: { name: string; phone_number: string; brgyId: string }
+  data: { name: string; phone_number: string; brgyId: string; address: string }
 ) {
   const supabase = await createServerSupabaseClient();
 
@@ -114,6 +115,7 @@ export async function updateClientProfile(
       phone_number: data.phone_number,
       brgy_id: data.brgyId,
       name: data.name,
+      address: data.address,
     })
     .eq("id", id)
     .select(
@@ -125,6 +127,7 @@ export async function updateClientProfile(
         status,
         user_type,
         created_at,
+        address,
         barangays (
           id,
           name,
@@ -158,6 +161,7 @@ export async function getClientReport(userId: string) {
       email,
       phone_number,
       status,
+      address,
       created_at,
       user_type,
       brgy_id

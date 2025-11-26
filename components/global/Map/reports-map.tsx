@@ -27,6 +27,7 @@ import RenderLocations from "./render-locations";
 import BoundDragHandler from "@/lib/map/bound-non-sticky";
 import { useUpdateAddMapModal } from "@/hooks/modals/use-update-add-map-modal";
 import Image from "next/image";
+import { ReturnToCenterControl } from "../docs/return-button";
 
 export default function ReportsMap({ reports }: { reports?: MapData }) {
   const queryClient = useQueryClient();
@@ -313,9 +314,8 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
         key={"full-screen-map"}
         center={kawitCenter}
         zoom={15}
-        minZoom={13}
+        minZoom={1}
         maxZoom={18}
-        maxBounds={kawitBounds}
         maxBoundsViscosity={0}
         scrollWheelZoom={false}
         doubleClickZoom={false}
@@ -324,7 +324,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
         zoomControl={false}
         className="h-full w-full"
       >
-        <BoundDragHandler bounds={kawitBounds} />
+        <ReturnToCenterControl center={kawitCenter} zoom={15} />
         <ZoomControl position="bottomright" />
         <ResizeFix />
 
@@ -336,7 +336,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
         {renderMarkers()}
         {renderBarangays()}
         {renderEvacuations()}
-        <RenderLocations />
+        <RenderLocations userType="admin" />
       </MapContainer>
 
       <MarkerMaker onSelect={onMarkerTypeSelect} />

@@ -21,6 +21,7 @@ import { getAnnouncementsClient } from "@/lib/client-fetchers";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator";
 
 export default function ShowAnnouncementModal() {
   const queryClient = useQueryClient();
@@ -80,6 +81,55 @@ export default function ShowAnnouncementModal() {
     };
   }, [queryClient]);
 
+  function groupAnnouncements(announcements: any[]) {
+    const today = new Date();
+    const dayMs = 1000 * 60 * 60 * 24;
+
+    // Normalize today's date to YYYY-MM-DD only
+    const todayDateOnly = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    const groups: Record<string, any[]> = {
+      Today: [],
+      Yesterday: [],
+      "This Week": [],
+      "This Month": [],
+      "> 1 Month": [],
+    };
+
+    announcements.forEach((a) => {
+      const fullDate = new Date(a.date);
+      const dateOnly = new Date(
+        fullDate.getFullYear(),
+        fullDate.getMonth(),
+        fullDate.getDate()
+      );
+      const diffDays = Math.floor(
+        (todayDateOnly.getTime() - dateOnly.getTime()) / dayMs
+      );
+
+      if (diffDays === 0) groups["Today"].push(a);
+      else if (diffDays === 1) groups["Yesterday"].push(a);
+      else if (diffDays <= 7) groups["This Week"].push(a);
+      else if (
+        fullDate.getMonth() === today.getMonth() &&
+        fullDate.getFullYear() === today.getFullYear()
+      ) {
+        groups["This Month"].push(a);
+      } else {
+        groups["> 1 Month"].push(a);
+      }
+    });
+
+    return groups;
+  }
+
+  console.log(announcements);
+  const grouped = groupAnnouncements(announcements);
+
   return (
     <Dialog>
       <Tooltip>
@@ -92,8 +142,10 @@ export default function ShowAnnouncementModal() {
             >
               <Bell className="h-5 w-5 drop-shadow-[0_0_2px_rgba(0,0,0,0.7)]" />
 
-              {/* 🔔 Red dot always shown if there's any announcement */}
-              {announcements.length > 0 && (
+              {/* 🔔 Red dot shown only if Today, Yesterday, or This Week have announcements */}
+              {(grouped["Today"].length > 0 ||
+                grouped["Yesterday"].length > 0 ||
+                grouped["This Week"].length > 0) && (
                 <Badge className="absolute top-0 -right-0 h-3 w-3 p-0 bg-red-500" />
               )}
             </Button>
@@ -127,12 +179,23 @@ export default function ShowAnnouncementModal() {
 
           {!isPending &&
             !isError &&
-            announcements.map((announcement: any, index: any) => (
-              <ReadOnlyAnnouncementCard
-                key={index}
-                announcement={announcement}
-              />
-            ))}
+            Object.entries(grouped).map(([label, list]) =>
+              list.length > 0 ? (
+                <div key={label} className="space-y-3">
+                  <Separator className="bg-gray-500" />
+                  <Badge variant="blue" className=" text-muted-foreground px-2">
+                    {label}
+                  </Badge>
+
+                  {list.map((announcement: any, index: number) => (
+                    <ReadOnlyAnnouncementCard
+                      key={announcement.id ?? index}
+                      announcement={announcement}
+                    />
+                  ))}
+                </div>
+              ) : null
+            )}
         </div>
       </DialogContent>
     </Dialog>

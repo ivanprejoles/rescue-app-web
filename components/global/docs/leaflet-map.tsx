@@ -23,14 +23,21 @@ import { legendMarker, statusMarkerColor, typeConfigs } from "@/lib/constants";
 import { toggleReportSelection } from "@/lib/map/MarkerHandlers";
 import BoundDragHandler from "@/lib/map/bound-non-sticky";
 import Image from "next/image";
+import { ReturnToCenterControl } from "./return-button";
+import RenderLocations from "../Map/render-locations";
+import { useLocationStore } from "@/hooks/use-marker-location";
 
 interface Props {
   markers: MapMarker[];
   evacuationCenters: MapEvacuationCenter[];
-  user?: ClientUser;
+  userType?: "user" | "rescuer";
 }
 
-export default function LeafletMap({ markers, evacuationCenters }: Props) {
+export default function LeafletMap({
+  markers,
+  evacuationCenters,
+  userType,
+}: Props) {
   const [selectedReports, setSelectedReports] = useState<StoredMarkerType[]>(
     []
   );
@@ -40,7 +47,8 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
     setIsClient(true);
   }, []);
 
-  const handleMarkerClick = useCallback((report: StoredMarkerType) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleMarkerClick = useCallback((report: any) => {
     setSelectedReports((prev) => toggleReportSelection(prev, report));
   }, []);
 
@@ -53,6 +61,7 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
 
     return evacuationCenters.map((evac, index) => {
       if (!evac.latitude || !evac.longitude) return null;
+      console.log(evac);
 
       return (
         <CustomMarker
@@ -120,6 +129,7 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
       const reportStatus = report.status;
 
       if (!legend) return null;
+      console.log(report);
 
       return (
         <CustomMarker
@@ -210,10 +220,8 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
     });
   };
 
-  // if (isLoading) return <p>Loading markers...</p>;
-  // if (error) return <p>Error: {error.message}</p>;
   if (!isClient) {
-    return null; // or a loader placeholder
+    return null;
   }
 
   return (
@@ -222,9 +230,8 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
         key={"main-map"}
         center={kawitCenter}
         zoom={15}
-        minZoom={13}
+        minZoom={1}
         maxZoom={18}
-        maxBounds={kawitBounds}
         maxBoundsViscosity={0}
         scrollWheelZoom={false}
         doubleClickZoom={false}
@@ -233,7 +240,7 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
         zoomControl={false}
         className="h-full w-full"
       >
-        <BoundDragHandler bounds={kawitBounds} />
+        <ReturnToCenterControl center={kawitCenter} zoom={15} />
         <ZoomControl position="bottomright" />
         <ResizeFix />
 
@@ -241,21 +248,13 @@ export default function LeafletMap({ markers, evacuationCenters }: Props) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-
         {renderMarkers()}
-        {/* {renderBarangays()} */}
         {renderEvacuations()}
-        {/* <RenderLocations /> */}
+        {userType && userType == "rescuer" && (
+          <RenderLocations userType="rescuer" />
+        )}
+        {userType && userType == "user" && <RenderLocations userType="user" />}
       </MapContainer>
-
-      {/* <MarkerMaker onSelect={onMarkerTypeSelect} /> */}
-      {/* <LocationModal
-        mode={selectedType === "Evacuation" ? "evacuation" : "marker"}
-        isOpen={modalOpen}
-        onClose={closeModal}
-        initialData={{ type: selectedType?.toLowerCase() ?? "" }}
-      /> */}
-      {/* <LegendPopover /> */}
     </div>
   );
 }
