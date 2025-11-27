@@ -25,8 +25,9 @@ const TooltipWrapper = ({ text, maxLength = 12, className }: WrapperProps) => {
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 640px)");
 
-  const truncatedText = truncateText(text, isMobile ? 10 : maxLength);
-  const showFullText = text.length > (isMobile ? 10 : maxLength);
+  const safeText = text ?? "";
+  const truncatedText = truncateText(safeText, isMobile ? 10 : maxLength);
+  const showFullText = safeText.length > (isMobile ? 10 : maxLength);
 
   if (isMobile) {
     return (
@@ -45,7 +46,7 @@ const TooltipWrapper = ({ text, maxLength = 12, className }: WrapperProps) => {
         <DialogContent
           className={`sm:max-w-[500px] text-xs md:text-sm px-2 ${className}`}
         >
-          <DialogTitle className="text-1xs">{text}</DialogTitle>
+          <DialogTitle className="text-1xs">{text || ""}</DialogTitle>
         </DialogContent>
       </Dialog>
     );
