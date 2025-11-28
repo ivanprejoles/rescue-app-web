@@ -55,7 +55,7 @@ const RenderLocations = ({ userType = "user" }: Props) => {
         new Set(locationsData.map((l) => l.entity_id))
       );
 
-      console.log(entityIds);
+      // console.log(entityIds);
       // 3. Fetch user info filtered by targetTypes
       const { data: usersData, error: usersError } = await supabase
         .from("users")
@@ -65,7 +65,7 @@ const RenderLocations = ({ userType = "user" }: Props) => {
 
       if (usersError) console.error(usersError);
 
-      console.log(usersData);
+      // console.log(usersData);
 
       // 4. Attach user info to each location
       return locationsData
@@ -101,16 +101,16 @@ const RenderLocations = ({ userType = "user" }: Props) => {
 
   // Show loading UI
   if (isPending) return <LoaderIcon className="h-6 w-6 animate-spin mb-2" />;
-  console.log("render location");
-  console.log(validLocations);
-  console.log(targetTypes);
+  // console.log("render location");
+  // console.log(validLocations);
+  // console.log(targetTypes);
 
   return (
     <>
       {validLocations.map((loc) => {
         const legend = UserMarker.find((l) => l.key === loc.entity_type)!;
 
-        console.log(loc);
+        // console.log(loc);
         return (
           <CustomMarker
             key={loc.id}
