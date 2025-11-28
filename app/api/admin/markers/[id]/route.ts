@@ -72,7 +72,6 @@ export async function PUT(
       rescuer_id,
     });
 
-    console.log(updatedMarker);
 
     return NextResponse.json(updatedMarker, { status: 200 });
   } catch (error: any) {

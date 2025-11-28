@@ -19,7 +19,7 @@ export async function getRescuersAndUsers() {
       )
     `
     )
-    .in("user_type", ["user", "rescuer"])
+    .in("user_type", ["user", "rescuer", "unverified"])
     .order("name");
 
   if (error) throw error;
@@ -27,10 +27,12 @@ export async function getRescuersAndUsers() {
   // Separate users by user_type
   const rescuers = data?.filter((u) => u.user_type === "rescuer") ?? [];
   const users = data?.filter((u) => u.user_type === "user") ?? [];
+  const unverifieds = data?.filter((u) => u.user_type === "unverified") ?? [];
 
   return {
     rescuers,
     users,
+    unverifieds,
   };
 }
 

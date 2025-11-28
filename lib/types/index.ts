@@ -181,6 +181,7 @@ export interface User {
   id: string;
   user_id: string;
   phone_number: string;
+  imageUrl?: string;
   name: string;
   user_type: "user" | "rescuer";
   created_at: string;

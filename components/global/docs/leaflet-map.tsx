@@ -61,7 +61,6 @@ export default function LeafletMap({
 
     return evacuationCenters.map((evac, index) => {
       if (!evac.latitude || !evac.longitude) return null;
-      console.log(evac);
 
       return (
         <CustomMarker
@@ -129,7 +128,6 @@ export default function LeafletMap({
       const reportStatus = report.status;
 
       if (!legend) return null;
-      console.log(report);
 
       return (
         <CustomMarker

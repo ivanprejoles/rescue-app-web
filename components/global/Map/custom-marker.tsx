@@ -31,7 +31,6 @@ export function CustomMarker({
     if (!markerRef.current) return;
 
     if (activeMarkerId === marker.id) {
-      console.log("its running!!");
       markerRef.current.openPopup();
     }
     // else {

@@ -6,11 +6,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { getRescueStatusColor, getRescuerStatusColor } from "@/lib/utils";
 import { UserList } from "@/components/global/User/user-list";
 import { UserModal } from "@/components/global/modal/user-modal";
 import { RescuerList } from "@/components/global/Rescuer/rescuer-list";
-// import { RescuerModal } from "@/components/global/modal/rescuer-modal";
 import { UserFilters } from "@/components/global/User/user-filter";
 import { RescuerFilters } from "@/components/global/Rescuer/rescuer-filter";
 import type { User } from "@/lib/types";
@@ -20,6 +18,8 @@ import SidebarHeader from "../header";
 import { AlertTriangle, Users } from "lucide-react";
 import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { ChartRadialStack } from "../chart/user-radial-stack";
+import { UnverifiedFilters } from "../Unverified/unverified-filter";
+import { UnverifiedList } from "../Unverified/unverified-list";
 
 // Loading skeleton component
 const StatsLoadingSkeleton = () => (
@@ -64,17 +64,14 @@ const LoadingList = () => (
 
 export default function ClientSideUser() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  // const [selectedRescuer, setSelectedRescuer] = useState<User | null>(null);
-
   const [userSearch, setUserSearch] = useState("");
-  const [userStatus, setUserStatus] = useState("all");
-
   const [rescuerSearch, setRescuerSearch] = useState("");
-  const [rescuerStatus, setRescuerStatus] = useState("all");
+  const [unverifiedSearch, setUnverifiedSearch] = useState("");
 
   const { data, isLoading, error } = useAdminQuery<{
     users: User[];
     rescuers: User[];
+    unverifieds: User[];
   }>(["rescuers-users"], getRescuersAndUsersClient);
 
   // Filter users
@@ -85,11 +82,9 @@ export default function ClientSideUser() {
         user.name.toLowerCase().includes(userSearch.toLowerCase()) ||
         user.email.toLowerCase().includes(userSearch.toLowerCase());
 
-      const matchesStatus = userStatus === "all" || user.status === userStatus;
-
-      return matchesSearch && matchesStatus;
+      return matchesSearch;
     });
-  }, [userSearch, userStatus, data]);
+  }, [userSearch, data]);
 
   // Filter rescuers
   const filteredRescuers = useMemo(() => {
@@ -99,23 +94,38 @@ export default function ClientSideUser() {
         rescuer.name.toLowerCase().includes(rescuerSearch.toLowerCase()) ||
         rescuer.email.toLowerCase().includes(rescuerSearch.toLowerCase());
 
-      const matchesStatus =
-        rescuerStatus === "all" || rescuer.status === rescuerStatus;
-
-      return matchesSearch && matchesStatus;
+      return matchesSearch;
     });
-  }, [rescuerSearch, rescuerStatus, data]);
+  }, [rescuerSearch, data]);
+
+  // Filter unverifieds
+  const filteredUnverifieds = useMemo(() => {
+    const unverifieds = data?.unverifieds ?? [];
+    return unverifieds.filter((unverified) => {
+      const matchesSearch =
+        unverified.name
+          .toLowerCase()
+          .includes(unverifiedSearch.toLowerCase()) ||
+        unverified.email.toLowerCase().includes(unverifiedSearch.toLowerCase());
+
+      return matchesSearch;
+    });
+  }, [unverifiedSearch, data]);
 
   // Statistics calculations
   const stats = useMemo(() => {
     const users = data?.users ?? [];
     const rescuers = data?.rescuers ?? [];
+    const unverifieds = data?.unverifieds ?? [];
 
     return {
       totalUsers: users.length,
       activeUsers: users.filter((u) => u.status === "active").length,
       totalRescuers: rescuers.length,
       activeRescuers: rescuers.filter((r) => r.status === "active").length,
+      totalUnverifieds: unverifieds.length,
+      activeUnverifieds: unverifieds.filter((u) => u.status === "active")
+        .length,
     };
   }, [data]);
 
@@ -124,7 +134,7 @@ export default function ClientSideUser() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <SidebarHeader
           header="User Management"
-          description="Manage users and rescuers"
+          description="Manage users, rescuers, and unverified with comprehensive controls"
           icon={Users}
         />
         <div className="w-full mx-auto">
@@ -143,19 +153,19 @@ export default function ClientSideUser() {
     <div className="min-h-screen gap-3 mt-3 flex flex-col">
       <SidebarHeader
         header="User Management"
-        description="Manage users and rescuers with comprehensive controls"
+        description="Manage users, rescuers, and unverified with comprehensive controls"
         icon={Users}
       />
       {isLoading ? (
         <StatsLoadingSkeleton />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <GlowingWrapper>
             <Card className="border-0.75 h-full bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 py-0">
               <ChartRadialStack
                 label="Users"
                 value={stats.totalUsers || 0}
-                description="Showing total users in real-time"
+                description="Total users"
               />
             </Card>
           </GlowingWrapper>
@@ -165,7 +175,16 @@ export default function ClientSideUser() {
               <ChartRadialStack
                 label="Rescuers"
                 value={stats.totalRescuers || 0}
-                description="Showing total rescuers in real-time"
+                description="Total rescuers"
+              />
+            </Card>
+          </GlowingWrapper>
+          <GlowingWrapper>
+            <Card className="border-0.75 h-full bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 py-0">
+              <ChartRadialStack
+                label="Unverified"
+                value={stats.totalUnverifieds || 0}
+                description="Total unverified"
               />
             </Card>
           </GlowingWrapper>
@@ -179,7 +198,7 @@ export default function ClientSideUser() {
             <GlowingWrapper>
               <Card className="border-0.75 bg-transparent dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10 p-3">
                 <GlowingWrapper>
-                  <TabsList className="grid w-auto grid-cols-2 shadow-sm">
+                  <TabsList className="grid w-auto grid-cols-3 shadow-sm">
                     <TabsTrigger
                       value="users"
                       className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
@@ -191,6 +210,12 @@ export default function ClientSideUser() {
                       className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
                     >
                       Rescuers ({filteredRescuers.length})
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="unverified"
+                      className="data-[state=active]:bg-gray-600 data-[state=active]:text-white"
+                    >
+                      Unverified ({filteredUnverifieds.length})
                     </TabsTrigger>
                   </TabsList>
                 </GlowingWrapper>
@@ -217,8 +242,6 @@ export default function ClientSideUser() {
                   <UserFilters
                     searchTerm={userSearch}
                     onSearchChange={setUserSearch}
-                    statusFilter={userStatus}
-                    onStatusChange={setUserStatus}
                   />
                 </div>
 
@@ -230,7 +253,6 @@ export default function ClientSideUser() {
                     formatTimeAgo={(date: string) =>
                       new Date(date).toLocaleDateString()
                     }
-                    getStatusColor={getRescueStatusColor}
                     onSelectUser={setSelectedUser}
                   />
                 )}
@@ -259,8 +281,6 @@ export default function ClientSideUser() {
                   <RescuerFilters
                     searchTerm={rescuerSearch}
                     onSearchChange={setRescuerSearch}
-                    statusFilter={rescuerStatus}
-                    onStatusChange={setRescuerStatus}
                   />
                 </div>
 
@@ -272,8 +292,46 @@ export default function ClientSideUser() {
                     formatTimeAgo={(date: Date) =>
                       new Date(date).toLocaleDateString()
                     }
-                    getStatusColor={getRescuerStatusColor}
                     onSelectRescuer={setSelectedUser}
+                  />
+                )}
+              </TabsContent>
+
+              {/* Unverified Tab */}
+              <TabsContent value="unverified" className="p-6 space-y-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold">
+                        Unverified Management
+                      </h3>
+                      <p className="text-sm">
+                        Manage and monitor unverified users
+                      </p>
+                    </div>
+                    <Badge
+                      variant="secondary"
+                      className="bg-gray-500 text-white"
+                    >
+                      {filteredUnverifieds.length} unverified
+                    </Badge>
+                  </div>
+
+                  <UnverifiedFilters
+                    searchTerm={unverifiedSearch}
+                    onSearchChange={setUnverifiedSearch}
+                  />
+                </div>
+
+                {isLoading ? (
+                  <LoadingList />
+                ) : (
+                  <UnverifiedList
+                    unverified={filteredUnverifieds}
+                    formatTimeAgo={(date: Date) =>
+                      new Date(date).toLocaleDateString()
+                    }
+                    onSelectUnverified={setSelectedUser}
                   />
                 )}
               </TabsContent>
@@ -282,7 +340,6 @@ export default function ClientSideUser() {
               <UserModal
                 user={selectedUser}
                 onClose={() => setSelectedUser(null)}
-                getStatusColor={getRescueStatusColor}
               />
             )}
           </Tabs>

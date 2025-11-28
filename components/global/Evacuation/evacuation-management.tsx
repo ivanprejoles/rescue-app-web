@@ -41,7 +41,6 @@ const EvacuationManagement = ({ evacuationCenters, allBarangays }: Props) => {
         )
     );
   }, [evacuationCenters, searchTerm]);
-  console.log(filteredCenters);
 
   const handleAddCenter = () => {
     openAddUpdateModal("add");

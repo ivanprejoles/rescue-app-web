@@ -42,7 +42,6 @@ interface UserModalProps {
   user: User | null;
   onClose: () => void;
   onUpdated?: () => void;
-  getStatusColor?: (status: string) => string;
 }
 
 export const UserModal: React.FC<UserModalProps> = ({
@@ -75,6 +74,7 @@ export const UserModal: React.FC<UserModalProps> = ({
       const previousData = queryClient.getQueryData<{
         users: User[];
         rescuers: User[];
+        unverifieds: User[];
       }>(["rescuers-users"]);
 
       if (previousData) {
@@ -83,6 +83,9 @@ export const UserModal: React.FC<UserModalProps> = ({
             u.id === user!.id ? { ...u, user_type: userType } : u
           ),
           rescuers: previousData.rescuers.map((r) =>
+            r.id === user!.id ? { ...r, user_type: userType } : r
+          ),
+          unverifieds: previousData.unverifieds.map((r) =>
             r.id === user!.id ? { ...r, user_type: userType } : r
           ),
         });
@@ -157,7 +160,7 @@ export const UserModal: React.FC<UserModalProps> = ({
 
           <div>
             <Label htmlFor="address" className="text-gray-500">
-              Barangay Address (disabled)
+              Barangay (disabled)
             </Label>
             <ReadOnlyInput
               id="address"
@@ -187,6 +190,7 @@ export const UserModal: React.FC<UserModalProps> = ({
               <SelectContent>
                 <SelectItem value="user">User</SelectItem>
                 <SelectItem value="rescuer">Rescuer</SelectItem>
+                <SelectItem value="unverified">Unverified</SelectItem>
               </SelectContent>
             </Select>
           </div>

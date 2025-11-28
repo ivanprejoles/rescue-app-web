@@ -1,7 +1,6 @@
 "use client";
 
 import { FC } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock, Edit, Mail, Phone, Shield, House, MapPin } from "lucide-react";
@@ -16,28 +15,28 @@ import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { GradientWrapper } from "@/components/ui/background-gradient";
 import { ImageAvatar } from "../image-avatar";
 
-interface RescuerListProps {
-  rescuers: User[];
+interface UnverifiedListProps {
+  unverified: User[];
   formatTimeAgo: (date: Date) => string;
-  onSelectRescuer: (rescuer: User) => void;
+  onSelectUnverified: (unverified: User) => void;
 }
 
-export const RescuerList: FC<RescuerListProps> = ({
-  rescuers,
-  onSelectRescuer,
+export const UnverifiedList: FC<UnverifiedListProps> = ({
+  unverified,
+  onSelectUnverified,
 }) => {
-  if (rescuers.length === 0) {
+  if (unverified.length === 0) {
     return (
       <GlowingWrapper>
         <Card className="border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] relative z-10">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Shield className="h-12 w-12 text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No rescuers found
+              No unverified users found
             </h3>
             <p className="text-sm text-gray-500 text-center max-w-sm">
-              No rescuers match your current filters. Try adjusting your search
-              criteria.
+              No unverified users match your current filters. Try adjusting your
+              search criteria.
             </p>
           </CardContent>
         </Card>
@@ -47,23 +46,28 @@ export const RescuerList: FC<RescuerListProps> = ({
 
   return (
     <div className="space-y-4">
-      {rescuers.map((rescuer, index) => (
+      {unverified.map((rescuer, index) => (
         <GlowingWrapper key={(rescuer.id, index)}>
           <Card className="group shadow-sm hover:shadow-md transition-all duration-200 border-0.75 bg-black dark:shadow-[0px_0px_27px_0px_#2D2D2D] py-0">
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
+                  {/* <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-grat-500 to-gray-600 text-white font-semibold text-sm">
+                    {rescuer.name.length > 0
+                      ? rescuer.name.charAt(0).toUpperCase()
+                      : rescuer.email.charAt(0).toLocaleUpperCase()}
+                  </div> */}
                   <ImageAvatar
                     name={rescuer?.name}
                     email={rescuer?.email}
                     imageUrl={rescuer?.imageUrl}
-                    color="from-purple-500 to-purple-600"
                   />
+
                   <h4 className="font-semibold text-lg">
                     {rescuer.name.length > 0 ? rescuer.name : rescuer.email}
                   </h4>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-white bg-purple-500 px-3 py-1 rounded-full">
+                <div className="flex items-center gap-2 text-sm text-white bg-gray-500 px-3 py-1 rounded-full">
                   <Clock className="h-3 w-3" />
                   <span className="hidden sm:inline">Joined:</span>
                   <span>
@@ -75,15 +79,6 @@ export const RescuerList: FC<RescuerListProps> = ({
               <div className="space-y-3">
                 <div>
                   <div className="space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                      <Badge
-                        variant="outline"
-                        className="text-xs border-purple-200 text-purple-700 bg-purple-50"
-                      >
-                        <Shield className="h-3 w-3 mr-1" />
-                        Emergency Responder
-                      </Badge>
-                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       <ContactButton
                         icon={Phone}
@@ -144,7 +139,7 @@ export const RescuerList: FC<RescuerListProps> = ({
                     size="sm"
                     variant="outline"
                     className="shadow-lg hover:shadow-xl transition-shadow rounded-[22px] cursor-pointer"
-                    onClick={() => onSelectRescuer(rescuer)}
+                    onClick={() => onSelectUnverified(rescuer)}
                   >
                     <Edit className="h-4 w-4 mr-2" />
                     Edit

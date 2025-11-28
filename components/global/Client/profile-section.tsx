@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useUser } from "@clerk/nextjs"; // or @clerk/clerk-react depending on your setup
 import {
   AtSign,
@@ -22,6 +23,7 @@ import { GradientWrapper } from "@/components/ui/background-gradient";
 import { useProfileModalStore } from "@/hooks/modals/use-update-profile-modal";
 import { ClientAccessUser } from "@/lib/types";
 import { formatReadableDate } from "@/lib/utils";
+import { useFormValidation } from "@/hooks/use-form-validation";
 
 interface Props {
   data: ClientAccessUser;
@@ -30,6 +32,39 @@ interface Props {
 const ProfileSection = ({ data }: Props) => {
   const { user } = useUser();
   const openModal = useProfileModalStore((state) => state.openModal);
+
+  const { openModal: openFormModal } = useFormValidation();
+
+  // ✅ Helper function to check if user info is incomplete
+  const isUserIncomplete = (user: any) => {
+    if (!user) return true;
+
+    const isEmpty = (value: any) =>
+      value === null ||
+      value === undefined ||
+      (typeof value === "string" && value.trim().length === 0);
+
+    return (
+      isEmpty(user.name) ||
+      isEmpty(user.phone_number) ||
+      isEmpty(user.address) ||
+      (isEmpty(user.brgy_id) && isEmpty(user.barangays?.id)) ||
+      user.user_type === "unverified"
+    );
+  };
+
+  // ✅ Open modal if user info is incomplete
+  useEffect(() => {
+    if (data && isUserIncomplete(data)) {
+      openFormModal({
+        id: data.id,
+        name: data.name ?? "",
+        phone_number: data.phone_number ?? "",
+        address: data.address ?? "",
+        brgyId: data.barangays?.id ?? "",
+      });
+    }
+  }, []);
 
   const handleOpenEditModal = () => {
     openModal({

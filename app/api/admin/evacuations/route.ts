@@ -37,7 +37,6 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    console.log(body);
 
     const insertedBarangay = await createEvacuationCenter({
       name,

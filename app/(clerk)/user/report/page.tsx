@@ -31,7 +31,6 @@ export default async function ReportPage() {
     queryFn: () => Promise.resolve(reports),
   });
 
-  console.log(reports);
 
   const cachedData = queryClient.getQueryData<ClientData>(["client-report"]);
 

@@ -24,7 +24,6 @@ import {
 import { ContactButton } from "@/components/ui/contact-button";
 import { Ambulance, MapPin, Phone, User } from "lucide-react";
 import RenderLocations from "./render-locations";
-import BoundDragHandler from "@/lib/map/bound-non-sticky";
 import { useUpdateAddMapModal } from "@/hooks/modals/use-update-add-map-modal";
 import Image from "next/image";
 import { ReturnToCenterControl } from "../docs/return-button";
