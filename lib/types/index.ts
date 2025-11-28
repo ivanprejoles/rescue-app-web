@@ -286,6 +286,7 @@ export interface ClientAccessUser {
   id: string;
   name: string;
   email: string | null;
+  imageUrl?: string;
   phone_number: string | null;
   address: string | null;
   status: string;

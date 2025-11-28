@@ -30,8 +30,8 @@ export async function handleClientAccess(clerkUser: User): Promise<{
       .insert({
         user_id: clerkUser.id,
         name: `${clerkUser.firstName ?? ""} ${clerkUser.lastName ?? ""}`.trim(),
-        status: "waiting",
-        user_type: "user",
+        status: "active",
+        user_type: "unverified",
         email: clerkUser.emailAddresses[0]?.emailAddress || null,
       })
       .select("id, name, brgy_id")

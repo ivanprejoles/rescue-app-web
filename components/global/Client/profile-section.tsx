@@ -98,7 +98,7 @@ const ProfileSection = ({ data }: Props) => {
             <Avatar className="w-32 h-32 shadow-xl ring-4 ring-white">
               {/* Use Clerk user image if available, otherwise fallback to your data.imageUrl */}
               <AvatarImage
-                src={user?.imageUrl}
+                src={data.imageUrl || user?.imageUrl}
                 alt={data.name}
                 className="object-cover"
               />
