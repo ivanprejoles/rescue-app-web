@@ -182,6 +182,7 @@ export interface User {
   user_id: string;
   phone_number: string;
   imageUrl?: string;
+  validImageUrl?: string;
   name: string;
   user_type: "user" | "rescuer";
   created_at: string;
@@ -287,11 +288,12 @@ export interface ClientAccessUser {
   name: string;
   email: string | null;
   imageUrl?: string;
+  validImageUrl?: string;
   phone_number: string | null;
   address: string | null;
   status: string;
   created_at: string;
-  user_type: "rescuer" | "user";
+  user_type: "rescuer" | "user" | "unverified";
   barangays: BarangayInfo | null;
 }
 export interface ClientAccessWithBarangays {

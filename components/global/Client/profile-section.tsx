@@ -22,8 +22,9 @@ import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { GradientWrapper } from "@/components/ui/background-gradient";
 import { useProfileModalStore } from "@/hooks/modals/use-update-profile-modal";
 import { ClientAccessUser } from "@/lib/types";
-import { formatReadableDate } from "@/lib/utils";
+import { cn, formatReadableDate } from "@/lib/utils";
 import { useFormValidation } from "@/hooks/use-form-validation";
+import { ImageAvatar } from "../image-avatar";
 
 interface Props {
   data: ClientAccessUser;
@@ -119,11 +120,15 @@ const ProfileSection = ({ data }: Props) => {
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-4">
                 <Badge
                   variant="outline"
-                  className={`font-medium px-3 py-1 ${
-                    data.user_type === "rescuer"
-                      ? "bg-purple-100 text-purple-800 border-purple-200"
-                      : "bg-blue-50 text-blue-700 border-blue-200"
-                  }`}
+                  className={cn(
+                    "font-medium px-3 py-1",
+                    data.user_type === "rescuer" &&
+                      "bg-purple-100 text-purple-800 border-purple-200",
+                    data.user_type === "unverified" &&
+                      "bg-red-100 text-red-700 border-red-200",
+                    data.user_type === "user" &&
+                      "bg-blue-50 text-blue-700 border-blue-200"
+                  )}
                 >
                   {data.user_type.charAt(0).toUpperCase() +
                     data.user_type.slice(1)}
@@ -134,6 +139,13 @@ const ProfileSection = ({ data }: Props) => {
                 Member since {formatReadableDate(new Date(data.created_at))}
               </p>
             </div>
+          </div>
+        </CardHeader>
+        <CardHeader className="relative pb-0 w-full">
+          {/* Profile Header */}
+          <div className="flex flex-col justify-between items-center gap-6 pt-6 w-full">
+            <div className="">Valid ID</div>
+            <ImageAvatar imageUrl={data.validImageUrl} notAvatar={true} />
           </div>
         </CardHeader>
 

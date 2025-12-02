@@ -11,8 +11,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { Bell, Building2 } from "lucide-react";
 import { ChartRadialShape } from "../chart/barangay-radial";
+import {
+  useRealtimeMarker,
+  useRealtimeRegister,
+} from "@/lib/supabase/realtime/admin";
+import { useRouter } from "next/navigation";
 
 const ClientSideEvacuation = () => {
+  const router = useRouter();
+
   // Fetch the evacuations with only barangay IDs, and all barangays
   const { data, isLoading, error } = useAdminQuery<{
     evacuations: (RawEvacuationCenter & {
@@ -20,6 +27,8 @@ const ClientSideEvacuation = () => {
     })[];
     barangays: RawBarangay[];
   }>(["evacuations"], getEvacuationCentersClient);
+  useRealtimeRegister(router);
+  useRealtimeMarker(router);
 
   // Map evac center barangay IDs to full barangay objects
   const evacuationCenters: RawEvacuationCenter[] = useMemo(() => {

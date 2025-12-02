@@ -31,11 +31,13 @@ export const FileUploader = ({
   multiple = false,
   removeIndex,
   onRemoveComplete,
+  id,
 }: {
   onChange?: (files: File[]) => void;
   multiple?: boolean;
   removeIndex?: number | null | "all";
   onRemoveComplete?: () => void;
+  id?: string;
 }) => {
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -125,7 +127,9 @@ export const FileUploader = ({
               files.map((file, idx) => (
                 <motion.div
                   key={"file" + idx}
-                  layoutId={idx === 0 ? "file-upload" : "file-upload-" + idx}
+                  layoutId={
+                    idx === 0 ? `file-upload${id}` : "file-upload-" + idx
+                  }
                   className={cn(
                     "relative overflow-hidden z-40 bg-white dark:bg-neutral-900 flex flex-col items-start justify-start md:h-24 p-4 mt-4 w-full mx-auto rounded-md",
                     "shadow-sm"
@@ -173,7 +177,7 @@ export const FileUploader = ({
               ))}
             {!files.length && (
               <motion.div
-                layoutId="file-upload"
+                layoutId={`file-upload${id}`}
                 variants={mainVariant}
                 transition={{
                   type: "spring",

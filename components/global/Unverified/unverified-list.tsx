@@ -17,7 +17,6 @@ import { ImageAvatar } from "../image-avatar";
 
 interface UnverifiedListProps {
   unverified: User[];
-  formatTimeAgo: (date: Date) => string;
   onSelectUnverified: (unverified: User) => void;
 }
 
@@ -52,11 +51,6 @@ export const UnverifiedList: FC<UnverifiedListProps> = ({
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  {/* <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-grat-500 to-gray-600 text-white font-semibold text-sm">
-                    {rescuer.name.length > 0
-                      ? rescuer.name.charAt(0).toUpperCase()
-                      : rescuer.email.charAt(0).toLocaleUpperCase()}
-                  </div> */}
                   <ImageAvatar
                     name={rescuer?.name}
                     email={rescuer?.email}
@@ -73,6 +67,17 @@ export const UnverifiedList: FC<UnverifiedListProps> = ({
                   <span>
                     {new Date(rescuer.created_at).toLocaleDateString()}
                   </span>
+                </div>
+              </div>
+
+              {/* valid id image */}
+              <div className="flex flex-col gap-2 items-center justify-between mb-4">
+                <div className="text-sm text-white">Valid ID</div>
+                <div className="flex items-center gap-3">
+                  <ImageAvatar
+                    notAvatar={true}
+                    imageUrl={rescuer?.validImageUrl}
+                  />
                 </div>
               </div>
 

@@ -10,12 +10,6 @@ export async function getRescuersAndUsers() {
       *,
       barangays (
         id, name, address, latitude, longitude
-      ),
-      markers_as_user:markers!markers_user_id_fkey (
-        id, type, description, latitude, longitude, status, created_at, updated_at
-      ),
-      markers_as_rescuer:markers!markers_rescuer_id_fkey (
-        id, type, description, latitude, longitude, status, created_at, updated_at
       )
     `
     )

@@ -16,10 +16,14 @@ import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import FullScreen from "./full-screen";
 import { MapPinned } from "lucide-react";
 import StatisticsMap from "./statistics-map";
-import { useRealtimeMap } from "@/lib/supabase/realtime/admin";
+import {
+  useRealtimeMap,
+  useRealtimeRegister,
+} from "@/lib/supabase/realtime/admin";
 import { useMapStore } from "@/hooks/useMapStore";
 import { useDialogStore } from "@/hooks/use-full-screen";
 import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 const ReportsMap = dynamic(
   () => import("@/components/global/Map/reports-map"),
@@ -43,6 +47,7 @@ export async function fetchMarkers() {
 }
 
 export default function ClientSideMap() {
+  const router = useRouter();
   const { setActiveMarkerId } = useMapStore();
   const { setOpen } = useDialogStore();
   const handleSetMarkerId = useCallback(
@@ -66,6 +71,7 @@ export default function ClientSideMap() {
   });
 
   useRealtimeMap(handleSetMarkerId, handleSetOpen);
+  useRealtimeRegister(router);
   if (isPending) return <p>Loading markers...</p>;
   if (error) return <p>Error : {error.message}</p>;
 

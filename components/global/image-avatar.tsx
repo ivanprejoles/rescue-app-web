@@ -12,6 +12,7 @@ interface AvatarProps {
   email?: string | null;
   imageUrl?: string | null;
   color?: string;
+  notAvatar?: boolean;
 }
 
 export function ImageAvatar({
@@ -19,6 +20,7 @@ export function ImageAvatar({
   email,
   imageUrl,
   color = "from-gray-500 to-gray-600",
+  notAvatar = false,
 }: AvatarProps) {
   // Safe string conversions
   const safeName = typeof name === "string" ? name.trim() : "";
@@ -40,7 +42,12 @@ export function ImageAvatar({
 
   // Avatar when an image is available
   const ImageCircle = (
-    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition-all">
+    <div
+      className={cn(
+        "w-10 h-10 rounded-full overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition-all",
+        notAvatar && "w-50 h-20 rounded-md border"
+      )}
+    >
       <img
         src={imageUrl!}
         alt="Avatar"
@@ -58,7 +65,8 @@ export function ImageAvatar({
     <div
       className={cn(
         "flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br text-white font-semibold text-sm",
-        color
+        color,
+        notAvatar && "w-50 h-20 rounded-md"
       )}
     >
       {initial}
@@ -75,13 +83,15 @@ export function ImageAvatar({
 
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Profile Photo</DialogTitle>
+          <DialogTitle>
+            {notAvatar ? "Valid ID" : "Profile Photo"}{" "}
+          </DialogTitle>
         </DialogHeader>
 
         <img
           src={imageUrl!}
           alt="Profile Full"
-          className="w-full h-auto rounded-lg object-cover"
+          className={"w-full h-auto rounded-lg object-cover"}
         />
       </DialogContent>
     </Dialog>

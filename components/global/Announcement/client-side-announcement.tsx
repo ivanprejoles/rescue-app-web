@@ -24,8 +24,12 @@ import { DeleteAnnouncementModal } from "../modal/delete-announcement-modal";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { useRealtimeMarker, useRealtimeRegister } from "@/lib/supabase/realtime/admin";
+import { useRouter } from "next/navigation";
 
 export default function ClientSideAnnouncement() {
+  const router = useRouter();
+
   const queryClient = useQueryClient();
   const {
     data: announcements,
@@ -37,7 +41,8 @@ export default function ClientSideAnnouncement() {
     refetchOnReconnect: false,
     refetchOnMount: false,
   });
-
+  useRealtimeRegister(router);
+  useRealtimeMarker(router) 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] =
     useState<Announcement | null>(null);

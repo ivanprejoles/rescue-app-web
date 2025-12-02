@@ -8,8 +8,8 @@ export async function PATCH(request: Request) {
   if (!userId)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await request.json();
-  const { id, name, phone_number, brgyId, address, imageUrl } = body;
-  if (!id || !phone_number || !brgyId || !name || !address || !imageUrl) {
+  const { id, name, phone_number, brgyId, address, imageUrl, validImageUrl } = body;
+  if (!id || !phone_number || !brgyId || !name || !address || !imageUrl || !validImageUrl) {
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 }
@@ -23,6 +23,7 @@ export async function PATCH(request: Request) {
       name,
       address,
       imageUrl,
+      validImageUrl
     });
     return NextResponse.json(updatedProfile);
   } catch (error: any) {

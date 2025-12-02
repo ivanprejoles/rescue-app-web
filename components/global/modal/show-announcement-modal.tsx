@@ -127,7 +127,6 @@ export default function ShowAnnouncementModal() {
     return groups;
   }
 
-  console.log(announcements);
   const grouped = groupAnnouncements(announcements);
 
   return (

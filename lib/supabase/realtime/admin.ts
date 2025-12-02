@@ -251,17 +251,13 @@ export function useRealtimeMap(
                 : "Unknown time";
 
               const user: any = singleMarker.user;
-              const rescuer: any = singleMarker.rescuer;
               const userName = Array.isArray(user) ? user[0]?.name : user?.name;
-              const rescuerName = Array.isArray(rescuer)
-                ? rescuer[0]?.name
-                : rescuer?.name;
               let message = "";
 
               if (payload.eventType === "INSERT") {
                 message = `A new report has been created by ${userName}!`;
               } else if (payload.eventType === "UPDATE") {
-                message = `A report has been updated by rescuer ${rescuerName}!`;
+                message = `A report from ${userName} has been updated!`;
               }
 
               toast(message, {
@@ -273,6 +269,7 @@ export function useRealtimeMap(
                     setActiveMarkerId(singleMarker.id);
                   },
                 },
+                duration: 8000,
               });
             }
           } catch (err) {
@@ -529,17 +526,13 @@ export function useRealtimeRescuerMarker(
                 : "Unknown time";
 
               const user: any = singleMarker.user;
-              const rescuer: any = singleMarker.rescuer;
               const userName = Array.isArray(user) ? user[0]?.name : user?.name;
-              const rescuerName = Array.isArray(rescuer)
-                ? rescuer[0]?.name
-                : rescuer?.name;
               let message = "";
 
               if (payload.eventType === "INSERT") {
                 message = `A new report has been created by ${userName}!`;
               } else if (payload.eventType === "UPDATE") {
-                message = `A report has been updated by rescuer ${rescuerName}!`;
+                message = `A report from ${userName} has been updated!`;
               }
 
               toast(message, {
@@ -551,6 +544,7 @@ export function useRealtimeRescuerMarker(
                     setActiveMarkerId(singleMarker.id);
                   },
                 },
+                duration: 8000,
               });
             }
           } catch (err) {
@@ -572,4 +566,136 @@ export function useRealtimeRescuerMarker(
       supabase.removeChannel(channel);
     };
   }, [queryClient]);
+}
+
+export function useRealtimeRegister(router: any) {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    const channel = supabase
+      .channel("realtime-users-insert")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "users",
+        },
+        (payload: any) => {
+          const user = payload.new;
+          if (!user) return;
+
+          // 🔔 admin notification
+          toast("New user signed up!", {
+            description: `${user.email} • just now`,
+            action: {
+              label: "View User",
+              onClick: () => router.push(`/admin/users`),
+            },
+            duration: 8000,
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+}
+
+export function useRealtimeMarker(router: any) {
+  useEffect(() => {
+    const supabase = createClient();
+
+    const markerSelect = `
+      id,
+      type,
+      description,
+      latitude,
+      longitude,
+      imageUrl,
+      status,
+      created_at,
+      updated_at,
+      user:user_id (
+        id,
+        name,
+        email,
+        phone_number
+      ),
+      rescuer:rescuer_id (
+        id,
+        name,
+        email,
+        phone_number
+      )
+    `;
+
+    const channel = supabase
+      .channel("client-report-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "markers" },
+        async (payload: any) => {
+          try {
+            // We only show toast on INSERT or UPDATE
+            if (payload.eventType === "DELETE") return;
+
+            const markerId = payload.new?.id;
+            if (!markerId) return;
+
+            // 🔍 Fetch enriched marker so we get user/rescuer
+            const { data: marker, error } = await supabase
+              .from("markers")
+              .select(markerSelect)
+              .eq("id", markerId)
+              .maybeSingle();
+
+            if (error || !marker) return;
+
+            const isInsert = payload.eventType === "INSERT";
+            const isUpdate = payload.eventType === "UPDATE";
+
+            // Extract people
+            const user = Array.isArray(marker.user)
+              ? marker.user[0]
+              : marker.user;
+
+            const userName = user?.name ?? "Someone";
+
+            const createdAt = marker.created_at
+              ? new Date(marker.created_at).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : "Just now";
+
+            // Decide toast message
+            let message = "";
+            if (isInsert) message = `New report submitted by ${userName}`;
+            if (isUpdate) message = `A report from ${userName} was updated`;
+
+            // 🔔 Show toast only — no caching
+            toast(message, {
+              description: createdAt,
+              action: {
+                label: "View Map",
+                onClick: () => router.push(`/admin/map`),
+              },
+              duration: 8000,
+            });
+          } catch (err) {
+            console.error("Realtime toast error:", err);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 }

@@ -14,6 +14,7 @@ export const profileSchema = z.object({
   address: z.string().min(1, "Address is required"),
   brgyId: z.string().min(1, "Please select a barangay"),
   imageUrl: z.string().nullable().optional(),
+  validImageUrl: z.string().nullable().optional(),
 });
 
 interface ProfileForm {
@@ -23,6 +24,7 @@ interface ProfileForm {
   address: string;
   brgyId: string;
   imageUrl: string | null;
+  validImageUrl: string | null;
 }
 
 interface ProfileModalState {
@@ -41,6 +43,7 @@ export const useFormValidation = create<ProfileModalState>((set) => ({
     address: "",
     phone_number: "",
     brgyId: "",
+    validImageUrl: null,
     imageUrl: null,
   },
 
@@ -54,6 +57,7 @@ export const useFormValidation = create<ProfileModalState>((set) => ({
         phone_number: initialForm.phone_number ?? "",
         brgyId: initialForm.brgyId ?? "",
         imageUrl: initialForm.imageUrl ?? null,
+        validImageUrl: initialForm.validImageUrl ?? null,
       },
     }),
 
@@ -67,6 +71,7 @@ export const useFormValidation = create<ProfileModalState>((set) => ({
         address: "",
         brgyId: "",
         imageUrl: null,
+        validImageUrl: null,
       },
     }),
 

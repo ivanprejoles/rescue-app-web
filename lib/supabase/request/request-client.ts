@@ -67,6 +67,7 @@ export async function getClientProfile(userId: string) {
       phone_number,
       status,
       imageUrl,
+      validImageUrl,
       created_at,
       address,
       user_type,
@@ -112,6 +113,7 @@ export async function updateClientProfile(
     brgyId: string;
     address: string;
     imageUrl?: string;
+    validImageUrl?: string;
   }
 ) {
   const supabase = await createServerSupabaseClient();
@@ -124,6 +126,7 @@ export async function updateClientProfile(
       name: data.name,
       address: data.address,
       imageUrl: data.imageUrl,
+      validImageUrl: data.validImageUrl,
     })
     .eq("id", id)
     .select(

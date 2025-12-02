@@ -47,6 +47,7 @@ export const ClientValidationForm = () => {
   } = useFormValidation();
 
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [validImageFile, setValidImageFile] = useState<File | null>(null);
 
   const form = useForm<ProfileSchemaType>({
     resolver: zodResolver(profileSchema),
@@ -61,7 +62,10 @@ export const ClientValidationForm = () => {
   const handleSave = form.handleSubmit(async (values: ProfileSchemaType) => {
     try {
       setLoading(true);
+
       let uploadedUrl = values.imageUrl;
+      let uploadedValidUrl = values.validImageUrl;
+
       if (imageFile) {
         const fileName = `profile-${values.id}-${Date.now()}`;
         const { error } = await supabase.storage
@@ -75,11 +79,29 @@ export const ClientValidationForm = () => {
           .getPublicUrl(`clientPhoto/${fileName}`).data.publicUrl;
       }
 
+      // ========== Upload VALID ID IMAGE ==========
+      if (validImageFile) {
+        const fileName = `valid-${values.id}-${Date.now()}`;
+        const { error } = await supabase.storage
+          .from("report-storage")
+          .upload(`faceID/${fileName}`, validImageFile, { upsert: true });
+
+        if (error) throw new Error("Valid ID upload failed");
+
+        uploadedValidUrl = supabase.storage
+          .from("report-storage")
+          .getPublicUrl(`faceID/${fileName}`).data.publicUrl;
+      }
+
       // Optionally send update to API (can be skipped if you just want invalidation)
       await fetch("/api/client/validation", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, imageUrl: uploadedUrl }),
+        body: JSON.stringify({
+          ...values,
+          imageUrl: uploadedUrl,
+          validImageUrl: uploadedValidUrl,
+        }),
       });
 
       // Invalidate the client-report cache instead of mutation
@@ -193,6 +215,7 @@ export const ClientValidationForm = () => {
                 multiple={false}
                 onChange={(files) => setImageFile(files[0])}
                 removeIndex={null}
+                id="1"
               />
             </div>
 
@@ -212,6 +235,41 @@ export const ClientValidationForm = () => {
               ) : (
                 <div className="flex items-center justify-center w-full h-full text-xs text-muted-foreground">
                   No image
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* VALID IMAGE UPLOAD */}
+          <Label className="text-sm font-medium text-center">
+            Upload Valid ID
+          </Label>
+          <div className="flex flex-col gap-4 md:flex-row items-center space-y-4">
+            <div className="w-full max-w-xs relative overflow-hidden">
+              <FileUploader
+                multiple={false}
+                onChange={(files) => setValidImageFile(files[0])}
+                removeIndex={null}
+                id="2"
+              />
+            </div>
+
+            <div className="w-[180px] h-[180px] border rounded-md overflow-hidden shadow-sm relative">
+              {validImageFile || form.watch("validImageUrl") ? (
+                <Image
+                  src={
+                    validImageFile
+                      ? URL.createObjectURL(validImageFile)
+                      : form.watch("validImageUrl") ?? ""
+                  }
+                  alt="Valid ID Preview"
+                  width={128}
+                  height={128}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full h-full text-xs text-muted-foreground">
+                  No Valid ID
                 </div>
               )}
             </div>

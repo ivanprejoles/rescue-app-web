@@ -21,7 +21,6 @@ import {
   SelectLabel,
   SelectItem,
 } from "@/components/ui/select";
-import { MapData } from "@/lib/types";
 import { Flag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,66 +28,68 @@ import dynamic from "next/dynamic";
 import { formatDate } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
 
 const LocationPickerMap = dynamic(() => import("@/lib/map/location-picker"), {
   ssr: false, // disables server side rendering for this component
 });
 
 export const ReportModal: React.FC = () => {
+  const supabase = createClient();
   const { isOpen, report, closeModal } = useReportModalStore();
+  const [rescuers, setRescuers] = useState<
+    Array<{ id: string; email: string }>
+  >([]);
   const [status, setStatus] = useState<string>(report?.status ?? "Pending");
   const [error, setError] = useState<string | null>(null);
+  const [selectedRescuer, setSelectedRescuer] = useState<string | null>(null);
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const fetchRescuers = async () => {
+      const { data, error } = await supabase
+        .from("users")
+        .select("id, name, email")
+        .eq("user_type", "rescuer");
+
+      if (error) {
+        console.error("Failed to fetch rescuers:", error.message);
+        return;
+      }
+
+      setRescuers(data || []);
+    };
+
+    fetchRescuers();
+  }, []);
 
   useEffect(() => {
     if (report) {
       setStatus(report.status);
+      if (report.rescuer && report.rescuer?.id) {
+        setSelectedRescuer(report.rescuer?.id);
+      }
       setError(null);
     }
   }, [report]);
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) =>
-      updateMarkerClient(id, { status }),
+    mutationFn: ({
+      id,
+      status,
+      rescuer_id,
+    }: {
+      id: string;
+      status: string;
+      rescuer_id?: string;
+    }) => updateMarkerClient(id, { status, rescuer_id }),
 
-    onMutate: async ({ id, status }) => {
-      await queryClient.cancelQueries({ queryKey: ["markers"] });
-
-      // snapshot previous state
-      const previousData = queryClient.getQueryData<MapData>(["markers"]);
-
-      // optimistic update
-      queryClient.setQueryData<MapData>(["markers"], (oldData) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          markers: oldData.markers.map((marker) =>
-            marker.id === id ? { ...marker, status } : marker
-          ),
-        };
-      });
-
-      return { previousData };
-    },
-
-    onError: (err, variables, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(["markers"], context.previousData);
-      }
+    onError: () => {
       setError("Failed to update status");
       toast.error("Failed to update status");
     },
 
-    onSuccess: (updatedMarker) => {
-      queryClient.setQueryData<MapData>(["markers"], (oldData) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          markers: oldData.markers.map((marker) =>
-            marker.id === updatedMarker.id ? updatedMarker : marker
-          ),
-        };
-      });
+    onSuccess: () => {
       toast.success("Status updated successfully");
       closeModal();
     },
@@ -104,8 +105,27 @@ export const ReportModal: React.FC = () => {
   const handleSave = async () => {
     if (!report) return;
 
+    if (
+      status === "Assigned" &&
+      (!selectedRescuer || selectedRescuer.trim().length <= 1)
+    ) {
+      setError("Please select a rescuer before assigning.");
+      toast.error("Please select a rescuer before assigning.");
+      return;
+    }
+
     try {
-      await updateMutation.mutateAsync({ id: report.id, status });
+      const payload: { id: string; status: string; rescuer_id?: string } = {
+        id: report.id,
+        status,
+      };
+
+      // only send rescuer_id if status is Assigned
+      if (status === "Assigned") {
+        payload.rescuer_id = selectedRescuer!;
+      }
+
+      await updateMutation.mutateAsync(payload);
     } catch {
       // error already handled
     }
@@ -145,11 +165,34 @@ export const ReportModal: React.FC = () => {
               </SelectContent>
             </Select>
           </div>
+          {status && status == "Assigned" && (
+            <div>
+              <label className="font-semibold block mb-1">Assign Rescuer</label>
+              <Select
+                value={selectedRescuer || ""}
+                onValueChange={(rescuerId) => setSelectedRescuer(rescuerId)}
+              >
+                <SelectTrigger className="w-full sm:w-[250px] text-sm">
+                  <SelectValue placeholder="Select rescuer..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Available Rescuers</SelectLabel>
+                    {rescuers.map((rescuer) => (
+                      <SelectItem key={rescuer.id} value={rescuer.id}>
+                        {rescuer.email}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div>
             <label className="font-semibold block text-gray-500">
               Barangay (disabled)
             </label>
-            <Input value={report.barangay?.name} disabled />
+            <Input value={report.barangay?.name || ""} disabled />
           </div>
           <div>
             <label className="font-semibold block text-gray-500">
@@ -157,7 +200,7 @@ export const ReportModal: React.FC = () => {
             </label>
             <Textarea
               className="border rounded p-2 w-full cursor-not-allowed resize-none"
-              value={report.description}
+              value={report.description || ""}
               disabled
               rows={4}
             />
@@ -166,13 +209,16 @@ export const ReportModal: React.FC = () => {
             <label className="font-semibold block text-gray-500">
               Contact Number (disabled)
             </label>
-            <Input value={report.user?.phone_number} disabled />
+            <Input value={report.user?.phone_number || ""} disabled />
           </div>
           <div>
             <label className="font-semibold block text-gray-500">
               Date Reported (disabled)
             </label>
-            <Input value={formatDate(report.created_at as string)} disabled />
+            <Input
+              value={formatDate(report.created_at as string) || ""}
+              disabled
+            />
           </div>
 
           <div className="space-y-2">
@@ -197,7 +243,7 @@ export const ReportModal: React.FC = () => {
                 </Label>
                 <Input
                   id="displayLatitude"
-                  value={report.latitude}
+                  value={report.latitude || ""}
                   disabled // Make it read-only
                   className="bg-gray-100 cursor-not-allowed"
                 />
@@ -211,7 +257,7 @@ export const ReportModal: React.FC = () => {
                 </Label>
                 <Input
                   id="displayLongitude"
-                  value={report.longitude}
+                  value={report.longitude || ""}
                   disabled // Make it read-only
                   className="bg-gray-100 cursor-not-allowed"
                 />

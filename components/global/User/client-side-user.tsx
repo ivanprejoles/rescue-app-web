@@ -20,6 +20,11 @@ import { GlowingWrapper } from "@/components/ui/glowing-effect";
 import { ChartRadialStack } from "../chart/user-radial-stack";
 import { UnverifiedFilters } from "../Unverified/unverified-filter";
 import { UnverifiedList } from "../Unverified/unverified-list";
+import {
+  useRealtimeMarker,
+  useRealtimeRegister,
+} from "@/lib/supabase/realtime/admin";
+import { useRouter } from "next/navigation";
 
 // Loading skeleton component
 const StatsLoadingSkeleton = () => (
@@ -63,6 +68,7 @@ const LoadingList = () => (
 );
 
 export default function ClientSideUser() {
+  const router = useRouter();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userSearch, setUserSearch] = useState("");
   const [rescuerSearch, setRescuerSearch] = useState("");
@@ -73,7 +79,8 @@ export default function ClientSideUser() {
     rescuers: User[];
     unverifieds: User[];
   }>(["rescuers-users"], getRescuersAndUsersClient);
-
+  useRealtimeRegister(router);
+  useRealtimeMarker(router);
   // Filter users
   const filteredUsers = useMemo(() => {
     const users = data?.users ?? [];
@@ -328,9 +335,6 @@ export default function ClientSideUser() {
                 ) : (
                   <UnverifiedList
                     unverified={filteredUnverifieds}
-                    formatTimeAgo={(date: Date) =>
-                      new Date(date).toLocaleDateString()
-                    }
                     onSelectUnverified={setSelectedUser}
                   />
                 )}

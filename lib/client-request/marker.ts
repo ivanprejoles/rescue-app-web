@@ -2,6 +2,7 @@ export async function updateMarkerClient(
   id: string,
   data: Partial<{
     status: string;
+    rescuer_id: string;
   }>
 ) {
   const res = await fetch(`/api/admin/markers/${id}`, {

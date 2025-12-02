@@ -72,6 +72,17 @@ export const RescuerList: FC<RescuerListProps> = ({
                 </div>
               </div>
 
+              {/* valid id image */}
+              <div className="flex flex-col gap-2 items-center justify-between mb-4">
+                <div className="text-sm text-white">Valid ID</div>
+                <div className="flex items-center gap-3">
+                  <ImageAvatar
+                    notAvatar={true}
+                    imageUrl={rescuer?.validImageUrl}
+                  />
+                </div>
+              </div>
+
               <div className="space-y-3">
                 <div>
                   <div className="space-y-3">
