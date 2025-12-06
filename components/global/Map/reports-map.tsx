@@ -100,7 +100,7 @@ export default function ReportsMap({ reports }: { reports?: MapData }) {
               rescuerStatus && reportStatus
                 ? statusMarkerColor[
                     reportStatus as keyof typeof statusMarkerColor
-                  ]
+                  ] ?? statusMarkerColor.Pending
                 : legend.color,
             iconColor: legend.iconColor,
           }}

@@ -178,7 +178,7 @@ export const rotatingSliderCard = [
 ];
 
 export const statusTextColors: Record<
-  "Pending" | "Assigned" | "Resolved" | "Failed" | "Active",
+  "Pending" | "Assigned" | "Resolved" | "Failed" | "Active" | "Closed",
   string
 > = {
   Pending: "text-yellow-500",
@@ -186,6 +186,7 @@ export const statusTextColors: Record<
   Resolved: "text-green-600",
   Failed: "text-red-500",
   Active: "text-red-500",
+  Closed: "text-gray-500",
 };
 
 export const statusMarkerColor = {
@@ -193,4 +194,5 @@ export const statusMarkerColor = {
   Assigned: "#3B82F6",
   Resolved: "#16A34A",
   Failed: "#EF4444",
+  Closed: "#808080",
 };

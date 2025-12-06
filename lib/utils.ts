@@ -158,7 +158,7 @@ export const openGmailComposeWithRecipient = (recipientEmail: string) => {
 
   window.open(gmailUrl, "_blank");
 };
-  
+
 export function capitalize(str: string): string {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -179,4 +179,48 @@ export function truncateText(
 export function capitalizeFirstLetter(text: string) {
   if (!text) return text; // handle empty or undefined input
   return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+export function buildReportMessage({
+  isInsert,
+  isUpdate,
+  userName,
+  rescuerName,
+  status,
+}: {
+  isInsert: boolean;
+  isUpdate: boolean;
+  userName: string;
+  rescuerName: string | null;
+  status: string | null;
+}) {
+  let title = "";
+  let message = "";
+
+  if (isInsert) {
+    title = "New Report";
+    message = `New report submitted by ${userName}.`;
+
+    return { title, message };
+  }
+
+  if (isUpdate) {
+    title = "Report Updated";
+
+    if (status === "Assigned" && rescuerName) {
+      message = `Report from ${userName} is now assigned to ${rescuerName}.`;
+    } else if (status === "Resolved" && rescuerName) {
+      message = `Report from ${userName} has been resolved by ${rescuerName}.`;
+    } else if (status === "Failed" && rescuerName) {
+      message = `${rescuerName} marked the report from ${userName} as failed.`;
+    } else if (status === "Closed") {
+      message = `Admin has closed the report from ${userName}.`;
+    } else if (rescuerName) {
+      message = `Rescuer ${rescuerName} updated a report from ${userName}.`;
+    } else {
+      message = `A report from ${userName} was updated.`;
+    }
+  }
+
+  return { title, message };
 }

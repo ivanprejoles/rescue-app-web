@@ -139,7 +139,7 @@ export default function LeafletMap({
               rescuerStatus && reportStatus
                 ? statusMarkerColor[
                     reportStatus as keyof typeof statusMarkerColor
-                  ]
+                  ] ?? statusMarkerColor.Pending
                 : legend.color,
             iconColor: legend.iconColor,
           }}
