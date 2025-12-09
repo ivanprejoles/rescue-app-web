@@ -274,8 +274,8 @@ export function useRealtimeMap(
                   message = `Report from ${userName} is now assigned to ${rescuerName}.`;
                 } else if (status === "Resolved" && rescuerName) {
                   message = `Report from ${userName} has been resolved by ${rescuerName}.`;
-                } else if (status === "Failed" && rescuerName) {
-                  message = `${rescuerName} marked the report from ${userName} as failed.`;
+                } else if (status === "Unresolved" && rescuerName) {
+                  message = `${rescuerName} marked the report from ${userName} as unresolved.`;
                 } else if (status === "Closed") {
                   message = `Admin has closed the report from ${userName}.`;
                 } else if (rescuerName) {
@@ -429,8 +429,8 @@ export function useRealtimeReportMarkers() {
                       message = `${userName}'s report has been resolved by ${rescuerName}.`;
                       break;
 
-                    case "Failed":
-                      message = `${rescuerName} marked ${userName}'s report as failed.`;
+                    case "Unresolved":
+                      message = `${rescuerName} marked ${userName}'s report as unresolved.`;
                       break;
 
                     case "Closed":
@@ -776,8 +776,8 @@ export function useRealtimeMarker(router: any) {
                 message = `Report from ${userName} is now assigned to ${rescuerName}.`;
               } else if (status === "Resolved" && rescuerName) {
                 message = `Report from ${userName} has been resolved by ${rescuerName}.`;
-              } else if (status === "Failed" && rescuerName) {
-                message = `${rescuerName} marked the report from ${userName} as failed.`;
+              } else if (status === "Unresolved" && rescuerName) {
+                message = `${rescuerName} marked the report from ${userName} as unresolved.`;
               } else if (status === "Closed") {
                 message = `Admin has closed the report from ${userName}.`;
               } else if (rescuerName) {

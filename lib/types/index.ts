@@ -86,7 +86,7 @@ export interface Report {
   latitude: number;
   title: string;
   longitude: number;
-  status: "Pending" | "Assigned" | "Resolved" | "Failed"; // adjust values as needed
+  status: "Pending" | "Assigned" | "Resolved" | "Unresolved"; // adjust values as needed
   created_at?: string;
   updated_at?: string;
   user?: User;
@@ -108,7 +108,7 @@ export interface MarkerWithRelations {
   latitude: number;
   longitude: number;
   address: string;
-  status: "Pending" | "Assigned" | "Resolved" | "Failed";
+  status: "Pending" | "Assigned" | "Resolved" | "Unresolved";
   created_at: string;
   updated_at: string;
 

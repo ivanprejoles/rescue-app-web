@@ -52,7 +52,7 @@ export const getStatusColor = (status: string) => {
       return "bg-blue-700 text-white border-blue-200";
     case "Resolved":
       return "bg-emerald-700 text-white border-emerald-200";
-    case "failed":
+    case "Unresolved":
       return "bg-red-50 text-red-700 border-red-200";
     default:
       return "bg-gray-50 text-gray-700 border-gray-200";
@@ -211,8 +211,8 @@ export function buildReportMessage({
       message = `Report from ${userName} is now assigned to ${rescuerName}.`;
     } else if (status === "Resolved" && rescuerName) {
       message = `Report from ${userName} has been resolved by ${rescuerName}.`;
-    } else if (status === "Failed" && rescuerName) {
-      message = `${rescuerName} marked the report from ${userName} as failed.`;
+    } else if (status === "Unresolved" && rescuerName) {
+      message = `${rescuerName} marked the report from ${userName} as unresolved.`;
     } else if (status === "Closed") {
       message = `Admin has closed the report from ${userName}.`;
     } else if (rescuerName) {

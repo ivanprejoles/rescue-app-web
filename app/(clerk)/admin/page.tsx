@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 import { GridPattern } from "@/components/ui/grid-pattern";
 import PublicMap from "@/components/global/docs/public-map";
 import BentoGrid from "@/components/global/docs/bento-grid";

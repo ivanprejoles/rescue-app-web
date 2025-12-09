@@ -67,7 +67,7 @@ const FilterSection: React.FC<FilterSectionProps> = ({
                       <SelectItem value="Pending">Pending</SelectItem>
                       <SelectItem value="Assigned">Assigned</SelectItem>
                       <SelectItem value="Resolved">Resolved</SelectItem>
-                      <SelectItem value="Failed">Failed</SelectItem>
+                      <SelectItem value="Unresolved">Unresolved</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>

@@ -160,7 +160,7 @@ export const ReportModal: React.FC = () => {
                   <SelectItem value="Pending">Pending</SelectItem>
                   <SelectItem value="Assigned">Assigned</SelectItem>
                   <SelectItem value="Resolved">Resolved</SelectItem>
-                  <SelectItem value="Failed">Failed</SelectItem>
+                  <SelectItem value="Unresolved">Unresolved</SelectItem>
                   <SelectItem value="Closed">Closed</SelectItem>
                 </SelectGroup>
               </SelectContent>
