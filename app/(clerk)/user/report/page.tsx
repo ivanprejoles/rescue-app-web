@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import {
   ClientSideMarkerRescuer,
   ClientSideMarkerUser,
@@ -30,7 +31,6 @@ export default async function ReportPage() {
     queryKey: ["client-report"],
     queryFn: () => Promise.resolve(reports),
   });
-
 
   const cachedData = queryClient.getQueryData<ClientData>(["client-report"]);
 

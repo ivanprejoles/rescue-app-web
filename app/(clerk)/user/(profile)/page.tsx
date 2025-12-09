@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import ClientSideProfile from "@/components/global/Client/client-side-profile";
 import { getClientProfile } from "@/lib/supabase/request/request-client";
 import { auth } from "@clerk/nextjs/server";
