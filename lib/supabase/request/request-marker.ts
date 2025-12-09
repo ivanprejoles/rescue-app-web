@@ -17,6 +17,7 @@ export async function getReportMarkersOnly(userId: string) {
       longitude,
       imageUrl,
       status,
+      reason,
       created_at,
       updated_at,
       users:user_id (

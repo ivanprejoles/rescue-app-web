@@ -57,15 +57,15 @@ const TooltipWrapper = ({ text, maxLength = 12, className }: WrapperProps) => {
       <Tooltip>
         <TooltipTrigger asChild>
           <span
-            className={`cursor-help text-1xs text-start line-clamp-1 truncate ${className}`}
+            className={`cursor-help text-1xs text-start line-clamp-2 truncate ${className}`}
           >
             {truncatedText}
-            {showFullText && <span className="text-muted-foreground">...</span>}
+            {showFullText && <span className="text-muted-foreground"></span>}
           </span>
         </TooltipTrigger>
         <TooltipContent
           side="bottom"
-          className={`max-auto bg-muted text-muted-foreground px-3 py-2 rounded-md shadow-lg  ${className}`}
+          className={`max-auto bg-muted text-muted-foreground px-3 py-2 rounded-md shadow-lg max-w-[90vw]  ${className}`}
         >
           {text}
         </TooltipContent>

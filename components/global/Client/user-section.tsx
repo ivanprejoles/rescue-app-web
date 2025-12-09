@@ -28,6 +28,8 @@ type Props = {
 };
 
 const UserSection = ({ markers, evacuationCenters, user }: Props) => {
+  console.log(markers);
+
   return (
     <>
       <GlowingWrapper>

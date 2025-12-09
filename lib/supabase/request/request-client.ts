@@ -192,6 +192,7 @@ export async function getClientReport(userId: string) {
         description,
         latitude,
         longitude,
+        reason,
         imageUrl,
         status,
         created_at,

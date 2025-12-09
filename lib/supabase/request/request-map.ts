@@ -9,6 +9,7 @@ export async function getAllMarkersForMap() {
         id,
         type,
         description,
+        reason,
         latitude,
         longitude,
         imageUrl,

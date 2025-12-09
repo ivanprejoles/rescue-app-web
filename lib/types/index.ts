@@ -222,6 +222,7 @@ export interface MapMarker {
   id: string;
   type: string;
   description?: string | null;
+  reason?: string | null;
   latitude: number;
   longitude: number;
   status?: string | null;

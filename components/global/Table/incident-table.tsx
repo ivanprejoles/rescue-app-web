@@ -97,6 +97,7 @@ const IncidentTable: React.FC<IncidentTableProps> = ({
     () => sortGrouped(groupedMarkers),
     [groupedMarkers, sortConfig]
   );
+  console.log(sortedGroupedMarkers);
 
   const groupedBarangays = useMemo(
     () => groupByField<MapBarangay>(barangays, "barangay"),

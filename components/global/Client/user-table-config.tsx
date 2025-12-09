@@ -8,6 +8,7 @@ import {
   Activity,
   MapPinHouse,
   Settings,
+  Ambulance,
 } from "lucide-react";
 import {
   ColumnConfig,
@@ -44,17 +45,49 @@ export const defaultMarkerColumns: ColumnConfig[] = [
     label: "Reported By",
     icon: User,
     render: (marker: any) => (
-      <TooltipWrapper text={marker.user?.name || "   Admin   "} />
+      <TooltipWrapper
+        className="text-green-400"
+        text={marker.user?.name || "   Admin   "}
+      />
     ),
     sortable: true,
     width: "w-32",
   },
   {
     key: "description",
-    label: "Description",
+    label: "Report",
     icon: User,
     render: (marker: any) => (
-      <TooltipWrapper text={marker.description || "   Unknown   "} />
+      <TooltipWrapper
+        className="text-green-400"
+        text={marker.description || "   Unknown   "}
+      />
+    ),
+    sortable: true,
+    width: "w-32",
+  },
+  {
+    key: "rescuer",
+    label: "Rescuer",
+    icon: Ambulance,
+    render: (marker: any) => (
+      <TooltipWrapper
+        className="text-red-400"
+        text={(marker.rescuer && marker.rescuer?.name) || "   None   "}
+      />
+    ),
+    sortable: true,
+    width: "w-32",
+  },
+  {
+    key: "reason",
+    label: "Response",
+    icon: User,
+    render: (marker: any) => (
+      <TooltipWrapper
+        className="text-red-400"
+        text={marker.reason || "   None   "}
+      />
     ),
     sortable: true,
     width: "w-32",
