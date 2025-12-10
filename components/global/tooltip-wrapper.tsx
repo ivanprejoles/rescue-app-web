@@ -23,8 +23,7 @@ interface WrapperProps {
 
 const TooltipWrapper = ({ text, maxLength = 12, className }: WrapperProps) => {
   const [open, setOpen] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 640px)");
-
+  const isMobile = useMediaQuery("(max-width: 1024px)");
   const safeText = text ?? "";
   const truncatedText = truncateText(safeText, isMobile ? 10 : maxLength);
   const showFullText = safeText.length > (isMobile ? 10 : maxLength);
