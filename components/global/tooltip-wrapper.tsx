@@ -43,7 +43,7 @@ const TooltipWrapper = ({ text, maxLength = 12, className }: WrapperProps) => {
           </Button>
         </DialogTrigger>
         <DialogContent
-          className={`sm:max-w-[500px] text-xs md:text-sm px-2 ${className}`}
+          className={`sm:max-w-[90vw] text-xs md:text-sm px-2 ${className}`}
         >
           <DialogTitle className="text-1xs">{text || ""}</DialogTitle>
         </DialogContent>
