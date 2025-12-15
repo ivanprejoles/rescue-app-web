@@ -5,7 +5,6 @@ import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { handleAdminAccess } from "@/lib/supabase/request/request-admin";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 import { MainHeader } from "@/components/ui/header";
-// import { Spotlight } from "@/components/ui/spotlight-new";
 import { QueryClient } from "@tanstack/react-query";
 import AdminModalProvider from "@/components/providers/admin-modal-provider";
 
